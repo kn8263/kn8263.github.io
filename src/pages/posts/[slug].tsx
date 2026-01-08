@@ -113,7 +113,7 @@ export const getStaticProps: GetStaticProps<IPostProps, IPostUrl> = async ({
 		'slug',
 		'tags',
 	]);
-	const content = await markdownToHtml(post.content || '');
+	const content = await markdownToHtml(post.content || '', post.slug);
 	const recents = getRecentPosts(['title', 'date', 'slug']);
 	const mainTags = getTags();
 

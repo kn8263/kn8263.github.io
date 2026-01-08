@@ -4,8 +4,9 @@
 	"license": "UNLICENSED",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
+		"dev": "npm run copy-post-images && next dev",
+		"copy-post-images": "node scripts/copy-post-images.js",
+		"build": "npm run copy-post-images && next build",
 		"start": "next start",
 		"build-stats": "cross-env ANALYZE=true npm run build",
 		"export": "next export",

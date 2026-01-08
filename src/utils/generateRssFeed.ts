@@ -31,7 +31,7 @@ export const generateRssFeed = async () => {
 			feed.addItem({
 				title: post.title,
 				description: post.description,
-				content: await markdownToHtml(post.content),
+				content: await markdownToHtml(post.content || '', post.slug),
 				id: url,
 				link: url,
 				date: new Date(post.date),

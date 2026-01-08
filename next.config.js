@@ -1,5 +1,6 @@
 const withPWA = require('next-pwa')({
 	dest: 'public',
+	disable: process.env.NODE_ENV === 'production', // 本番環境でPWAを無効化
 });
 const withBundleAnalyzer =
 	process.env.ANALYZE === 'true'

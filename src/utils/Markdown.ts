@@ -46,14 +46,51 @@ const addDivMermaidPlugin = () => {
 
 const mermaidOption = { useMaxWidth: false };
 
-export const markdownToHtml = async (markdown: string) =>
-	(
-		await unified()
-			.use(remarkParse)
-			.use(remarkMath)
-			.use(remarkGfm)
-			.use(remarkPlantUML as any)
-			.use(addDivMermaidPlugin as any)
+// 画像パスを変換するプラグイン
+const transformImagePaths = (articleSlug: string) => () => {
+	return (tree: Node) => {
+		visit(tree, (node: any) => {
+			if (node.type === 'image') {
+				// 相対パスの場合、記事のスラッグに基づいて変換
+				if (
+					node.url &&
+					!node.url.startsWith('http') &&
+					!node.url.startsWith('/')
+				) {
+					// スラッグから記事名を取得
+					const articleName = articleSlug
+						.replace(/^posts\//, '')
+						.replace(/^articles\//, '')
+						.replace(/\.md$/, '')
+						.replace(/\.tsx$/, '');
+
+					// パスを変換
+					// eslint-disable-next-line no-param-reassign
+					node.url = `/assets/images/posts/${articleName}/${node.url}`;
+				}
+			}
+		});
+	};
+};
+
+export const markdownToHtml = async (
+	markdown: string,
+	articleSlug?: string,
+) => {
+	const processor = unified()
+		.use(remarkParse)
+		.use(remarkMath)
+		.use(remarkGfm)
+		.use(remarkPlantUML as any)
+		.use(addDivMermaidPlugin as any);
+
+	// スラッグが指定されている場合、画像パス変換プラグインを追加
+	if (articleSlug) {
+		processor.use(transformImagePaths(articleSlug) as any);
+	}
+
+	return (
+		await processor
 			.use(remarkMermaid, {
 				launchOptions: {
 					executablePath:
@@ -89,3 +126,4 @@ export const markdownToHtml = async (markdown: string) =>
 	)
 		.toString()
 		.replace(/@@baseUrl@@/g, process.env.baseUrl || '');
+};

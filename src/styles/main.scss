@@ -26,6 +26,15 @@
 
 	.markdown-content {
 		@apply break-words p-4 m-2 rounded-lg shadow-md border-0 bg-white;
+		
+		img {
+			max-width: 50vw;
+			max-height: 50vh;
+			width: auto;
+			height: auto;
+			display: block;
+			margin: 1rem auto;
+		}
 			
 		h2 {
 			@apply mt-16 mb-8 text-3xl font-bold py-2 pl-16 bg-left-top bg-no-repeat bg-[length:60px] bg-[url('/assets/svgs/lambda.svg')];

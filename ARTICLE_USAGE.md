@@ -45,6 +45,31 @@ const example = "Hello, World!";
 \`\`\`
 ```
 
+# 画像
+1. _posts_image内にマークダウンと同じ名前のディレクトリを作成
+2. そのディレクトリ内に画像を配置
+3. マークダウン内でファイル名のみ使用
+
+### 配置
+```
+_posts_image/
+  └── my-article/
+      ├── image1.jpg
+      └── screenshot.png
+```
+
+### 書き方
+```markdown
+![画像の説明](image1.jpg)
+![スクリーンショット](screenshot.png)
+```
+
+### 自動変換後
+```html
+<img src="/assets/images/posts/my-article/image1.jpg" alt="画像の説明">
+<img src="/assets/images/posts/my-article/screenshot.png" alt="スクリーンショット">
+```
+
 ### フロントマターの説明
 
 | 項目 | 説明 | 必須 | デフォルト値 |

@@ -43,3 +43,9 @@ tags:
 // コードブロックも使用可能
 const example = "Hello, World!";
 ```
+
+## 画像
+```
+![画像の説明](sample.png)
+```
+![画像の説明](sample.png)
