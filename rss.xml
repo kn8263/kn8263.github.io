@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>KN8263.GITHUB.IO</title>
+        <link>https://kn8263.github.io</link>
+        <description>中島功人です。ほぼ自分用のメモサイトです。</description>
+        <lastBuildDate>Thu, 08 Jan 2026 02:33:29 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>ja</language>
+        <copyright>©Nakashima, Katsuhito Some Rights Reserved</copyright>
+        <atom:link href="https://kn8263.github.io/feed" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[テンプレート記事]]></title>
+            <link>https://kn8263.github.io/posts/template-article</link>
+            <guid>https://kn8263.github.io/posts/template-article</guid>
+            <pubDate>Mon, 01 Jan 2024 03:00:00 GMT</pubDate>
+            <description><![CDATA[これは記事のテンプレートです。このファイルをコピーして新しい記事を作成してください。]]></description>
+            <content:encoded><![CDATA[<h1>テンプレート記事</h1>
+<p>これは記事のテンプレートです。</p>
+<h2>使い方</h2>
+<ul>
+<li>このファイルをコピーして新しいファイル名に変更してください</li>
+<li>フロントマター（<code>---</code>で囲まれた部分）を編集してください</li>
+<li>本文をMarkdown形式で記述してください</li>
+</ul>
+<h2>フロントマターの説明</h2>
+<ul>
+<li><code>title</code>: 記事のタイトル</li>
+<li><code>date</code>: 公開日時（ISO 8601形式）</li>
+<li><code>template</code>: テンプレートタイプ（通常は"post"）</li>
+<li><code>draft</code>: 下書きフラグ（<code>false</code>で公開、<code>true</code>で非公開）</li>
+<li><code>category</code>: カテゴリ</li>
+<li><code>description</code>: 記事の説明（SEO用）</li>
+<li><code>tags</code>: タグのリスト</li>
+</ul>
+<h2>Markdown記法</h2>
+<p>通常のMarkdown記法が使用できます。</p>
+<ul>
+<li><strong>太字</strong></li>
+<li><em>斜体</em></li>
+<li><code>コード</code></li>
+<li><a href="https://example.com">リンク</a></li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #6E7781">// コードブロックも使用可能</span></span>
+<span class="line"><span style="color: #CF222E">const</span><span style="color: #24292F"> </span><span style="color: #0550AE">example</span><span style="color: #24292F"> </span><span style="color: #CF222E">=</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Hello, World!"</span><span style="color: #24292F">;</span></span></code></pre>]]></content:encoded>
+        </item>
+    </channel>
+</rss>
