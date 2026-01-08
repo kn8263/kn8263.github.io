@@ -25,10 +25,14 @@ export type PostItems = {
 };
 
 export function getPostSlugs() {
-	return [
-		...fs.readdirSync(postsDirectory),
-		...fs.readdirSync(pagesPostsDirectory),
-	].filter((path) => {
+	const postsFiles = fs.existsSync(postsDirectory)
+		? fs.readdirSync(postsDirectory)
+		: [];
+	const articlesFiles = fs.existsSync(pagesPostsDirectory)
+		? fs.readdirSync(pagesPostsDirectory)
+		: [];
+
+	return [...postsFiles, ...articlesFiles].filter((path) => {
 		const fullPath = join(
 			/.*\.md$/.test(path) ? postsDirectory : pagesPostsDirectory,
 			path,
