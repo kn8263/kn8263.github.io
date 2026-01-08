@@ -94,6 +94,7 @@ tags:
 
 3. Reactコンポーネントとして記事を実装します
 
+{% raw %}
 ```tsx
 import { format } from 'date-fns';
 import { GetStaticProps } from 'next';
@@ -180,6 +181,7 @@ export const getStaticProps: GetStaticProps<ArticleProps> = async () => {
 
 export default Article;
 ```
+{% endraw %}
 
 ### アクセス方法
 記事は `/articles/[ファイル名]/index.html` でアクセスできます。
