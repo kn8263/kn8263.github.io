@@ -1,0 +1,1 @@
+import{j as e}from"./jsx-runtime.BjG_zV1W.js";import"./index.C7o2Wufa.js";const l=({children:o})=>e.jsx("div",{className:"p-4 bg-blue-100 rounded border-2 border-blue-300",children:e.jsx("p",{className:"text-blue-800 font-semibold",children:o})});export{l as default};

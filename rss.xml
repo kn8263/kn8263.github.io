@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Thu, 08 Jan 2026 04:14:55 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 08 Jan 2026 12:59:39 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -48,6 +48,92 @@
 <pre><code>![画像の説明](sample.png)
 </code></pre>
 <p><img src="/assets/images/posts/template-article/sample.png" alt="画像の説明"></p>]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[テンプレート記事（Astro版）]]></title>
+            <link>https://kn8263.github.io/articles/template</link>
+            <guid>https://kn8263.github.io/articles/template</guid>
+            <pubDate>Mon, 01 Jan 2024 03:00:00 GMT</pubDate>
+            <description><![CDATA[これはAstro形式の記事のテンプレートです。Reactコンポーネントを含む複雑な記事を作成できます。]]></description>
+            <content:encoded><![CDATA[<Main
+	recents={recents}
+	tags={mainTags}
+	meta={{
+		title,
+		description,
+		post: {
+			date,
+			modified_date: null,
+			image: null,
+		},
+		url: '/articles/template/',
+	}}
+>
+	<h1 class="content-title">{title}</h1>
+	<div class="content-date">
+		Posted {format(new Date(date), 'LLLL d, yyyy')}
+	</div>
+<pre><code>&#x3C;ul class="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
+	{tags.map((tag) => (
+		&#x3C;li
+			class="px-2 py-1 m-1 rounded-full overflow-hidden shadow-md border-0 bg-white w-fit break-all"
+		>
+			&#x3C;a href={`/tag/${tag}/index.html`}>
+				#{tag}
+			&#x3C;/a>
+		&#x3C;/li>
+	))}
+&#x3C;/ul>
+
+&#x3C;Content client:load>
+	&#x3C;div>
+		&#x3C;p>これはAstro形式の記事のテンプレートです。&#x3C;/p>
+		&#x3C;p>このファイルをコピーして新しい記事を作成できます。&#x3C;/p>
+		
+		&#x3C;h2>使い方&#x3C;/h2>
+		&#x3C;ol>
+			&#x3C;li>このファイルをコピーして新しいファイル名に変更してください&#x3C;/li>
+			&#x3C;li>フロントマター（`---`で囲まれた部分）の変数を編集してください&#x3C;/li>
+			&#x3C;li>コンテンツ部分を編集してください&#x3C;/li>
+		&#x3C;/ol>
+
+		&#x3C;h2>Reactコンポーネントの使用&#x3C;/h2>
+		&#x3C;p>Astroファイル内でReactコンポーネントを使用できます：&#x3C;/p>
+		&#x3C;ReactHelloWorld client:load>
+			こんな感じでReactコンポーネントが使えます！✨
+		&#x3C;/ReactHelloWorld>
+
+		&#x3C;h2>フロントマターの説明&#x3C;/h2>
+		&#x3C;ul>
+			&#x3C;li>`title`: 記事のタイトル（文字列）&#x3C;/li>
+			&#x3C;li>`date`: 公開日時（ISO 8601形式の文字列）&#x3C;/li>
+			&#x3C;li>`description`: 記事の説明（SEO用、文字列）&#x3C;/li>
+			&#x3C;li>`tags`: タグのリスト（配列）&#x3C;/li>
+			&#x3C;li>`category`: カテゴリ（文字列）&#x3C;/li>
+		&#x3C;/ul>
+
+		&#x3C;h2>Markdown記法&#x3C;/h2>
+		&#x3C;p>通常のMarkdown記法が使用できます。&#x3C;/p>
+		&#x3C;ul>
+			&#x3C;li>&#x3C;strong>太字&#x3C;/strong>&#x3C;/li>
+			&#x3C;li>&#x3C;em>斜体&#x3C;/em>&#x3C;/li>
+			&#x3C;li>&#x3C;code>コード&#x3C;/code>&#x3C;/li>
+			&#x3C;li>&#x3C;a href="https://example.com">リンク&#x3C;/a>&#x3C;/li>
+		&#x3C;/ul>
+
+		&#x3C;h2>コードブロック&#x3C;/h2>
+		&#x3C;pre>&#x3C;code class="language-typescript">// コードブロックも使用可能
+</code></pre>
+<p>const example = "Hello, World!";</code></pre></p>
+<pre><code>		&#x3C;h2>画像&#x3C;/h2>
+		&#x3C;p>画像も使用できます：&#x3C;/p>
+		&#x3C;p>&#x3C;code>![画像の説明](sample.png)&#x3C;/code>&#x3C;/p>
+	&#x3C;/div>
+&#x3C;/Content>
+
+&#x3C;PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+</code></pre>
+</Main>]]></content:encoded>
         </item>
     </channel>
 </rss>
