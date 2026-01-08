@@ -1,0 +1,21 @@
+---
+import Main from '../layouts/Main.astro';
+import { Content } from '../content/Content';
+import { getRecentPosts, getTags } from '../utils/Content';
+
+const recents = getRecentPosts(['title', 'date', 'slug']);
+const tags = getTags();
+---
+
+<Main
+	recents={recents}
+	tags={tags}
+	meta={{
+		title: '404 not found',
+		description: '404 not found page',
+	}}
+>
+	<Content client:load>
+		<h1 class="content-title">404 not found</h1>
+	</Content>
+</Main>

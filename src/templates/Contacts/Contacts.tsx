@@ -1,5 +1,3 @@
-import React from 'react';
-
 import getContactHref from './get-contact-href';
 import getIcon from './get-icon';
 import Icon from './Icon';

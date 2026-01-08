@@ -1,9 +1,7 @@
-import { GetStaticProps } from 'next';
-
+---
+import Main from '../layouts/Main.astro';
 import { Content } from '../content/Content';
-import { Meta } from '../layout/Meta';
-import { Main } from '../templates/Main';
-import { getRecentPosts, getTags, PostItems } from '../utils/Content';
+import { getRecentPosts, getTags } from '../utils/Content';
 import { markdownToHtml } from '../utils/Markdown';
 
 const contentMarkdown = String.raw`
@@ -80,35 +78,21 @@ const contentMarkdown = String.raw`
 
 `;
 
-type AboutProps = {
-	recents: PostItems[];
-	tags: string[];
-	contentHTML: string;
-};
+const recents = getRecentPosts(['title', 'date', 'slug']);
+const tags = getTags();
+const contentHTML = await markdownToHtml(contentMarkdown);
+---
 
-const About = (props: AboutProps) => (
-	<Main
-		recents={props.recents}
-		tags={props.tags}
-		meta={<Meta title="ポートフォリオ" description="ポートフォリオ" />}
-	>
-		<h1 className="content-title">ポートフォリオ</h1>
-		<Content>
-			<div dangerouslySetInnerHTML={{ __html: props.contentHTML }} />
-		</Content>
-	</Main>
-);
-
-export const getStaticProps: GetStaticProps<AboutProps> = async () => {
-	const recents = getRecentPosts(['title', 'date', 'slug']);
-
-	return {
-		props: {
-			recents,
-			tags: getTags(),
-			contentHTML: await markdownToHtml(contentMarkdown),
-		},
-	};
-};
-
-export default About;
+<Main
+	recents={recents}
+	tags={tags}
+	meta={{
+		title: 'ポートフォリオ',
+		description: 'ポートフォリオ',
+	}}
+>
+	<h1 class="content-title">ポートフォリオ</h1>
+	<Content client:load>
+		<Fragment set:html={contentHTML} />
+	</Content>
+</Main>

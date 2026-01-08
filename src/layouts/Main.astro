@@ -1,0 +1,95 @@
+---
+import { CheckMeRibbon } from '../templates/CheckMeRibbon';
+import { Sidebar } from '../templates/SideBar';
+import Navbar from '../navigation/Navbar.astro';
+import { AppConfig } from '../utils/AppConfig';
+import type { PostItems } from '../types/Content';
+import Meta from './Meta.astro';
+import '../styles/global.css';
+
+interface Props {
+	recents: PostItems[];
+	tags: string[];
+	meta?: {
+		title: string;
+		description: string;
+		canonical?: string;
+		post?: {
+			image?: string | null;
+			date: string;
+			modified_date?: string | null;
+		};
+		url?: string;
+	};
+}
+
+const { recents, tags, meta } = Astro.props;
+---
+
+<html lang="ja">
+	<head>
+		{meta ? (
+			<Meta
+				title={meta.title}
+				description={meta.description}
+				canonical={meta.canonical}
+				post={meta.post}
+				url={meta.url}
+			/>
+		) : (
+			<Meta
+				title={AppConfig.title}
+				description={AppConfig.description}
+			/>
+		)}
+	</head>
+	<body>
+		<div class="antialiased w-full text-black md:px-0 sm:flex min-h-screen">
+
+	<div class="mx-auto float-left px-3 w-full sm:w-3/4 lg:w-[calc(100vw-256px)] bg-slate-100 min-h-fit sm:min-h-screen">
+		<div class="border-b border-gray-300 break-all text-center text-zinc-900 font-semibold block">
+			<div class="pt-4 pb-8 sm:pb-0">
+				<div class="font-semibold text-2xl text-gray-900">
+					<a href="/index.html">
+						{AppConfig.title}
+					</a>
+				</div>
+				<div class="text-sm sm:hidden">{AppConfig.description}</div>
+			</div>
+			<div class="sm:hidden">
+				<Navbar>
+					<li class="mr-5">
+						<a href="/index.html">
+							Home
+						</a>
+					</li>
+					<li class="mr-5">
+						<a href="/about/index.html">
+							About
+						</a>
+					</li>
+					<li class="mr-5">
+						<a href="/portfolio/index.html">
+							Portfolio
+						</a>
+					</li>
+					<!-- <li class="mr-5">
+						<a href="/contact/index.html">
+							Contact
+						</a>
+					</li> -->
+				</Navbar>
+			</div>
+		</div>
+
+		<div class="text-base py-5">
+			<slot />
+		</div>
+	</div>
+	<div class="w-full sm:w-1/4 lg:w-[256px] float-right sticky shadow-md sm:h-full sm:top-auto sm:self-end sm:bottom-0 min-h-fit sm:min-h-screen">
+		<CheckMeRibbon client:load />
+		<Sidebar recents={recents} tags={tags} client:load />
+	</div>
+	</div>
+	</body>
+</html>

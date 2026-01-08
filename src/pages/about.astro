@@ -1,0 +1,38 @@
+---
+import Main from '../layouts/Main.astro';
+import { Content } from '../content/Content';
+import { getRecentPosts, getTags } from '../utils/Content';
+import { markdownToHtml } from '../utils/Markdown';
+
+const contentMarkdown = String.raw`
+このウェブサイトは、TypeScript + Astro.js + Tailwindで作成して、GitHub Pagesで公開しています。<br>
+レスポンシブデザイン・マテリアルデザインを考慮し、パソコンでもスマホでも見やすいように作っています。<br>
+また、スタイルはTailwindを使って記述していて、保守や拡張しやすいモダンな設計をしています。<br>
+
+GitHub ActionsでCI/CDをしています。<br>
+ソースコードはすべてGitHubに公開していますので見てみて下さい。<br>
+<https://github.com/kn8263/kn8263.github.io>
+
+### 著者について
+
+[ポートフォリオ](/portfolio/index.html)
+`;
+
+const recents = getRecentPosts(['title', 'date', 'slug']);
+const tags = getTags();
+const contentHTML = await markdownToHtml(contentMarkdown);
+---
+
+<Main
+	recents={recents}
+	tags={tags}
+	meta={{
+		title: 'このウェブサイトについて',
+		description: 'このウェブサイトについて',
+	}}
+>
+	<h1 class="content-title">このウェブサイトについて</h1>
+	<Content client:load>
+		<Fragment set:html={contentHTML} />
+	</Content>
+</Main>

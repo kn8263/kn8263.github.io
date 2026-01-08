@@ -1,7 +1,7 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 type INavbarProps = {
-	children: ReactNode;
+	children: React.ReactNode;
 };
 
 const Navbar = (props: INavbarProps) => (

@@ -1,0 +1,34 @@
+---
+import Main from '../layouts/Main.astro';
+import { BlogGallery } from '../blog/BlogGallery';
+import { AppConfig } from '../utils/AppConfig';
+import {
+	getAllPostsIncludeTSX,
+	getRecentPosts,
+	getTags,
+} from '../utils/Content';
+import type { IPaginationProps } from '../pagination/Pagination';
+
+const posts = getAllPostsIncludeTSX(['title', 'date', 'slug']);
+const pagination: IPaginationProps = {};
+const recents = getRecentPosts(['title', 'date', 'slug']);
+
+if (posts.length > AppConfig.pagination_size) {
+	pagination.next = '/page2';
+}
+
+const postsToShow = posts.slice(0, AppConfig.pagination_size);
+const tags = getTags();
+---
+
+<Main
+	recents={recents}
+	tags={tags}
+	meta={{
+		title: 'KN8263.GITHUB.IO',
+		description: AppConfig.description,
+	}}
+>
+	<h1 class="content-title">レポート一覧</h1>
+	<BlogGallery posts={postsToShow} pagination={pagination} client:load />
+</Main>

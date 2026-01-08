@@ -45,8 +45,8 @@ const example = "Hello, World!";
 \`\`\`
 ```
 
-# 画像
-1. _posts_image内にマークダウンと同じ名前のディレクトリを作成
+### 画像
+1. `_posts_image`内にマークダウンと同じ名前のディレクトリを作成
 2. そのディレクトリ内に画像を配置
 3. マークダウン内でファイル名のみ使用
 
@@ -87,131 +87,143 @@ _posts_image/
 
 例: `_posts/my-article.md` → `/posts/my-article/index.html`
 
-## 2. TypeScript/TSXファイル（`src/pages/articles/`ディレクトリ）
+## 2. Astroファイル（`src/pages/articles/`ディレクトリ）
 
 ### 概要
-`src/pages/articles/`ディレクトリにTypeScript/TSXファイルを配置することで、Reactコンポーネントを含む複雑な記事を作成できます。
+`src/pages/articles/`ディレクトリにAstroファイル（`.astro`）を配置することで、Reactコンポーネントを含む複雑な記事を作成できます。
 
 ### 使い方
 
-1. `src/pages/articles/`ディレクトリに新しいTSXファイルを作成します
+1. `src/pages/articles/`ディレクトリに新しい`.astro`ファイルを作成します
    - ファイル名は任意ですが、スラッグとして使用されます
-   - 例: `my-article.tsx`
+   - 例: `my-article.astro`
 
-2. ファイルの先頭にフロントマターをコメント形式で記述します
+2. ファイルの先頭にフロントマターをTypeScriptコードとして記述します
 
-```tsx
-/**
+```astro
 ---
-title: 記事のタイトル
-date: "2024-01-28T12:00:00+0900"
-template: "post"
-type: "tsx"
-draft: false
-category: "blog"
-description: "記事の説明（SEO用）"
-tags:
-  - "タグ1"
-  - "タグ2"
----
-*/
-```
-
-3. Reactコンポーネントとして記事を実装します
-
-{% raw %}
-```tsx
 import { format } from 'date-fns';
-import { GetStaticProps } from 'next';
-import Link from 'next/link';
-
+import Main from '../../layouts/Main.astro';
 import { Content } from '../../content/Content';
-import { Meta } from '../../layout/Meta';
 import { PostPagination } from '../../pagination/PostPagination';
-import { Main } from '../../templates/Main';
 import {
-  getPrevNextPost,
-  getRecentPosts,
-  getTags,
-  PostItems,
+	getAllPostsIncludeTSX,
+	getRecentPosts,
+	getTags,
 } from '../../utils/Content';
-import { markdownToHtml } from '../../utils/Markdown';
+import type { PostItems } from '../../types/Content';
 
-type ArticleProps = {
-  recents: PostItems[];
-  tags: string[];
-  content: string;
-  prevPost?: PostItems;
-  nextPost?: PostItems;
-};
+// フロントマター（メタデータをTypeScript変数として定義）
+const title = "記事のタイトル";
+const date = "2024-01-28T12:00:00+0900";
+const description = "記事の説明（SEO用）";
+const tags = ['タグ1', 'タグ2'];
+// @ts-ignore - Content.tsで読み取られるため保持（未使用警告を無視）
+const category = 'blog';
 
-const Article = (props: ArticleProps) => {
-  return (
-    <Main
-      recents={props.recents}
-      tags={props.tags}
-      meta={
-        <Meta
-          title="記事のタイトル"
-          description="記事の説明"
-        />
-      }
-    >
-      <h1 className="content-title">記事のタイトル</h1>
-      <div className="content-date">
-        Posted {format(new Date('2024-01-28T12:00:00+0900'), 'LLLL d, yyyy')}
-      </div>
-      <ul className="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
-        {['タグ1', 'タグ2'].map((tag) => (
-          <li
-            className="px-2 py-1 m-1 rounded-full overflow-hidden shadow-md border-0 bg-white w-fit break-all"
-            key={tag}
-          >
-            <Link
-              href={{
-                pathname: '/tag/[tag]',
-                query: { tag },
-              }}
-              as={`/tag/${tag}/index.html`}
-            >
-              #{tag}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <Content>
-        <div dangerouslySetInnerHTML={{ __html: props.content }} />
-      </Content>
-      <PostPagination nextPost={props.nextPost} prevPost={props.prevPost} />
-    </Main>
-  );
-};
-
-export const getStaticProps: GetStaticProps<ArticleProps> = async () => {
-  const markdownContent = `
-# 見出し
-
-本文の内容をここに記述します。
-  `;
-
-  return {
-    props: {
-      recents: getRecentPosts(['title', 'date', 'slug']),
-      tags: getTags(),
-      content: await markdownToHtml(markdownContent),
-      ...getPrevNextPost(__filename),
-    },
-  };
-};
-
-export default Article;
+// 前後の記事を取得
+const recents = getRecentPosts(['title', 'date', 'slug']);
+const mainTags = getTags();
+const posts = getAllPostsIncludeTSX(['title', 'date', 'slug']);
+const currentNumber = posts.map(({ slug }) => slug).indexOf('articles/my-article');
+const prevPost: PostItems | null = posts[currentNumber - 1] ?? null;
+const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
+---
 ```
-{% endraw %}
+
+3. コンテンツ部分を記述します
+
+```astro
+<Main
+	recents={recents}
+	tags={mainTags}
+	meta={{
+		title,
+		description,
+		post: {
+			date,
+			modified_date: null,
+			image: null,
+		},
+		url: '/articles/my-article/',
+	}}
+>
+	<h1 class="content-title">{title}</h1>
+	<div class="content-date">
+		Posted {format(new Date(date), 'LLLL d, yyyy')}
+	</div>
+
+	<ul class="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
+		{tags.map((tag) => (
+			<li
+				class="px-2 py-1 m-1 rounded-full overflow-hidden shadow-md border-0 bg-white w-fit break-all"
+			>
+				<a href={`/tag/${tag}/index.html`}>
+					#{tag}
+				</a>
+			</li>
+		))}
+	</ul>
+
+	<Content client:load>
+		<div>
+			<p>記事の本文をここに記述します。</p>
+			
+			<h2>見出し</h2>
+			<p>通常のHTMLやMarkdown記法が使用できます。</p>
+			
+			<ul>
+				<li>リスト項目1</li>
+				<li>リスト項目2</li>
+			</ul>
+			
+			<pre><code class="language-typescript">// コードブロックも使用可能
+const example = "Hello, World!";</code></pre>
+		</div>
+	</Content>
+
+	<PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+</Main>
+```
+
+### Reactコンポーネントの使用
+
+Astroファイル内でReactコンポーネントを使用する場合は、`client:load`ディレクティブを使用します：
+
+```astro
+---
+import ReactHelloWorld from '../../components/ReactHelloWorld/ReactHelloWorld';
+---
+<Content client:load>
+	<div>
+		<p>通常のコンテンツ</p>
+		<ReactHelloWorld client:load>
+			こんな感じでReactコンポーネントが使えます！✨
+		</ReactHelloWorld>
+	</div>
+</Content>
+```
+
+### フロントマターの説明
+
+| 項目 | 説明 | 必須 | デフォルト値 |
+|------|------|------|--------------|
+| `title` | 記事のタイトル（文字列） | 必須 | - |
+| `date` | 公開日時（ISO 8601形式の文字列） | 必須 | - |
+| `description` | 記事の説明（SEO用、文字列） | 任意 | - |
+| `tags` | タグのリスト（配列） | 任意 | [] |
+| `category` | カテゴリ（文字列） | 任意 | "blog" |
+
+**注意**: `category`変数は`Content.ts`で読み取られるため、`@ts-ignore`コメントを追加して未使用警告を無視してください。
 
 ### アクセス方法
 記事は `/articles/[ファイル名]/index.html` でアクセスできます。
 
-例: `src/pages/articles/my-article.tsx` → `/articles/my-article/index.html`
+例: `src/pages/articles/my-article.astro` → `/articles/my-article/index.html`
+
+### テンプレートファイル
+
+`src/pages/articles/template.astro`をコピーして新しい記事を作成することをお勧めします。
 
 ## マークダウンの機能
 
@@ -232,4 +244,6 @@ export default Article;
 - ファイル名はURLのスラッグとして使用されるため、適切な命名規則に従ってください
 - 日付はISO 8601形式（`YYYY-MM-DDTHH:mm:ss+0900`）で記述してください
 - タグは配列形式で記述してください
-- TSXファイルを使用する場合は、Reactコンポーネントとして実装する必要があります
+- `.astro`ファイルを使用する場合は、Astroのテンプレート構文を使用してください
+- Reactコンポーネントを使用する場合は、`client:load`ディレクティブを追加してください
+- Astroファイルでは`key`属性は不要です（Reactとは異なります）
