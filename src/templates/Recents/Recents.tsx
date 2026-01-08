@@ -1,8 +1,4 @@
-import React from 'react';
-
-import Link from 'next/link';
-
-import { PostItems } from '../../utils/Content';
+import type { PostItems } from '../../types/Content';
 
 type IRecentPostsProps = {
 	posts: PostItems[];
@@ -15,19 +11,7 @@ const Recents = (props: IRecentPostsProps) => (
 			{props.posts.map((post) => {
 				return (
 					<li className="m-0 text-sm" key={post.slug}>
-						<Link
-							href={
-								post.slug.startsWith('posts/')
-									? {
-											pathname: '/posts/[slug]',
-											query: { slug: post.slug.replace(/^.*\/([^/]*)$/, '$1') },
-										}
-									: `/${post.slug}`
-							}
-							as={`/${post.slug}/index.html`}
-						>
-							{post.title}
-						</Link>
+						<a href={`/${post.slug}/index.html`}>{post.title}</a>
 					</li>
 				);
 			})}

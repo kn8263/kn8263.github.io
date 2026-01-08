@@ -1,0 +1,85 @@
+---
+import { format } from 'date-fns';
+import Main from '../../layouts/Main.astro';
+import { Content } from '../../content/Content';
+import { PostPagination } from '../../pagination/PostPagination';
+import {
+	getAllPostsIncludeTSX,
+	getMdPosts,
+	getPostBySlug,
+	getRecentPosts,
+	getTags,
+} from '../../utils/Content';
+import { markdownToHtml } from '../../utils/Markdown';
+import type { PostItems } from '../../types/Content';
+
+export async function getStaticPaths() {
+	const posts = getMdPosts(['slug']);
+
+	return posts.map((post) => ({
+		params: {
+			slug: post.slug.replace(/^posts\//u, ''),
+		},
+	}));
+}
+
+const { slug } = Astro.params;
+const realSlug = slug!;
+const post = getPostBySlug(realSlug, [
+	'title',
+	'description',
+	'date',
+	'modified_date',
+	'image',
+	'content',
+	'slug',
+	'tags',
+]);
+const content = await markdownToHtml(post.content || '', post.slug);
+const recents = getRecentPosts(['title', 'date', 'slug']);
+const mainTags = getTags();
+
+const posts = getAllPostsIncludeTSX(['title', 'date', 'slug']);
+const currentNumber = posts.map(({ slug }) => slug).indexOf(`posts/${realSlug}`);
+
+const prevPost: PostItems | null = posts[currentNumber - 1] ?? null;
+const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
+---
+
+<Main
+	recents={recents}
+	tags={mainTags}
+	meta={{
+		title: post.title,
+		description: post.description,
+		post: {
+			image: post.image,
+			date: post.date,
+			modified_date: post.modified_date,
+		},
+		url: `/posts/${realSlug}/`,
+	}}
+>
+	<h1 class="content-title">{post.title}</h1>
+	<div class="content-date">
+		Posted {format(new Date(post.date), 'LLLL d, yyyy')}
+	</div>
+
+	<ul class="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
+		{post.tags?.map((tag) => (
+			<li
+				class="px-2 py-1 m-1 rounded-full overflow-hidden shadow-md border-0 bg-white w-fit break-all"
+				key={tag}
+			>
+				<a href={`/tag/${tag}/index.html`}>
+					#{tag}
+				</a>
+			</li>
+		))}
+	</ul>
+	<Content client:load>
+		<Fragment set:html={content} />
+	</Content>
+
+	<PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+</Main>

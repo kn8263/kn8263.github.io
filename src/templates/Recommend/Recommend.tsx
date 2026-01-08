@@ -1,7 +1,3 @@
-import React from 'react';
-
-import Link from 'next/link';
-
 const Recommend = () => (
 	<nav className="my-2 py-1 border-t border-t-slate-200 relative">
 		おすすめのレポート
@@ -39,19 +35,7 @@ const Recommend = () => (
 			].map((post) => {
 				return (
 					<li className="m-0 text-sm" key={post.slug}>
-						<Link
-							href={
-								post.slug.startsWith('posts/')
-									? {
-											pathname: '/posts/[slug]',
-											query: { slug: post.slug.replace(/^.*\/([^/]*)$/, '$1') },
-										}
-									: `/${post.slug}`
-							}
-							as={`/${post.slug}/index.html`}
-						>
-							{post.title}
-						</Link>
+						<a href={`/${post.slug}/index.html`}>{post.title}</a>
 					</li>
 				);
 			})}

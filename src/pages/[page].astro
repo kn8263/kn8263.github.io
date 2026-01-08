@@ -1,0 +1,58 @@
+---
+import Main from '../layouts/Main.astro';
+import { BlogGallery } from '../blog/BlogGallery';
+import { AppConfig } from '../utils/AppConfig';
+import {
+	getAllPostsIncludeTSX,
+	getRecentPosts,
+	getTags,
+} from '../utils/Content';
+import { convertTo2D } from '../utils/Pagination';
+import type { IPaginationProps } from '../pagination/Pagination';
+
+export async function getStaticPaths() {
+	const posts = getAllPostsIncludeTSX(['slug']);
+	const pages = convertTo2D(posts, AppConfig.pagination_size);
+
+	return pages.slice(1).map((_, index) => ({
+		params: {
+			// Ind starts from zero so we need to do ind + 1
+			// slice(1) removes the first page so we do another ind + 1
+			// the first page is implemented in index.astro
+			page: `page${index + 2}`,
+		},
+	}));
+}
+
+const { page } = Astro.params;
+const posts = getAllPostsIncludeTSX(['title', 'date', 'slug']);
+const recents = getRecentPosts(['title', 'date', 'slug']);
+
+const pages = convertTo2D(posts, AppConfig.pagination_size);
+const currentPage = Number(page!.replace('page', ''));
+const currentIndex = currentPage - 1;
+
+const pagination: IPaginationProps = {};
+
+if (currentPage < pages.length) {
+	pagination.next = `page${currentPage + 1}`;
+}
+
+if (currentPage === 2) {
+	pagination.previous = '/';
+} else {
+	pagination.previous = `page${currentPage - 1}`;
+}
+---
+
+<Main
+	recents={recents}
+	tags={getTags()}
+	meta={{
+		title: `レポート一覧 ${currentPage}ページ目`,
+		description: `レポート一覧 ${currentPage}ページ目`,
+	}}
+>
+	<h1 class="content-title">レポート一覧 {currentPage}ページ目</h1>
+	<BlogGallery posts={pages[currentIndex]} pagination={pagination} client:load />
+</Main>

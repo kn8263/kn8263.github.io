@@ -1,7 +1,3 @@
-import React from 'react';
-
-import Link from 'next/link';
-
 type ITagPostsProps = {
 	tags: string[];
 };
@@ -23,16 +19,10 @@ const Tags = (props: ITagPostsProps) => (
 				.map((tag) => {
 					return (
 						<li className="m-0 text-sm" key={tag}>
-							<Link
-								href={{
-									pathname: '/tag/[tag]',
-									query: { tag },
-								}}
-								as={`/tag/${tag}/index.html`}
-							>
+							<a href={`/tag/${tag}/index.html`}>
 								{tag}({props.tags.filter((countTag) => countTag === tag).length}
 								)
-							</Link>
+							</a>
 						</li>
 					);
 				})}

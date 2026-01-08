@@ -1,0 +1,111 @@
+---
+import { format } from 'date-fns';
+import Main from '../../layouts/Main.astro';
+import { Content } from '../../content/Content';
+import { PostPagination } from '../../pagination/PostPagination';
+import ReactHelloWorld from '../../components/ReactHelloWorld/ReactHelloWorld';
+import {
+	getAllPostsIncludeTSX,
+	getRecentPosts,
+	getTags,
+} from '../../utils/Content';
+import type { PostItems } from '../../types/Content';
+
+// フロントマター（YAML形式のメタデータをTypeScript変数として定義）
+// Content.tsで読み取るために、これらの値はYAMLとしても記述可能ですが、
+// AstroではTypeScriptコードとして記述します
+const title = "テンプレート記事（Astro版）";
+const date = "2024-01-01T12:00:00+0900";
+const description = "これはAstro形式の記事のテンプレートです。Reactコンポーネントを含む複雑な記事を作成できます。";
+const tags = ['Template', 'Astro', 'React'];
+// @ts-ignore - Content.tsで読み取られるため保持（未使用警告を無視）
+const category = 'blog';
+
+// 前後の記事を取得
+const recents = getRecentPosts(['title', 'date', 'slug']);
+const mainTags = getTags();
+const posts = getAllPostsIncludeTSX(['title', 'date', 'slug']);
+const currentNumber = posts.map(({ slug }) => slug).indexOf('articles/template');
+const prevPost: PostItems | null = posts[currentNumber - 1] ?? null;
+const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
+---
+
+<Main
+	recents={recents}
+	tags={mainTags}
+	meta={{
+		title,
+		description,
+		post: {
+			date,
+			modified_date: null,
+			image: null,
+		},
+		url: '/articles/template/',
+	}}
+>
+	<h1 class="content-title">{title}</h1>
+	<div class="content-date">
+		Posted {format(new Date(date), 'LLLL d, yyyy')}
+	</div>
+
+	<ul class="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
+		{tags.map((tag) => (
+			<li
+				class="px-2 py-1 m-1 rounded-full overflow-hidden shadow-md border-0 bg-white w-fit break-all"
+			>
+				<a href={`/tag/${tag}/index.html`}>
+					#{tag}
+				</a>
+			</li>
+		))}
+	</ul>
+
+	<Content client:load>
+		<div>
+			<p>これはAstro形式の記事のテンプレートです。</p>
+			<p>このファイルをコピーして新しい記事を作成できます。</p>
+			
+			<h2>使い方</h2>
+			<ol>
+				<li>このファイルをコピーして新しいファイル名に変更してください</li>
+				<li>フロントマター（`---`で囲まれた部分）の変数を編集してください</li>
+				<li>コンテンツ部分を編集してください</li>
+			</ol>
+
+			<h2>Reactコンポーネントの使用</h2>
+			<p>Astroファイル内でReactコンポーネントを使用できます：</p>
+			<ReactHelloWorld client:load>
+				こんな感じでReactコンポーネントが使えます！✨
+			</ReactHelloWorld>
+
+			<h2>フロントマターの説明</h2>
+			<ul>
+				<li>`title`: 記事のタイトル（文字列）</li>
+				<li>`date`: 公開日時（ISO 8601形式の文字列）</li>
+				<li>`description`: 記事の説明（SEO用、文字列）</li>
+				<li>`tags`: タグのリスト（配列）</li>
+				<li>`category`: カテゴリ（文字列）</li>
+			</ul>
+
+			<h2>Markdown記法</h2>
+			<p>通常のMarkdown記法が使用できます。</p>
+			<ul>
+				<li><strong>太字</strong></li>
+				<li><em>斜体</em></li>
+				<li><code>コード</code></li>
+				<li><a href="https://example.com">リンク</a></li>
+			</ul>
+
+			<h2>コードブロック</h2>
+			<pre><code class="language-typescript">// コードブロックも使用可能
+const example = "Hello, World!";</code></pre>
+
+			<h2>画像</h2>
+			<p>画像も使用できます：</p>
+			<p><code>![画像の説明](sample.png)</code></p>
+		</div>
+	</Content>
+
+	<PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+</Main>
