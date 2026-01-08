@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Thu, 08 Jan 2026 02:33:29 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 08 Jan 2026 04:06:36 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -43,7 +43,11 @@
 <li><a href="https://example.com">リンク</a></li>
 </ul>
 <pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #6E7781">// コードブロックも使用可能</span></span>
-<span class="line"><span style="color: #CF222E">const</span><span style="color: #24292F"> </span><span style="color: #0550AE">example</span><span style="color: #24292F"> </span><span style="color: #CF222E">=</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Hello, World!"</span><span style="color: #24292F">;</span></span></code></pre>]]></content:encoded>
+<span class="line"><span style="color: #CF222E">const</span><span style="color: #24292F"> </span><span style="color: #0550AE">example</span><span style="color: #24292F"> </span><span style="color: #CF222E">=</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Hello, World!"</span><span style="color: #24292F">;</span></span></code></pre>
+<h2>画像</h2>
+<pre><code>![画像の説明](sample.png)
+</code></pre>
+<p><img src="/assets/images/posts/template-article/sample.png" alt="画像の説明"></p>]]></content:encoded>
         </item>
     </channel>
 </rss>
