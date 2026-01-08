@@ -3,7 +3,8 @@ import rehypeMathJaxSvg from 'rehype-mathjax/svg';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkMermaid from 'remark-mermaidjs';
-import * as remarkPlantUML from 'remark-sync-plantuml';
+// @ts-ignore - remark-sync-plantuml has default export but types may not reflect it
+import remarkPlantUML from 'remark-sync-plantuml';
 import { getHighlighter } from 'shiki';
 import type { Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';
