@@ -44,17 +44,14 @@ jobs:
       - name: build
         run: npm run build
 
-      - name: build sitemap
-        run: npm run build-sitemap
-
       - name: add nojekyll
-        run: touch ./out/.nojekyll
+        run: touch ./dist/.nojekyll
 
       - name: Move 404 page to root directory
-        run: mv ./out/404/index.html ./out/404.html
+        run: mv ./dist/404/index.html ./dist/404.html || true
 
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+          publish_dir: ./dist
