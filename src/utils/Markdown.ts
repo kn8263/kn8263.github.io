@@ -8,18 +8,20 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import remarkPlantUML from 'remark-sync-plantuml';
 import { getHighlighter } from 'shiki';
-import { unified, Plugin } from 'unified';
+// import { unified, Plugin } from 'unified';
+import { unified } from 'unified';
 import type { Node, Parent } from 'unist';
 import { visit } from 'unist-util-visit';
 
-const addDivMermaidPlugin: Plugin = () => {
-	return (tree: Node, _file) => {
+// const addDivMermaidPlugin: Plugin = () => {
+const addDivMermaidPlugin = () => {
+	return (tree: Node, _file: any) => {
 		visit(
 			tree,
-			(node) =>
+			(node: any) =>
 				node.type === 'code' && 'lang' in node && node.lang === 'mermaid',
-			(node, index, parent?: Parent) => {
-				if (parent && index) {
+			(node: any, index: number | undefined, parent?: Parent) => {
+				if (parent && typeof index === 'number') {
 					const newHTML = {
 						type: 'paragraph',
 						children: [
@@ -51,7 +53,7 @@ export const markdownToHtml = async (markdown: string) =>
 			.use(remarkMath)
 			.use(remarkGfm)
 			.use(remarkPlantUML as any)
-			.use(addDivMermaidPlugin)
+			.use(addDivMermaidPlugin as any)
 			.use(remarkMermaid, {
 				launchOptions: {
 					executablePath:
