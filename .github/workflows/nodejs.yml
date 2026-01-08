@@ -1,0 +1,60 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  TZ: "Asia/Tokyo"
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - uses: actions/cache@v3
+        id: node_modules_cache_id
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: apt update
+        run: sudo apt-get update -y
+
+      - name: install graphviz fonts-noto-cjk
+        run: sudo apt-get install graphviz fonts-noto-cjk -y
+
+      - name: npm install
+        run: npm install --frozen-lockfile
+
+      - name: build
+        run: npm run build
+
+      - name: build sitemap
+        run: npm run build-sitemap
+
+      - name: add nojekyll
+        run: touch ./out/.nojekyll
+
+      - name: Move 404 page to root directory
+        run: mv ./out/404/index.html ./out/404.html
+
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out

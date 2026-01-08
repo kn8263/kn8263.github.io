@@ -1,0 +1,15 @@
+{
+	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"mikestead.dotenv",
+		"csstools.postcss",
+		"blanu.vscode-styled-jsx",
+		"msjsdiag.debugger-for-chrome",
+		"bradlc.vscode-tailwindcss",
+		"wraith13.background-phi-colors",
+		"jpoissonnier.vscode-styled-components",
+		"wraith13.bracket-lens",
+		"eamodio.gitlens"
+	]
+}
