@@ -44,3 +44,5 @@ local
 
 # RSS files
 /public/rss.xml
+
+/.obsidian
