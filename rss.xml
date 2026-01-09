@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Fri, 09 Jan 2026 06:13:12 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 09 Jan 2026 06:29:36 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -16,7 +16,8 @@
             <guid>https://kn8263.github.io/posts/about_RAG_LangCahin</guid>
             <pubDate>Fri, 09 Jan 2026 05:59:32 GMT</pubDate>
             <description><![CDATA[RAG（Retrieval Augmented Generation）について]]></description>
-            <content:encoded><![CDATA[<h2>RAGとは</h2>
+            <content:encoded><![CDATA[<p>RAGについて知見がほとんど無かったので概要をざっくり整理してみました。</p>
+<h2>RAGとは</h2>
 <p>RAG（Retrieval-Augmented Generation）は、AIが答えを作る前に<strong>外部の情報（社内ドキュメント／ナレッジベースなど）を検索し、その情報を使って回答を生成する仕組み</strong>です。これにより、単に大規模言語モデル（LLM）の記憶だけに頼るよりも<strong>正確で最新の回答ができるようになります</strong>。</p>
 <h3>【一般向けのイメージ】</h3>
 <p>学校の司書が質問に答える例でいうと：</p>
@@ -37,7 +38,7 @@
 → <strong>これがRAGの主な構成要素と流れ</strong>です。</li>
 </ol>
 <h3>【ポイント整理】</h3>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th>項目</th>
@@ -58,7 +59,7 @@
 <td>LLMが回答を生成</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>→ RAGはこの3つのステップを組み合わせた<strong>最新型AI応答設計</strong>です。</p>
 <hr>
 <p>AWS で RAG（FAQ 型）を本番稼働させる場合の<strong>典型構成</strong>は次のとおりです。</p>
@@ -66,7 +67,7 @@
 <p><strong>API（Lambda）＋ ベクトル検索（OpenSearch / Aurora / DynamoDB+Vector）＋ LLM（Bedrock or OpenAI）＋ S3</strong></p>
 </blockquote>
 <h2>【代表的なAWS構成（FAQ・RAG）】</h2>
-<h4>① 最もよくある標準構成（AWS公式寄り）</h4>
+<h3>最もよくある標準構成（AWS公式寄り）</h3>
 <pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292f">[ Frontend (CloudFront + S3 / React or Solid) ]</span></span>
 <span class="line"><span style="color: #24292f">                |</span></span>
 <span class="line"><span style="color: #24292f">                v</span></span>
@@ -83,8 +84,9 @@
 <span class="line"><span style="color: #24292f">        |</span></span>
 <span class="line"><span style="color: #24292f">        v</span></span>
 <span class="line"><span style="color: #24292f">[ S3 (FAQ元データ) ]</span></span></code></pre>
-<h4>役割対応（ローカルとの比較）</h4>
-<table>
+<br>
+<h3>役割対応（ローカルとの比較）</h3>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th>ローカル</th>
@@ -114,8 +116,8 @@
 <td>API</td>
 </tr>
 </tbody>
-</table>
-<h4>Lambda（Python + LangChain）</h4>
+</table></div>
+<h3>Lambda（Python + LangChain）</h3>
 <p>Lambda が <strong>RAG の司令塔</strong> です。</p>
 <p>Lambda内でやること：</p>
 <ol>
@@ -126,7 +128,7 @@
 <li>LLMに投げる</li>
 <li>回答を返す</li>
 </ol>
-<h4>ベクトル検索（FAISSの代替）</h4>
+<h3>ベクトル検索（FAISSの代替）</h3>
 <h4>選択肢①：Amazon OpenSearch Serverless（推奨）</h4>
 <ul>
 <li>Vector Search ネイティブ対応</li>
@@ -190,7 +192,7 @@ FAQ + 質問を LLM に渡す
 ユーザーへ返却
 </code></pre>
 <h2>【考えられる具体的内容】</h2>
-<h3>✔ 1. ベクトルデータベースを準備して RAG を実装</h3>
+<h3>✔ ベクトルデータベースを準備して RAG を実装</h3>
 <p>Lambda（Python 側）で：</p>
 <ul>
 <li>PDF・テキスト・DB のテキストを取得</li>
@@ -200,7 +202,7 @@ FAQ + 質問を LLM に渡す
 <li>検索結果を LLM へのコンテキストとしてプロンプト生成</li>
 <li>LLM を呼び出して回答生成</li>
 </ul>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th>役割</th>
@@ -271,7 +273,7 @@ FAQ + 質問を LLM に渡す
 <td>実行場所が違う</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>ベクトルストレージ、Embeddingについて</h3>
 <ul>
 <li>Embedding<br>
@@ -280,7 +282,7 @@ FAQ + 質問を LLM に渡す
 → <strong>数値を高速検索できる形で保存</strong></li>
 </ul>
 <p>※AWSでは両方が Bedrock/OpenSearch に吸収されて見える</p>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th>観点</th>
@@ -310,9 +312,9 @@ FAQ + 質問を LLM に渡す
 <td>自動</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>他補足</h3>
-<table>
+<div class="table-container"><table>
 <thead>
 <tr>
 <th>役割</th>
@@ -377,7 +379,7 @@ FAQ + 質問を LLM に渡す
 <td>インデックス再生成含む</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2>LangChain</h2>
 <p><strong>役割</strong>：RAG全体のオーケストレーション<br>
 <strong>概要</strong>：</p>
