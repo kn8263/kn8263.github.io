@@ -4,12 +4,401 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Fri, 09 Jan 2026 04:06:14 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 09 Jan 2026 06:13:12 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
         <copyright>©Nakashima, Katsuhito Some Rights Reserved</copyright>
         <atom:link href="https://kn8263.github.io/feed" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[RAGについて]]></title>
+            <link>https://kn8263.github.io/posts/about_RAG_LangCahin</link>
+            <guid>https://kn8263.github.io/posts/about_RAG_LangCahin</guid>
+            <pubDate>Fri, 09 Jan 2026 05:59:32 GMT</pubDate>
+            <description><![CDATA[RAG（Retrieval Augmented Generation）について]]></description>
+            <content:encoded><![CDATA[<h2>RAGとは</h2>
+<p>RAG（Retrieval-Augmented Generation）は、AIが答えを作る前に<strong>外部の情報（社内ドキュメント／ナレッジベースなど）を検索し、その情報を使って回答を生成する仕組み</strong>です。これにより、単に大規模言語モデル（LLM）の記憶だけに頼るよりも<strong>正確で最新の回答ができるようになります</strong>。</p>
+<h3>【一般向けのイメージ】</h3>
+<p>学校の司書が質問に答える例でいうと：</p>
+<ol>
+<li><strong>関連する本を探す（検索 = Retrieval）</strong> riˈtrivəl</li>
+<li><strong>本の内容を読んで整理する（拡張 = Augmented）</strong> ɑɡˈmɛntəd</li>
+<li><strong>その内容を自分の言葉で答える（生成 = Generation）</strong> ˌʤɛnəˈreɪʃən</li>
+</ol>
+<p>この「探す → 情報をまとめる → 答える」流れが、RAGの考え方です。</p>
+<h3>【仕組み：実務寄りの流れ（一般ケース）】</h3>
+<p>典型的なRAGパイプラインは大まかに次のようになります：</p>
+<ol>
+<li><strong>外部データ（ドキュメント/社内資料/FAQなど）を用意</strong></li>
+<li>文書を小さなチャンクに分け、<strong>埋め込みベクトル化</strong>(Embedding)</li>
+<li><strong>ベクトルデータベース</strong>に保存（検索可能にする）</li>
+<li>ユーザー質問をベクトル化し、類似度検索して関連情報を取得（Retrieval）</li>
+<li>取得情報を元にLLMにコンテキストを渡し、<strong>応答を生成</strong>（Generation）<br>
+→ <strong>これがRAGの主な構成要素と流れ</strong>です。</li>
+</ol>
+<h3>【ポイント整理】</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Retrieval</td>
+<td>外部情報を検索</td>
+</tr>
+<tr>
+<td>Augmented</td>
+<td>情報を追加・拡張</td>
+</tr>
+<tr>
+<td>Generation</td>
+<td>LLMが回答を生成</td>
+</tr>
+</tbody>
+</table>
+<p>→ RAGはこの3つのステップを組み合わせた<strong>最新型AI応答設計</strong>です。</p>
+<hr>
+<p>AWS で RAG（FAQ 型）を本番稼働させる場合の<strong>典型構成</strong>は次のとおりです。</p>
+<blockquote>
+<p><strong>API（Lambda）＋ ベクトル検索（OpenSearch / Aurora / DynamoDB+Vector）＋ LLM（Bedrock or OpenAI）＋ S3</strong></p>
+</blockquote>
+<h2>【代表的なAWS構成（FAQ・RAG）】</h2>
+<h4>① 最もよくある標準構成（AWS公式寄り）</h4>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292f">[ Frontend (CloudFront + S3 / React or Solid) ]</span></span>
+<span class="line"><span style="color: #24292f">                |</span></span>
+<span class="line"><span style="color: #24292f">                v</span></span>
+<span class="line"><span style="color: #24292f">[ API Gateway ]</span></span>
+<span class="line"><span style="color: #24292f">                |</span></span>
+<span class="line"><span style="color: #24292f">                v</span></span>
+<span class="line"><span style="color: #24292f">[ Lambda (Python + LangChain) ]</span></span>
+<span class="line"><span style="color: #24292f">        |                |</span></span>
+<span class="line"><span style="color: #24292f">        |                v</span></span>
+<span class="line"><span style="color: #24292f">        |        [ Amazon Bedrock (LLM) ]</span></span>
+<span class="line"><span style="color: #24292f">        |</span></span>
+<span class="line"><span style="color: #24292f">        v</span></span>
+<span class="line"><span style="color: #24292f">[ Amazon OpenSearch Serverless (Vector Search) ]</span></span>
+<span class="line"><span style="color: #24292f">        |</span></span>
+<span class="line"><span style="color: #24292f">        v</span></span>
+<span class="line"><span style="color: #24292f">[ S3 (FAQ元データ) ]</span></span></code></pre>
+<h4>役割対応（ローカルとの比較）</h4>
+<table>
+<thead>
+<tr>
+<th>ローカル</th>
+<th>AWS</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FAISS</td>
+<td>OpenSearch Vector</td>
+<td>ベクトル検索</td>
+</tr>
+<tr>
+<td>Ollama / LLaMA</td>
+<td>Bedrock（Claude, Llama, Titan）</td>
+<td>LLM</td>
+</tr>
+<tr>
+<td>CSV</td>
+<td>S3</td>
+<td>ベクトルデータインデックス用のデータ原本</td>
+</tr>
+<tr>
+<td>Python Script</td>
+<td>Lambda</td>
+<td>API</td>
+</tr>
+</tbody>
+</table>
+<h4>Lambda（Python + LangChain）</h4>
+<p>Lambda が <strong>RAG の司令塔</strong> です。</p>
+<p>Lambda内でやること：</p>
+<ol>
+<li>質問文を受け取る</li>
+<li>Embedding生成</li>
+<li>ベクトル検索</li>
+<li>関連FAQ取得</li>
+<li>LLMに投げる</li>
+<li>回答を返す</li>
+</ol>
+<h4>ベクトル検索（FAISSの代替）</h4>
+<h4>選択肢①：Amazon OpenSearch Serverless（推奨）</h4>
+<ul>
+<li>Vector Search ネイティブ対応</li>
+<li>スケール・運用不要</li>
+<li>FAQ 数千〜数十万件向き</li>
+</ul>
+<h4>選択肢②：Aurora PostgreSQL + pgvector</h4>
+<ul>
+<li>RDBと統合したい場合</li>
+<li>トランザクション管理が必要な時</li>
+</ul>
+<h4>選択肢③：DynamoDB + Vector（新しめ）</h4>
+<ul>
+<li>完全サーバレス</li>
+<li>検索性能は用途次第</li>
+</ul>
+<h3>LLM（生成AI）</h3>
+<h4>選択肢①：Amazon Bedrock（AWS内完結）</h4>
+<ul>
+<li>Claude</li>
+<li>LLaMA</li>
+<li>Titan</li>
+<li>IAM管理・監査が容易</li>
+</ul>
+<h4>選択肢②：OpenAI API</h4>
+<ul>
+<li>精度重視</li>
+<li>コスト・外部通信あり</li>
+</ul>
+<h2>【インデックス構築（AWS版）】</h2>
+<p>ローカルの：
+<code>python build_index.py</code>
+は AWS では次のいずれかになります。</p>
+<h3>パターン1：一時EC2 / ECSで実行</h3>
+<ul>
+<li>FAQ更新時のみ起動</li>
+<li>OpenSearch にインデックス登録</li>
+</ul>
+<h3>パターン2：Lambdaバッチ</h3>
+<ul>
+<li>FAQ更新イベントで自動再構築</li>
+<li>小規模向き</li>
+</ul>
+<p>【全体の処理フロー】</p>
+<pre><code>ユーザー質問
+   ↓
+Frontend
+   ↓
+API Gateway
+   ↓
+Lambda
+   ↓
+Embedding生成
+   ↓
+OpenSearchで類似FAQ検索
+   ↓
+FAQ + 質問を LLM に渡す
+   ↓
+回答生成
+   ↓
+ユーザーへ返却
+</code></pre>
+<h2>【考えられる具体的内容】</h2>
+<h3>✔ 1. ベクトルデータベースを準備して RAG を実装</h3>
+<p>Lambda（Python 側）で：</p>
+<ul>
+<li>PDF・テキスト・DB のテキストを取得</li>
+<li>文書をチャンク化して埋め込みベクトルに変換</li>
+<li>ベクトルストアに登録</li>
+<li>フロントからの質問を埋め込み→類似検索</li>
+<li>検索結果を LLM へのコンテキストとしてプロンプト生成</li>
+<li>LLM を呼び出して回答生成</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>役割</th>
+<th>ローカル検証環境</th>
+<th>AWS 本番環境</th>
+<th>補足</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>フロント</td>
+<td>Solid.js（dev server）</td>
+<td>S3 + CloudFront</td>
+<td>SPAはそのまま</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Python CLI / 仮API</td>
+<td>API Gateway</td>
+<td>HTTPS・認証</td>
+</tr>
+<tr>
+<td>実行基盤</td>
+<td>Docker Compose</td>
+<td>AWS Lambda</td>
+<td>実行形態が変わるだけ</td>
+</tr>
+<tr>
+<td>RAG制御</td>
+<td>LangChain</td>
+<td>LangChain</td>
+<td>基本同一</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>Ollama + LLaMA</td>
+<td>Bedrock / OpenAI</td>
+<td>差し替えポイント</td>
+</tr>
+<tr>
+<td>Embedding</td>
+<td>sentence-transformers 等</td>
+<td>Bedrock Embeddings / OpenAI Embeddings</td>
+<td>別APIになる</td>
+</tr>
+<tr>
+<td>ベクトルストレージ</td>
+<td><strong>FAISS</strong> を使ってファイルとしてベクトルインデックスを管理<br>※FAISS（Local Vector Store）<br>　ベクトルを <strong>ローカルファイル</strong> として保存</td>
+<td><strong>S3 Vectors</strong>, OpenSearch, Pinecone, Weaviate</td>
+<td></td>
+</tr>
+<tr>
+<td>ベクトル検索</td>
+<td>FAISS（ローカル）</td>
+<td>OpenSearch / Aurora</td>
+<td><strong>最大の違い</strong></td>
+</tr>
+<tr>
+<td>FAQ元データ</td>
+<td>CSV</td>
+<td>S3</td>
+<td>保存先変更</td>
+</tr>
+<tr>
+<td>インデックス作成</td>
+<td>build_index.py</td>
+<td>バッチLambda / ECS</td>
+<td>実行場所が違う</td>
+</tr>
+</tbody>
+</table>
+<h3>ベクトルストレージ、Embeddingについて</h3>
+<ul>
+<li>Embedding<br>
+→ <strong>テキスト → 数値に変換</strong></li>
+<li>Vector Store<br>
+→ <strong>数値を高速検索できる形で保存</strong></li>
+</ul>
+<p>※AWSでは両方が Bedrock/OpenSearch に吸収されて見える</p>
+<table>
+<thead>
+<tr>
+<th>観点</th>
+<th>FAISS</th>
+<th>S3 Vectors / OpenSearch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>役割</td>
+<td>検索エンジン</td>
+<td>検索 + 永続 + 運用</td>
+</tr>
+<tr>
+<td>保存</td>
+<td>ファイル</td>
+<td>マネージド</td>
+</tr>
+<tr>
+<td>再構築</td>
+<td>手動</td>
+<td>イベント駆動可</td>
+</tr>
+<tr>
+<td>バックアップ</td>
+<td>自前</td>
+<td>自動</td>
+</tr>
+</tbody>
+</table>
+<h3>他補足</h3>
+<table>
+<thead>
+<tr>
+<th>役割</th>
+<th>ローカル検証環境</th>
+<th>AWS 本番環境</th>
+<th>補足</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>設定管理</td>
+<td><code>.env</code> / compose.yml</td>
+<td>SSM Parameter Store / Secrets Manager</td>
+<td>APIキー・モデル名</td>
+</tr>
+<tr>
+<td>認証・認可</td>
+<td>なし</td>
+<td>Cognito / IAM / JWT</td>
+<td>FAQでも必須になること多い</td>
+</tr>
+<tr>
+<td>ログ</td>
+<td>stdout / print</td>
+<td>CloudWatch Logs</td>
+<td>LLMの誤動作検知</td>
+</tr>
+<tr>
+<td>監視</td>
+<td>なし</td>
+<td>CloudWatch Metrics / Alarms</td>
+<td>レイテンシ・失敗率</td>
+</tr>
+<tr>
+<td>エラーハンドリング</td>
+<td>例外そのまま</td>
+<td>API Gateway + Lambda制御</td>
+<td>ユーザー向け整形</td>
+</tr>
+<tr>
+<td>スケーリング</td>
+<td>手動</td>
+<td>Lambda / OpenSearch AutoScale</td>
+<td>FAQ増加時</td>
+</tr>
+<tr>
+<td>FAQ更新検知</td>
+<td>手動実行</td>
+<td>S3 Event / 管理画面</td>
+<td>再インデックス起点</td>
+</tr>
+<tr>
+<td>キャッシュ</td>
+<td>なし</td>
+<td>API Gateway / ElastiCache</td>
+<td>LLMコスト削減</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>なし</td>
+<td>GitHub Actions / CodePipeline</td>
+<td>インデックス再生成含む</td>
+</tr>
+</tbody>
+</table>
+<h2>LangChain</h2>
+<p><strong>役割</strong>：RAG全体のオーケストレーション<br>
+<strong>概要</strong>：</p>
+<ul>
+<li>LLM呼び出し</li>
+<li>ベクトル検索</li>
+<li>プロンプト組み立て</li>
+<li>RAG用QAチェーン<br>
+をまとめて扱えるフレームワーク。</li>
+</ul>
+<p><strong>向いているケース</strong>：</p>
+<ul>
+<li>「検索 → LLM → 回答」を一気通貫で実装したい</li>
+<li>Lambda + Python で素早くRAGを組みたい</li>
+</ul>
+<p><strong>特徴</strong>：</p>
+<ul>
+<li>対応LLM・DBが多い</li>
+<li>実務での採用例が多い</li>
+</ul>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[テンプレート記事]]></title>
             <link>https://kn8263.github.io/posts/template-article</link>
@@ -34,6 +423,17 @@
 <li><code>description</code>: 記事の説明（SEO用）</li>
 <li><code>tags</code>: タグのリスト</li>
 </ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">---</span></span>
+<span class="line"><span style="color: #116329">title</span><span style="color: #24292F">: </span><span style="color: #0A3069">テンプレート記事</span></span>
+<span class="line"><span style="color: #116329">date</span><span style="color: #24292F">: </span><span style="color: #0A3069">"2026-01-01T12:00:00+0900"</span></span>
+<span class="line"><span style="color: #116329">template</span><span style="color: #24292F">: </span><span style="color: #0A3069">"post"</span></span>
+<span class="line"><span style="color: #116329">draft</span><span style="color: #24292F">: </span><span style="color: #0550AE">false</span></span>
+<span class="line"><span style="color: #116329">category</span><span style="color: #24292F">: </span><span style="color: #0A3069">"blog"</span></span>
+<span class="line"><span style="color: #116329">description</span><span style="color: #24292F">: </span><span style="color: #0A3069">"これは記事のテンプレートです。このファイルをコピーして新しい記事を作成してください。"</span></span>
+<span class="line"><span style="color: #116329">tags</span><span style="color: #24292F">:</span></span>
+<span class="line"><span style="color: #24292F">  - </span><span style="color: #0A3069">"テンプレート"</span></span>
+<span class="line"><span style="color: #24292F">  - </span><span style="color: #0A3069">"サンプル"</span></span>
+<span class="line"><span style="color: #24292F">---</span></span></code></pre>
 <h2>Markdown記法</h2>
 <p>通常のMarkdown記法が使用できます。</p>
 <ul>
