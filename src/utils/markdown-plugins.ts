@@ -1,4 +1,5 @@
 import rehypeShiki from '@leafac/rehype-shiki';
+import type { Element } from 'hast';
 import rehypeMathJaxSvg from 'rehype-mathjax/svg';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -114,6 +115,28 @@ export const remarkPlugins = [
 	],
 ];
 
+// テーブルをdivで囲むrehypeプラグイン
+export const wrapTablePlugin = () => {
+	return (tree: Node) => {
+		visit(
+			tree,
+			'element',
+			(node: Element, index: number | undefined, parent?: Parent) => {
+				if (node.tagName === 'table' && parent && typeof index === 'number') {
+					const wrapper: Element = {
+						type: 'element',
+						tagName: 'div',
+						properties: { className: ['table-container'] },
+						children: [node],
+					};
+					// eslint-disable-next-line no-param-reassign
+					parent.children[index] = wrapper;
+				}
+			},
+		);
+	};
+};
+
 export const rehypePlugins = async () => [
 	[
 		rehypeShiki,
@@ -122,4 +145,5 @@ export const rehypePlugins = async () => [
 		},
 	],
 	rehypeMathJaxSvg,
+	wrapTablePlugin as any,
 ];
