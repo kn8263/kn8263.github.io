@@ -1,0 +1,34 @@
+diff --git a/node_modules/sync-plantuml/lib/plantuml.js b/node_modules/sync-plantuml/lib/plantuml.js
+index 795695a..57e5210 100644
+--- a/node_modules/sync-plantuml/lib/plantuml.js
++++ b/node_modules/sync-plantuml/lib/plantuml.js
+@@ -3,20 +3,26 @@ const { execSync } = require('child_process');
+ 
+ const plantuml = (uml) => {
+ 	const plantumlJar = resolve(__dirname, '../vendor/plantuml.jar');
++	// Java 8対応: --add-opensオプションを削除（Java 9以降でのみ有効だが、Java 8でも動作する）
++	// 日本語対応: UTF-8エンコーディングを指定
+ 	const result = execSync(
+ 		[
+ 			'java',
+ 			'-jar',
+ 			'-Djava.awt.headless=true',
+-			'--add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax="ALL-UNNAMED"',
++			'-Dfile.encoding=UTF-8',
+ 			plantumlJar,
+ 			'-tsvg',
+ 			'-pipe',
+ 		].join(' '),
+-		{ input: uml }
++		{ input: uml, encoding: 'utf8' }
+ 	);
+ 
+-	return result.toString();
++	let svg = result.toString('utf8');
++	// SVGのXML宣言のエンコーディングをUTF-8に変更（日本語対応）
++	svg = svg.replace(/encoding="us-ascii"/g, 'encoding="UTF-8"');
++
++	return svg;
+ };
+ 
+ module.exports.plantuml = plantuml;

@@ -15,6 +15,7 @@
 		"lint:fix": "eslint . \"src/**/*\" --fix",
 		"build-types": "tsc --noEmit --pretty",
 		"prepare": "husky install",
+		"postinstall": "patch-package",
 		"astro": "astro"
 	},
 	"dependencies": {
@@ -81,7 +82,9 @@
 		"eslint-plugin-unused-imports": "^4.1.4",
 		"husky": "^9.1.6",
 		"lint-staged": "^15.2.10",
+		"patch-package": "^8.0.1",
 		"postcss": "^8.4.47",
+		"postinstall-postinstall": "^2.1.0",
 		"prettier": "^3.3.3",
 		"rimraf": "^6.0.1",
 		"sass": "^1.79.4",

@@ -1,3 +1,5 @@
+import { existsSync } from 'fs';
+
 import rehypeShiki from '@leafac/rehype-shiki';
 import type { Element } from 'hast';
 import rehypeMathJaxSvg from 'rehype-mathjax/svg';
@@ -42,6 +44,45 @@ export const addDivMermaidPlugin = () => {
 };
 
 const mermaidOption = { useMaxWidth: false };
+
+// Chromeの実行パスを取得する関数
+const getChromeExecutablePath = (): string | undefined => {
+	// 環境変数が設定されている場合はそれを使用
+	if (process.env.GoogleChromeExecutablePath) {
+		return process.env.GoogleChromeExecutablePath;
+	}
+
+	// OSを検出してデフォルトパスを設定
+	const { platform } = process;
+	if (platform === 'win32') {
+		// Windows環境の一般的なChromeのパス
+		const possiblePaths = [
+			'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+			'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+		];
+
+		// 最初に見つかったパスを返す
+		for (const path of possiblePaths) {
+			if (existsSync(path)) {
+				return path;
+			}
+		}
+
+		// 見つからない場合はundefinedを返してpuppeteerに自動検出させる
+		return undefined;
+	}
+
+	if (platform === 'darwin') {
+		// macOS環境
+		const macPath =
+			'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+		return existsSync(macPath) ? macPath : undefined;
+	}
+
+	// Linux環境
+	const linuxPath = '/opt/google/chrome/google-chrome';
+	return existsSync(linuxPath) ? linuxPath : undefined;
+};
 
 // 画像パスを変換するプラグイン（Astroでは使用時に動的に適用）
 export const transformImagePaths = (articleSlug: string) => () => {
@@ -92,9 +133,7 @@ export const remarkPlugins = [
 		remarkMermaid,
 		{
 			launchOptions: {
-				executablePath:
-					process.env.GoogleChromeExecutablePath ??
-					'/opt/google/chrome/google-chrome',
+				executablePath: getChromeExecutablePath(),
 			},
 			svgo: false,
 			mermaidOptions: {
