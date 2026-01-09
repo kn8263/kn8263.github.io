@@ -29,6 +29,19 @@ tags:
 - `category`: カテゴリ
 - `description`: 記事の説明（SEO用）
 - `tags`: タグのリスト
+```markdown
+---
+title: テンプレート記事
+date: "2026-01-01T12:00:00+0900"
+template: "post"
+draft: false
+category: "blog"
+description: "これは記事のテンプレートです。このファイルをコピーして新しい記事を作成してください。"
+tags:
+  - "テンプレート"
+  - "サンプル"
+---
+```
 
 ## Markdown記法
 
