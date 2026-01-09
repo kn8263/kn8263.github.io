@@ -12,7 +12,7 @@
 
 @layer utilities {
 	.content-title {
-		@apply px-8 pt-1 bg-left-bottom bg-no-repeat bg-[length:50px] bg-[url('/assets/svgs/lambda.svg')] text-gray-800 relative text-center font-bold text-3xl m-0 mb-6 p-1 border-solid border-4 border-slate-600 rounded-2xl bg-white after:border-transparent after:border-t-white after:border-0 after:border-t-[14px] after:border-r-[14px] after:border-solid after:content-[''] after:absolute after:right-[54px] after:bottom-[-13px] after:w-0 after:h-0 before:border-transparent before:border-t-slate-600 before:border-0 before:border-t-[24px] before:border-r-[24px] before:border-solid before:content-[''] before:absolute before:right-[48px] before:bottom-[-24px] before:w-0 before:h-0;
+		@apply px-8 pt-1 bg-[position:15px_bottom] bg-no-repeat bg-[length:50px] bg-[url('/assets/svgs/network2.svg')] text-gray-800 relative text-center font-bold text-3xl m-0 mb-6 p-1 border-solid border-4 border-slate-600 rounded-2xl bg-white after:border-transparent after:border-t-white after:border-0 after:border-t-[14px] after:border-r-[14px] after:border-solid after:content-[''] after:absolute after:right-[54px] after:bottom-[-13px] after:w-0 after:h-0 before:border-transparent before:border-t-slate-600 before:border-0 before:border-t-[24px] before:border-r-[24px] before:border-solid before:content-[''] before:absolute before:right-[48px] before:bottom-[-24px] before:w-0 before:h-0;
 	}
 	.content-date {
 		@apply text-center text-sm mt-[-14px];
@@ -37,7 +37,7 @@
 		}
 			
 		h2 {
-			@apply mt-16 mb-8 text-3xl font-bold py-2 pl-16 bg-left-top bg-no-repeat bg-[length:60px] bg-[url('/assets/svgs/lambda.svg')];
+			@apply mt-16 mb-8 text-3xl font-bold py-2 pl-16 bg-left-top bg-no-repeat bg-[length:60px] bg-[url('/assets/svgs/network2.svg')];
 		}
 		h3 {
 			@apply text-xl font-semibold border-l-4 border-b border-gray-700 border-solid pl-1 my-4;

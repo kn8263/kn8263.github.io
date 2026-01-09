@@ -62,7 +62,7 @@ const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
 >
 	<h1 class="content-title">{post.title}</h1>
 	<div class="content-date">
-		Posted {format(new Date(post.date), 'LLLL d, yyyy')}
+		公開日：{format(new Date(post.date), 'yyyy/MM/dd')}
 	</div>
 
 	<ul class="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
