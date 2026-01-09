@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Fri, 09 Jan 2026 02:30:06 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 09 Jan 2026 04:06:14 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -132,6 +132,11 @@
 &#x3C;/Content>
 
 &#x3C;PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+
+&#x3C;!-- デスクトップ用の目次（右サイドバー） -->
+&#x3C;Fragment slot="toc">
+	&#x3C;TableOfContents client:load />
+&#x3C;/Fragment>
 </code></pre>
 </Main>]]></content:encoded>
         </item>
