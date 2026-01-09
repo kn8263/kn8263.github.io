@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import Main from '../../layouts/Main.astro';
 import { Content } from '../../content/Content';
 import { PostPagination } from '../../pagination/PostPagination';
+import { TableOfContents } from '../../components/TableOfContents/TableOfContents';
 import ReactHelloWorld from '../../components/ReactHelloWorld/ReactHelloWorld';
 import {
 	getAllPostsIncludeTSX,
@@ -108,4 +109,9 @@ const example = "Hello, World!";</code></pre>
 	</Content>
 
 	<PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+	
+	<!-- デスクトップ用の目次（右サイドバー） -->
+	<Fragment slot="toc">
+		<TableOfContents client:load />
+	</Fragment>
 </Main>

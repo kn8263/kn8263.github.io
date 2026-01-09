@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import Main from '../../layouts/Main.astro';
 import { Content } from '../../content/Content';
 import { PostPagination } from '../../pagination/PostPagination';
+import { TableOfContents } from '../../components/TableOfContents/TableOfContents';
 import {
 	getAllPostsIncludeTSX,
 	getMdPosts,
@@ -69,7 +70,6 @@ const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
 		{post.tags?.map((tag) => (
 			<li
 				class="px-2 py-1 m-1 rounded-full overflow-hidden shadow-md border-0 bg-white w-fit break-all"
-				key={tag}
 			>
 				<a href={`/tag/${tag}/index.html`}>
 					#{tag}
@@ -82,4 +82,9 @@ const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
 	</Content>
 
 	<PostPagination nextPost={nextPost} prevPost={prevPost} client:load />
+	
+	<!-- デスクトップ用の目次（右サイドバー） -->
+	<Fragment slot="toc">
+		<TableOfContents client:load />
+	</Fragment>
 </Main>

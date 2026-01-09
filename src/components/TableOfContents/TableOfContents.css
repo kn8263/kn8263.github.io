@@ -1,0 +1,84 @@
+.table-of-contents {
+	background: white;
+	border-radius: 8px;
+	padding: 16px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	width: 100%;
+}
+
+.table-of-contents-sticky {
+	/* position: sticky は親要素の Tailwind クラスで適用 */
+}
+
+.table-of-contents-header {
+	margin-bottom: 12px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.table-of-contents-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #374151;
+}
+
+.table-of-contents-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.table-of-contents-item {
+	margin: 0;
+	padding: 0;
+}
+
+.table-of-contents-item-level-2 {
+	padding-left: 0;
+}
+
+.table-of-contents-item-level-3 {
+	padding-left: 16px;
+}
+
+.table-of-contents-item-level-4 {
+	padding-left: 32px;
+}
+
+.table-of-contents-link {
+	display: block;
+	padding: 6px 0;
+	font-size: 13px;
+	color: #6b7280;
+	text-decoration: none;
+	transition: color 0.2s;
+	line-height: 1.5;
+}
+
+.table-of-contents-link:hover {
+	color: #2563eb;
+}
+
+.table-of-contents-item-active .table-of-contents-link {
+	color: #2563eb;
+	font-weight: 500;
+}
+
+/* スクロールバーのスタイル */
+.table-of-contents::-webkit-scrollbar {
+	width: 6px;
+}
+
+.table-of-contents::-webkit-scrollbar-track {
+	background: #f3f4f6;
+	border-radius: 3px;
+}
+
+.table-of-contents::-webkit-scrollbar-thumb {
+	background: #d1d5db;
+	border-radius: 3px;
+}
+
+.table-of-contents::-webkit-scrollbar-thumb:hover {
+	background: #9ca3af;
+}
