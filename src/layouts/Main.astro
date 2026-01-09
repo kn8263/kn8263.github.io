@@ -1,5 +1,4 @@
 ---
-import { CheckMeRibbon } from '../templates/CheckMeRibbon';
 import { Sidebar } from '../templates/SideBar';
 import Navbar from '../navigation/Navbar.astro';
 import { AppConfig } from '../utils/AppConfig';
@@ -43,53 +42,76 @@ const { recents, tags, meta } = Astro.props;
 			/>
 		)}
 	</head>
-	<body>
-		<div class="antialiased w-full text-black md:px-0 sm:flex min-h-screen">
-
-	<div class="mx-auto float-left px-3 w-full sm:w-3/4 lg:w-[calc(100vw-256px)] bg-slate-100 min-h-fit sm:min-h-screen">
-		<div class="border-b border-gray-300 break-all text-center text-zinc-900 font-semibold block">
-			<div class="pt-4 pb-8 sm:pb-0">
-				<div class="font-semibold text-2xl text-gray-900">
-					<a href="/index.html">
-						{AppConfig.title}
-					</a>
-				</div>
-				<div class="text-sm sm:hidden">{AppConfig.description}</div>
+	<body class="block">
+		<div class="antialiased w-full text-black md:px-0 bg-slate-100 lg:table lg:w-full">
+		<!-- 左サイドバー（デスクトップ） -->
+		<div class="hidden lg:table-cell lg:w-64 bg-slate-100 lg:align-top">
+			<div class="p-5">
+				<Sidebar recents={recents} tags={tags} client:load />
 			</div>
-			<div class="sm:hidden">
-				<Navbar>
-					<li class="mr-5">
+		</div>
+
+		<!-- メインコンテンツ -->
+		<div class="mx-auto px-3 w-full sm:w-auto bg-slate-100 min-h-fit sm:min-h-screen lg:table-cell lg:align-top">
+			<div class="border-b border-gray-300 break-all text-center text-zinc-900 font-semibold block">
+				<div class="pt-4 pb-8 sm:pb-0">
+					<div class="font-semibold text-2xl text-gray-900">
 						<a href="/index.html">
-							Home
+							{AppConfig.title}
 						</a>
-					</li>
-					<li class="mr-5">
-						<a href="/about/index.html">
-							About
-						</a>
-					</li>
-					<li class="mr-5">
-						<a href="/portfolio/index.html">
-							Portfolio
-						</a>
-					</li>
-					<!-- <li class="mr-5">
-						<a href="/contact/index.html">
-							Contact
-						</a>
-					</li> -->
-				</Navbar>
+					</div>
+					<div class="text-sm sm:hidden">{AppConfig.description}</div>
+				</div>
+				<div class="sm:hidden">
+					<Navbar>
+						<li class="mr-5">
+							<a href="/index.html">
+								Home
+							</a>
+						</li>
+						<li class="mr-5">
+							<a href="/about/index.html">
+								About
+							</a>
+						</li>
+						<li class="mr-5">
+							<a href="/portfolio/index.html">
+								Portfolio
+							</a>
+						</li>
+						<!-- <li class="mr-5">
+							<a href="/contact/index.html">
+								Contact
+							</a>
+						</li> -->
+					</Navbar>
+				</div>
+			</div>
+
+			<div class="text-base py-5">
+				<slot />
+			</div>
+			
+			<!-- 左サイドバー（モバイル/タブレット：記事の下） -->
+			<div class="block lg:hidden mt-8">
+				<div class="p-5">
+					<Sidebar recents={recents} tags={tags} client:load />
+				</div>
 			</div>
 		</div>
 
-		<div class="text-base py-5">
-			<slot />
+		<!-- 右サイドバー（目次：デスクトップのみ） -->
+		<div class="hidden lg:table-cell lg:w-64 bg-slate-100 lg:align-top lg:h-screen">
+			<div class="p-5 h-full">
+				<!-- sticky 専用（overflow を持たせない） -->
+				<div class="sticky top-5">
+					<!-- スクロール専用 -->
+					<div class="max-h-[calc(100vh-40px)] overflow-y-auto">
+						<slot name="toc" />
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="w-full sm:w-1/4 lg:w-[256px] float-right sticky shadow-md sm:h-full sm:top-auto sm:self-end sm:bottom-0 min-h-fit sm:min-h-screen">
-		<CheckMeRibbon client:load />
-		<Sidebar recents={recents} tags={tags} client:load />
-	</div>
-	</div>
+		</div>
 	</body>
 </html>

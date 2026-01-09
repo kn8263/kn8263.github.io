@@ -1,4 +1,5 @@
 import { Author } from './Author/Author';
+import { CheckMeRibbon } from './CheckMeRibbon';
 import Contacts from './Contacts/Contacts';
 import { Copyright } from './Copyright/Copyright';
 import { Menu } from './Menu/Menu';
@@ -6,6 +7,7 @@ import { Recents } from './Recents/Recents';
 import { Tags } from './Tags/Tags';
 import type { PostItems } from '../types/Content';
 import { AppConfig } from '../utils/AppConfig';
+import './SideBar.css';
 
 type SidebarProps = {
 	recents: PostItems[];
@@ -13,11 +15,12 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ recents, tags }: SidebarProps) => {
-	const { title, copyright, contacts } = AppConfig;
+	const { copyright, contacts } = AppConfig;
 	return (
-		<div className="relative p-4">
+		<div className="sidebar-container">
+			<CheckMeRibbon />
 			<a href="/index.html" className="break-all">
-				{title}
+				TOP PAGE
 			</a>
 			<Author />
 			<Menu menu={AppConfig.sidebar_links} />
