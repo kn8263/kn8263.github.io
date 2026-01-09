@@ -45,11 +45,18 @@
 		h4 {
 			@apply border-l-2 border-slate-600 border-solid pl-1;
 		}
-		li {
+		ul li {
 			@apply list-[circle];
 		}
 		ul {
 			@apply my-6 ml-10;
+		}
+		ol {
+			@apply my-6 ml-10;
+			list-style-type: decimal;
+		}
+		ol li {
+			@apply list-decimal;
 		}
 		p {
 			@apply my-6;
@@ -154,6 +161,29 @@
 			svg {
 				display: unset;
 			}
+		}
+		// テーブルを横スクロール可能にするラッパー
+		.table-container {
+			@apply overflow-x-auto my-6;
+			width: 100%;
+			-webkit-overflow-scrolling: touch;
+		}
+		table {
+			@apply border-collapse border border-gray-300;
+			width: 100%;
+			min-width: max-content;
+			border-spacing: 0;
+			margin: 0;
+		}
+		thead {
+			@apply bg-gray-50;
+		}
+		th,
+		td {
+			@apply border border-gray-300 px-4 py-2;
+		}
+		th {
+			@apply font-semibold text-left;
 		}
 	}
 }

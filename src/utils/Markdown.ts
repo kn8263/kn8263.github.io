@@ -9,6 +9,7 @@ import {
 	remarkPlugins,
 	transformImagePaths,
 	getShikiHighlighter,
+	wrapTablePlugin,
 } from './markdown-plugins';
 
 export const markdownToHtml = async (
@@ -38,6 +39,7 @@ export const markdownToHtml = async (
 				highlighter: await getShikiHighlighter(),
 			})
 			.use(rehypeMathJaxSvg)
+			.use(wrapTablePlugin as any)
 			.use(rehypeStringify, { allowDangerousHtml: true })
 			.process(markdown)
 	)
