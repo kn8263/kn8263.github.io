@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Thu, 08 Jan 2026 12:59:39 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 09 Jan 2026 02:30:06 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -71,7 +71,7 @@
 >
 	<h1 class="content-title">{title}</h1>
 	<div class="content-date">
-		Posted {format(new Date(date), 'LLLL d, yyyy')}
+		公開日：{format(new Date(date), 'yyyy/MM/dd')}
 	</div>
 <pre><code>&#x3C;ul class="flex flex-row flex-wrap list-none p-0 m-2 justify-start">
 	{tags.map((tag) => (
