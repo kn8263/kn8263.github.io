@@ -44,15 +44,8 @@ const { recents, tags, meta } = Astro.props;
 	</head>
 	<body class="block">
 		<div class="antialiased w-full text-black md:px-0 bg-slate-100 lg:table lg:w-full">
-		<!-- 左サイドバー（デスクトップ） -->
-		<div class="hidden lg:table-cell lg:w-64 bg-slate-100 lg:align-top">
-			<div class="p-5">
-				<Sidebar recents={recents} tags={tags} client:load />
-			</div>
-		</div>
-
 		<!-- メインコンテンツ -->
-		<div class="mx-auto px-3 w-full sm:w-auto bg-slate-100 min-h-fit sm:min-h-screen lg:table-cell lg:align-top">
+		<div class="mx-auto px-3 w-full sm:w-auto bg-slate-100 min-h-fit sm:min-h-screen lg:table-cell lg:align-top lg:w-[calc(100%-384px)]">
 			<div class="border-b border-gray-300 break-all text-center text-zinc-900 font-semibold block">
 				<div class="pt-4 pb-8 sm:pb-0">
 					<div class="font-semibold text-2xl text-gray-900">
@@ -92,7 +85,7 @@ const { recents, tags, meta } = Astro.props;
 				<slot />
 			</div>
 			
-			<!-- 左サイドバー（モバイル/タブレット：記事の下） -->
+			<!-- サイドバー（モバイル/タブレット：記事の下） -->
 			<div class="block lg:hidden mt-8">
 				<div class="p-5">
 					<Sidebar recents={recents} tags={tags} client:load />
@@ -100,18 +93,60 @@ const { recents, tags, meta } = Astro.props;
 			</div>
 		</div>
 
-		<!-- 右サイドバー（目次：デスクトップのみ） -->
-		<div class="hidden lg:table-cell lg:w-64 bg-slate-100 lg:align-top lg:h-screen">
+		<!-- 右サイドバー（目次とサイドバー：デスクトップのみ） -->
+		<div class="hidden lg:table-cell lg:w-96 bg-slate-100 lg:align-top lg:h-screen">
 			<div class="p-5 h-full">
 				<!-- sticky 専用（overflow を持たせない） -->
 				<div class="sticky top-5">
-					<!-- スクロール専用 -->
-					<div class="max-h-[calc(100vh-40px)] overflow-y-auto">
-						<slot name="toc" />
+					<!-- 目次がある場合：目次（高さ5/8）+ サイドバー（高さ3/8、スクロール付き） -->
+					<div class="toc-wrapper">
+						<div class="toc-scroll-wrapper max-h-[calc((100vh-40px)*0.625)] overflow-y-auto mb-5 pr-2">
+							<slot name="toc" />
+						</div>
+						<div class="sidebar-wrapper max-h-[calc((100vh-40px)*0.375)] overflow-y-auto pr-2">
+							<Sidebar recents={recents} tags={tags} client:load />
+						</div>
+					</div>
+					<!-- 目次がない場合：サイドバーのみ（JavaScriptで切り替え） -->
+					<div class="sidebar-only-wrapper" style="display: none;">
+						<Sidebar recents={recents} tags={tags} client:load />
 					</div>
 				</div>
 			</div>
 		</div>
 		</div>
+		<script>
+			// 目次があるかどうかを判定してレイアウトを切り替え
+			function checkTocAndUpdateLayout() {
+				const tocWrapper = document.querySelector('.toc-wrapper');
+				const sidebarOnlyWrapper = document.querySelector('.sidebar-only-wrapper');
+				const tocContent = tocWrapper?.querySelector('.table-of-contents');
+				
+				if (!tocContent) {
+					// 目次がない場合
+					if (tocWrapper) tocWrapper.style.display = 'none';
+					if (sidebarOnlyWrapper) sidebarOnlyWrapper.style.display = 'block';
+				} else {
+					// 目次がある場合
+					if (tocWrapper) tocWrapper.style.display = 'block';
+					if (sidebarOnlyWrapper) sidebarOnlyWrapper.style.display = 'none';
+				}
+			}
+			
+			// DOMContentLoaded時と、少し遅延してからもチェック（クライアント側コンポーネントのレンダリングを待つ）
+			document.addEventListener('DOMContentLoaded', () => {
+				checkTocAndUpdateLayout();
+				// クライアント側コンポーネントのレンダリングを待つ
+				setTimeout(checkTocAndUpdateLayout, 500);
+				setTimeout(checkTocAndUpdateLayout, 1000);
+			});
+			
+			// ページが既に読み込まれている場合
+			if (document.readyState === 'complete' || document.readyState === 'interactive') {
+				checkTocAndUpdateLayout();
+				setTimeout(checkTocAndUpdateLayout, 500);
+				setTimeout(checkTocAndUpdateLayout, 1000);
+			}
+		</script>
 	</body>
 </html>

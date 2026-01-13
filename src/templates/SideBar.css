@@ -5,4 +5,32 @@
 	padding: 16px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	width: 100%;
+	box-sizing: border-box;
+}
+
+/* スクロールバーがある場合の調整 */
+.sidebar-wrapper,
+.toc-scroll-wrapper {
+	scrollbar-gutter: stable;
+}
+
+.sidebar-wrapper::-webkit-scrollbar,
+.toc-scroll-wrapper::-webkit-scrollbar {
+	width: 8px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-track,
+.toc-scroll-wrapper::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb,
+.toc-scroll-wrapper::-webkit-scrollbar-thumb {
+	background: #cbd5e1;
+	border-radius: 4px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover,
+.toc-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+	background: #94a3b8;
 }
