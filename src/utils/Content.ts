@@ -63,6 +63,10 @@ export function getPostSlugs() {
 				const categoryMatch = frontmatterCode.match(
 					/const\s+category\s*=\s*["']([^"']+)["']/,
 				);
+				// draftフラグを抽出（true/falseのブール値）
+				const draftMatch = frontmatterCode.match(
+					/const\s+draft\s*=\s*(true|false)/,
+				);
 
 				data = {
 					title: titleMatch ? titleMatch[1] : '',
@@ -74,6 +78,7 @@ export function getPostSlugs() {
 								.map((t: string) => t.trim().replace(/["']/g, ''))
 						: [],
 					category: categoryMatch ? categoryMatch[1] : 'blog',
+					draft: draftMatch ? draftMatch[1] === 'true' : false,
 				};
 			}
 		} else if (path.endsWith('.tsx')) {
@@ -170,7 +175,7 @@ function getPostByPath(path: string, fields: string[] = []): PostItems {
 		if (frontmatterMatch) {
 			const frontmatterCode = frontmatterMatch[1];
 			// TypeScriptコードから変数を抽出（簡易的な方法）
-			// title, date, description, tags, categoryを抽出
+			// title, date, description, tags, category, draftを抽出
 			const titleMatch = frontmatterCode.match(
 				/const\s+title\s*=\s*["']([^"']+)["']/,
 			);
@@ -186,6 +191,10 @@ function getPostByPath(path: string, fields: string[] = []): PostItems {
 			const categoryMatch = frontmatterCode.match(
 				/const\s+category\s*=\s*["']([^"']+)["']/,
 			);
+			// draftフラグを抽出（true/falseのブール値）
+			const draftMatch = frontmatterCode.match(
+				/const\s+draft\s*=\s*(true|false)/,
+			);
 
 			data = {
 				title: titleMatch ? titleMatch[1] : '',
@@ -197,6 +206,7 @@ function getPostByPath(path: string, fields: string[] = []): PostItems {
 							.map((t: string) => t.trim().replace(/["']/g, ''))
 					: [],
 				category: categoryMatch ? categoryMatch[1] : 'blog',
+				draft: draftMatch ? draftMatch[1] === 'true' : false,
 			};
 		}
 		content = fileContents.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '');

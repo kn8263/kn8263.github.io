@@ -2,7 +2,7 @@
 title: テンプレート記事
 date: "2024-01-01T12:00:00+0900"
 template: "post"
-draft: false
+draft: true
 category: "blog"
 description: "これは記事のテンプレートです。このファイルをコピーして新しい記事を作成してください。"
 tags:

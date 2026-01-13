@@ -10,6 +10,7 @@ import {
 	getRecentPosts,
 	getTags,
 } from '../../utils/Content';
+import { markdownToHtml } from '../../utils/Markdown';
 import type { PostItems } from '../../types/Content';
 
 // フロントマター（YAML形式のメタデータをTypeScript変数として定義）
@@ -21,14 +22,69 @@ const description = "これはAstro形式の記事のテンプレートです。
 const tags = ['Template', 'Astro', 'React'];
 // @ts-ignore - Content.tsで読み取られるため保持（未使用警告を無視）
 const category = 'blog';
+// @ts-ignore - Content.tsで読み取られるため保持（未使用警告を無視）
+const draft = true;
 
 // 前後の記事を取得
 const recents = getRecentPosts(['title', 'date', 'slug']);
 const mainTags = getTags();
 const posts = getAllPostsIncludeTSX(['title', 'date', 'slug']);
-const currentNumber = posts.map(({ slug }) => slug).indexOf('articles/template');
+const currentNumber = posts.map(({ slug }) => slug).indexOf('articles/template-article');
 const prevPost: PostItems | null = posts[currentNumber - 1] ?? null;
 const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
+
+// 記事のスラッグ（画像パス変換に使用）
+const articleSlug = 'articles/template-article';
+
+// Markdownコンテンツ
+const markdownContent = `
+これはAstro形式の記事のテンプレートです。
+このファイルをコピーして新しい記事を作成できます。
+
+## 使い方
+
+1. このファイルをコピーして新しいファイル名に変更してください
+2. フロントマター（\`---\`で囲まれた部分）の変数を編集してください
+3. コンテンツ部分を編集してください
+
+## Reactコンポーネントの使用
+
+Astroファイル内でReactコンポーネントを使用できます。
+
+## フロントマターの説明
+
+- \`title\`: 記事のタイトル（文字列）
+- \`date\`: 公開日時（ISO 8601形式の文字列）
+- \`description\`: 記事の説明（SEO用、文字列）
+- \`tags\`: タグのリスト（配列）
+- \`category\`: カテゴリ（文字列）
+- \`draft\`: 下書きフラグ（\`true\`で非公開、\`false\`で公開）
+
+## Markdown記法
+
+通常のMarkdown記法が使用できます。
+
+- **太字**
+- *斜体*
+- \`コード\`
+- [リンク](https://example.com)
+
+## コードブロック
+
+\`\`\`typescript
+// コードブロックも使用可能
+const example = "Hello, World!";
+\`\`\`
+
+## 画像
+
+画像も使用できます：
+
+![画像の説明](sample.png)
+`;
+
+// MarkdownをHTMLに変換（コードブロックのハイライトと画像パス変換を含む）
+const content = await markdownToHtml(markdownContent, articleSlug);
 ---
 
 <Main
@@ -42,7 +98,7 @@ const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
 			modified_date: null,
 			image: null,
 		},
-		url: '/articles/template/',
+		url: '/articles/template-article/',
 	}}
 >
 	<h1 class="content-title">{title}</h1>
@@ -63,48 +119,12 @@ const nextPost: PostItems | null = posts[currentNumber + 1] ?? null;
 	</ul>
 
 	<Content client:load>
-		<div>
-			<p>これはAstro形式の記事のテンプレートです。</p>
-			<p>このファイルをコピーして新しい記事を作成できます。</p>
-			
-			<h2>使い方</h2>
-			<ol>
-				<li>このファイルをコピーして新しいファイル名に変更してください</li>
-				<li>フロントマター（`---`で囲まれた部分）の変数を編集してください</li>
-				<li>コンテンツ部分を編集してください</li>
-			</ol>
-
-			<h2>Reactコンポーネントの使用</h2>
-			<p>Astroファイル内でReactコンポーネントを使用できます：</p>
+		<Fragment set:html={content} />
+		<!-- Reactコンポーネントなど、Markdown以外の要素はここに追加 -->
+		<div style="margin-top: 2rem;">
 			<ReactHelloWorld client:load>
 				こんな感じでReactコンポーネントが使えます！✨
 			</ReactHelloWorld>
-
-			<h2>フロントマターの説明</h2>
-			<ul>
-				<li>`title`: 記事のタイトル（文字列）</li>
-				<li>`date`: 公開日時（ISO 8601形式の文字列）</li>
-				<li>`description`: 記事の説明（SEO用、文字列）</li>
-				<li>`tags`: タグのリスト（配列）</li>
-				<li>`category`: カテゴリ（文字列）</li>
-			</ul>
-
-			<h2>Markdown記法</h2>
-			<p>通常のMarkdown記法が使用できます。</p>
-			<ul>
-				<li><strong>太字</strong></li>
-				<li><em>斜体</em></li>
-				<li><code>コード</code></li>
-				<li><a href="https://example.com">リンク</a></li>
-			</ul>
-
-			<h2>コードブロック</h2>
-			<pre><code class="language-typescript">// コードブロックも使用可能
-const example = "Hello, World!";</code></pre>
-
-			<h2>画像</h2>
-			<p>画像も使用できます：</p>
-			<p><code>![画像の説明](sample.png)</code></p>
 		</div>
 	</Content>
 

@@ -100,7 +100,8 @@ export const transformImagePaths = (articleSlug: string) => () => {
 						.replace(/^posts\//, '')
 						.replace(/^articles\//, '')
 						.replace(/\.md$/, '')
-						.replace(/\.tsx$/, '');
+						.replace(/\.tsx$/, '')
+						.replace(/\.astro$/, '');
 
 					// パスを変換
 					// eslint-disable-next-line no-param-reassign
