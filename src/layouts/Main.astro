@@ -87,7 +87,7 @@ const { recents, tags, meta } = Astro.props;
 			
 			<!-- サイドバー（モバイル/タブレット：記事の下） -->
 			<div class="block lg:hidden mt-8">
-				<div class="p-5">
+				<div>
 					<Sidebar recents={recents} tags={tags} client:load />
 				</div>
 			</div>

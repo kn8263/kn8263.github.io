@@ -282,26 +282,25 @@ composer -V
 ### 4. Node.js の設定
 - [nvmのインストール(nvm-setup.exe)](https://github.com/coreybutler/nvm-windows/releases)
 
-バージョンチェック
 ```bash
+# バージョンチェック
 nvm version
-```
-インストール可能なnode.jsバージョン確認
-```bash
+
+# インストール可能なnode.jsバージョン確認
 nvm list available
-```
-バージョン指定でインストール
-```bash
+
+# バージョン指定でインストール
 nvm install 22.20.0
-```
-インストール済みのnode.jsのバージョン確認
-```bash
+
+# インストール済みのnode.jsのバージョン確認
 nvm list
-```
-使用するnode.jsのバージョン指定
-```bash
+
+# 使用するnode.jsのバージョン指定
 nvm use 22.20.0
 ```
+
+
+
 
 - バージョン確認
 ```powershell
@@ -472,7 +471,7 @@ cp .env.example .env
 <br>
 <details><summary>.envの記載内容</summary> 
 
-```xml
+```txt:.env
 APP_NAME=app
 APP_URL=http://app.local
 APP_TITLE="アプリタイトル"

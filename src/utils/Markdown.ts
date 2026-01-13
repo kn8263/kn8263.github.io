@@ -10,6 +10,10 @@ import {
 	transformImagePaths,
 	getShikiHighlighter,
 	wrapTablePlugin,
+	preserveCodeBlockLangPlugin,
+	saveCodeBlockLangPlugin,
+	restoreCodeBlockLangPlugin,
+	addCodeBlockLabelPlugin,
 } from './markdown-plugins';
 
 export const markdownToHtml = async (
@@ -35,11 +39,15 @@ export const markdownToHtml = async (
 	return (
 		await processor
 			.use(remarkRehype, { allowDangerousHtml: true, footnoteLabel: '脚注' })
+			.use(preserveCodeBlockLangPlugin as any)
+			.use(saveCodeBlockLangPlugin as any)
 			.use(rehypeShiki as any, {
 				highlighter: await getShikiHighlighter(),
 			})
+			.use(restoreCodeBlockLangPlugin as any)
 			.use(rehypeMathJaxSvg)
 			.use(wrapTablePlugin as any)
+			.use(addCodeBlockLabelPlugin as any)
 			.use(rehypeStringify, { allowDangerousHtml: true })
 			.process(markdown)
 	)

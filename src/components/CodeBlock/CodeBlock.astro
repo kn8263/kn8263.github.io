@@ -1,0 +1,107 @@
+---
+import { getShikiHighlighter } from '../../utils/markdown-plugins';
+
+interface Props {
+	code: string;
+	lang?: string;
+	filename?: string;
+}
+
+const { code, lang, filename } = Astro.props;
+
+// 言語が指定されている場合はShikiでハイライト
+let highlightedHtml: string | null = null;
+if (lang) {
+	const highlighter = await getShikiHighlighter();
+	highlightedHtml = highlighter.codeToHtml(code, {
+		lang: lang,
+		theme: 'github-dark',
+	});
+}
+---
+
+<div class="code-block-wrapper">
+		{highlightedHtml ? (
+		<>
+			{lang && lang !== 'text' && (
+				<div class="code-block-label">
+					{filename || lang}
+				</div>
+			)}
+			<Fragment set:html={highlightedHtml} />
+		</>
+	) : (
+		<pre><code>{code}</code></pre>
+	)}
+</div>
+
+<style>
+	.code-block-wrapper {
+		margin: 1.5rem 0;
+		border-radius: 0.25rem;
+		overflow: hidden;
+		max-width: 100%;
+	}
+	
+	.code-block-label {
+		font-size: 0.75rem;
+		color: #e6e6e6;
+		background-color: #323e52;
+		padding: 0.3rem 0.5rem;
+		border-bottom: 1px solid #30363d;
+		border-radius: 0.25rem 0.25rem 0 0;
+		font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+		display: inline-block;
+		align-items: center;
+	}
+	
+	.code-block-wrapper .shiki {
+		margin: 0;
+		border-radius: 0 0.25rem 0.25rem 0.25rem;
+		padding: 1rem;
+		background-color: #1e1e1e;
+		border: none;
+		box-shadow: none;
+		overflow-x: auto;
+		overflow-y: hidden;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		display: block;
+	}
+	
+	.code-block-wrapper .shiki pre {
+		margin: 0;
+		padding: 0;
+		overflow-x: auto;
+		overflow-y: hidden;
+		display: block;
+	}
+	
+	.code-block-wrapper .shiki code {
+		white-space: pre;
+		display: block;
+		overflow-x: auto;
+	}
+	
+	.code-block-wrapper pre:not(.shiki) {
+		margin: 0;
+		border-radius: 0 0.25rem 0.25rem 0.25rem;
+		padding: 1rem;
+		background-color: #1e1e1e;
+		border: none;
+		box-shadow: none;
+		overflow-x: auto;
+		overflow-y: hidden;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: #d4d4d4;
+		display: block;
+	}
+	
+	.code-block-wrapper pre:not(.shiki) code {
+		color: #d4d4d4;
+		background: transparent;
+		white-space: pre;
+		display: block;
+	}
+</style>

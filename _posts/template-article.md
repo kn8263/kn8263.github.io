@@ -42,6 +42,61 @@ tags:
   - "サンプル"
 ---
 ```
+## コードブロックのサンプル
+
+### 言語指定のみ
+
+```typescript
+// TypeScriptのコードブロック
+const example: string = "Hello, World!";
+console.log(example);
+```
+
+```javascript
+// JavaScriptのコードブロック
+const example = "Hello,World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+console.log(example);
+```
+
+```python
+# Pythonのコードブロック
+def hello():
+    print("Hello, World!")
+
+hello()
+```
+
+### ファイル名付き
+
+```typescript:src/utils/helper.ts
+// ファイル名付きのコードブロック
+export const helper = () => {
+  return "Hello, World!";
+};
+```
+
+```javascript:app.js
+// JavaScriptファイル名付き
+const app = () => {
+  console.log("Hello, World!");
+};
+```
+
+```python:main.py
+# Pythonファイル名付き
+def main():
+    print("Hello, World!")
+
+if __name__ == "__main__":
+    main()
+```
+
+### 言語指定なし
+
+```
+プレーンテキストのコードブロック
+言語が指定されていない場合は、そのまま表示されます
+```
 
 ## Markdown記法
 
@@ -51,11 +106,6 @@ tags:
 - *斜体*
 - `コード`
 - [リンク](https://example.com)
-
-```typescript
-// コードブロックも使用可能
-const example = "Hello, World!";
-```
 
 ## 画像
 ```

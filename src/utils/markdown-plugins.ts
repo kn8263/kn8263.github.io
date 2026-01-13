@@ -118,10 +118,67 @@ let shikiHighlighter: Awaited<ReturnType<typeof getHighlighter>> | null = null;
 export const getShikiHighlighter = async () => {
 	if (!shikiHighlighter) {
 		shikiHighlighter = await getHighlighter({
-			theme: 'github-light',
+			theme: 'github-dark',
 		});
 	}
 	return shikiHighlighter;
+};
+
+// コードブロックのメタデータ（ファイル名など）を保存するremarkプラグイン
+export const extractCodeBlockMetaPlugin = () => {
+	return (tree: Node) => {
+		visit(tree, 'code', (node: any) => {
+			// 言語が指定されていない場合、textを設定
+			const codeNode = node;
+			if (!codeNode.lang) {
+				// eslint-disable-next-line no-param-reassign
+				codeNode.lang = 'text';
+			}
+
+			// メタデータをdata属性として保存
+			// 例: ```typescript:filename.ts -> lang="typescript", meta="filename.ts"
+			// eslint-disable-next-line no-param-reassign
+			codeNode.data = codeNode.data || {};
+			// eslint-disable-next-line no-param-reassign
+			codeNode.data.hName = 'code';
+			// eslint-disable-next-line no-param-reassign
+			codeNode.data.hProperties = codeNode.data.hProperties || {};
+
+			let { lang } = codeNode;
+			let filename: string | null = null;
+
+			// langに`:`が含まれている場合、言語とファイル名を分離
+			// 例: "typescript:filename.ts" -> lang="typescript", filename="filename.ts"
+			if (lang.includes(':')) {
+				const parts = lang.split(':');
+				const [firstPart, ...restParts] = parts;
+				lang = firstPart;
+				filename = restParts.join(':'); // 複数の`:`がある場合に対応
+			}
+
+			// metaプロパティがある場合、それを使用（優先）
+			if (codeNode.meta) {
+				const meta = codeNode.meta.trim();
+				if (meta) {
+					filename = meta;
+				}
+			}
+
+			// 言語情報を保存（分離後の言語名）
+			// eslint-disable-next-line no-param-reassign
+			codeNode.data.hProperties['data-lang'] = lang;
+
+			// ファイル名がある場合、保存
+			if (filename) {
+				// eslint-disable-next-line no-param-reassign
+				codeNode.data.hProperties['data-meta'] = filename;
+			}
+
+			// node.langも分離後の言語名に更新（rehypeShikiに正しい言語名を渡すため）
+			// eslint-disable-next-line no-param-reassign
+			codeNode.lang = lang;
+		});
+	};
 };
 
 // プラグインの設定
@@ -130,6 +187,7 @@ export const remarkPlugins = [
 	remarkGfm,
 	remarkPlantUML as any,
 	addDivMermaidPlugin as any,
+	extractCodeBlockMetaPlugin as any,
 	[
 		remarkMermaid,
 		{
@@ -177,13 +235,332 @@ export const wrapTablePlugin = () => {
 	};
 };
 
+// rehypeShikiの前に言語情報をpre要素に保存し、code要素のクラス名を修正するプラグイン
+export const preserveCodeBlockLangPlugin = () => {
+	return (tree: Node) => {
+		visit(tree, 'element', (node: Element) => {
+			// <pre><code class="language-xxx">の構造を検出
+			if (
+				node.tagName === 'pre' &&
+				node.children &&
+				Array.isArray(node.children)
+			) {
+				const codeElement = node.children.find(
+					(child: any) => child.type === 'element' && child.tagName === 'code',
+				) as Element | undefined;
+
+				if (codeElement && codeElement.properties) {
+					// 言語情報を取得（クラス名から優先的に取得）
+					let lang: string | null = null;
+					let filename: string | null = null;
+
+					// まずクラス名から取得（remark-rehypeで変換された後も保持される）
+					if (
+						codeElement.properties.className &&
+						typeof codeElement.properties.className === 'object' &&
+						Array.isArray(codeElement.properties.className)
+					) {
+						const langClass = codeElement.properties.className.find(
+							(cls: any) =>
+								typeof cls === 'string' && cls.startsWith('language-'),
+						);
+						if (langClass) {
+							const langValue = String(langClass).replace('language-', '');
+							// `:`が含まれている場合、言語とファイル名を分離
+							if (langValue.includes(':')) {
+								const parts = langValue.split(':');
+								const [firstPart, ...restParts] = parts;
+								lang = firstPart;
+								filename = restParts.join(':');
+							} else {
+								lang = langValue;
+							}
+						}
+					}
+
+					// data属性から取得（フォールバック）
+					if (!lang && codeElement.properties['data-lang']) {
+						lang = String(codeElement.properties['data-lang']);
+					}
+
+					// メタデータ（ファイル名）を取得（data属性から優先）
+					if (codeElement.properties['data-meta']) {
+						filename = String(codeElement.properties['data-meta']);
+					}
+
+					// code要素のクラス名を修正（言語名のみに）
+					if (lang && codeElement.properties.className) {
+						if (
+							typeof codeElement.properties.className === 'object' &&
+							Array.isArray(codeElement.properties.className)
+						) {
+							// 既存のlanguage-xxxクラスを削除
+							codeElement.properties.className =
+								codeElement.properties.className.filter(
+									(cls: any) =>
+										typeof cls !== 'string' || !cls.startsWith('language-'),
+								);
+							// 正しい言語名のクラスを追加
+							codeElement.properties.className.push(`language-${lang}`);
+						}
+					}
+
+					// pre要素に保存
+					if (lang) {
+						// eslint-disable-next-line no-param-reassign
+						node.properties = node.properties || {};
+						// eslint-disable-next-line no-param-reassign
+						node.properties['data-lang'] = lang;
+						if (filename) {
+							// eslint-disable-next-line no-param-reassign
+							node.properties['data-meta'] = filename;
+						}
+					}
+				}
+			}
+		});
+	};
+};
+
+// rehypeShikiの処理前に言語情報を一時保存し、処理後に復元するプラグイン
+// rehypeShikiがpre要素を完全に置き換えるため、言語情報を一時的に保存する必要がある
+const langInfoArray: Array<{ lang: string; filename: string | null }> = [];
+
+// rehypeShikiの処理前に言語情報を一時保存（順序を保持）
+export const saveCodeBlockLangPlugin = () => {
+	return (tree: Node) => {
+		langInfoArray.length = 0; // 配列をクリア
+		visit(tree, 'element', (node: Element) => {
+			if (node.tagName === 'pre' && node.properties) {
+				// rehypeShikiが処理する可能性のあるpre要素かどうかを判定
+				// （code要素があり、language-xxxクラスがある場合）
+				const codeElement = node.children?.find(
+					(child: any) => child.type === 'element' && child.tagName === 'code',
+				) as Element | undefined;
+
+				const willBeProcessedByShiki =
+					codeElement &&
+					codeElement.properties?.className &&
+					typeof codeElement.properties.className === 'object' &&
+					Array.isArray(codeElement.properties.className) &&
+					codeElement.properties.className.some(
+						(cls: any) =>
+							typeof cls === 'string' && cls.startsWith('language-'),
+					);
+
+				// rehypeShikiが処理する可能性のあるpre要素のみを保存
+				if (willBeProcessedByShiki && node.properties['data-lang']) {
+					const lang = String(node.properties['data-lang']);
+					const filename = node.properties['data-meta']
+						? String(node.properties['data-meta'])
+						: null;
+
+					langInfoArray.push({ lang, filename });
+				}
+			}
+		});
+	};
+};
+
+// rehypeShikiの処理後に言語情報を復元（順序に基づいて）
+export const restoreCodeBlockLangPlugin = () => {
+	return (tree: Node) => {
+		let index = 0;
+		visit(tree, 'element', (node: Element) => {
+			// rehypeShikiが処理した後の<pre class="shiki">を検出
+			if (
+				node.tagName === 'pre' &&
+				node.properties &&
+				typeof node.properties.className === 'object' &&
+				Array.isArray(node.properties.className) &&
+				node.properties.className.includes('shiki')
+			) {
+				// data-lang属性がない場合、復元を試みる
+				if (!node.properties['data-lang']) {
+					const savedInfo = langInfoArray[index];
+					if (savedInfo) {
+						// eslint-disable-next-line no-param-reassign
+						node.properties['data-lang'] = savedInfo.lang;
+						if (savedInfo.filename) {
+							// eslint-disable-next-line no-param-reassign
+							node.properties['data-meta'] = savedInfo.filename;
+						}
+					}
+					index += 1;
+				} else {
+					// data-langが既に存在する場合もインデックスを進める
+					index += 1;
+				}
+			}
+		});
+	};
+};
+
+// コードブロックに言語ラベルを追加するrehypeプラグイン
+export const addCodeBlockLabelPlugin = () => {
+	return (tree: Node) => {
+		visit(
+			tree,
+			'element',
+			(node: Element, index: number | undefined, parent?: Parent) => {
+				// <pre>要素を検出（Shikiが処理した場合も、処理されていない場合も対応）
+				if (
+					node.tagName === 'pre' &&
+					node.properties &&
+					parent &&
+					typeof index === 'number'
+				) {
+					// 言語とファイル名を取得
+					let lang: string | null = null;
+					let filename: string | null = null;
+
+					// コードブロックかどうかを判定（<code>要素があるか、Shikiが処理したか）
+					const hasCodeElement =
+						node.children &&
+						Array.isArray(node.children) &&
+						node.children.some(
+							(child: any) =>
+								child.type === 'element' && child.tagName === 'code',
+						);
+					const isShiki =
+						typeof node.properties.className === 'object' &&
+						Array.isArray(node.properties.className) &&
+						node.properties.className.includes('shiki');
+
+					// コードブロックの場合のみ処理
+					if (hasCodeElement || isShiki) {
+						// まずpre要素のdata属性から取得（preserveCodeBlockLangPluginで保存された情報、優先）
+						if (node.properties) {
+							if (node.properties['data-lang']) {
+								const langValue = String(node.properties['data-lang']);
+								// `:`が含まれている場合、言語とファイル名を分離
+								if (langValue.includes(':')) {
+									const parts = langValue.split(':');
+									const [firstPart, ...restParts] = parts;
+									lang = firstPart;
+									filename = restParts.join(':');
+								} else {
+									lang = langValue;
+								}
+							}
+							if (node.properties['data-meta']) {
+								filename = String(node.properties['data-meta']);
+							}
+						}
+
+						// 言語が取得できない場合、<code>要素から取得
+						if (!lang && node.children && Array.isArray(node.children)) {
+							const codeElement = node.children.find(
+								(child: any) =>
+									child.type === 'element' && child.tagName === 'code',
+							) as Element | undefined;
+
+							if (codeElement && codeElement.properties) {
+								// data属性から取得
+								if (codeElement.properties['data-lang']) {
+									const langValue = String(codeElement.properties['data-lang']);
+									if (langValue.includes(':')) {
+										const parts = langValue.split(':');
+										const [firstPart, ...restParts] = parts;
+										lang = firstPart;
+										if (!filename) {
+											filename = restParts.join(':');
+										}
+									} else {
+										lang = langValue;
+									}
+								} else if (
+									codeElement.properties.className &&
+									typeof codeElement.properties.className === 'object' &&
+									Array.isArray(codeElement.properties.className)
+								) {
+									// クラス名から言語を抽出（rehypeShikiが処理した後は通常クラス名は残らない）
+									const langClass = codeElement.properties.className.find(
+										(cls: any) =>
+											typeof cls === 'string' && cls.startsWith('language-'),
+									);
+									if (langClass) {
+										const langValue = String(langClass).replace(
+											'language-',
+											'',
+										);
+										if (langValue.includes(':')) {
+											const parts = langValue.split(':');
+											const [firstPart, ...restParts] = parts;
+											lang = firstPart;
+											if (!filename) {
+												filename = restParts.join(':');
+											}
+										} else {
+											lang = langValue;
+										}
+									}
+								}
+
+								// ファイル名を取得
+								if (!filename && codeElement.properties['data-meta']) {
+									filename = String(codeElement.properties['data-meta']);
+								}
+							}
+						}
+
+						// 言語が存在する場合のみラベルを追加（textの場合は表示しない）
+						if (lang && lang !== 'text') {
+							// ラベルテキスト（ファイル名があればファイル名、なければ言語名）
+							const labelText = filename || lang;
+
+							const label: Element = {
+								type: 'element',
+								tagName: 'div',
+								properties: { className: ['code-block-label'] },
+								children: [
+									{
+										type: 'text',
+										value: labelText,
+									},
+								],
+							};
+
+							// ラッパーdivを作成
+							const wrapper: Element = {
+								type: 'element',
+								tagName: 'div',
+								properties: { className: ['code-block-wrapper'] },
+								children: [label, node],
+							};
+
+							// eslint-disable-next-line no-param-reassign
+							parent.children[index] = wrapper;
+						} else if (lang === 'text') {
+							// textの場合はラッパーのみ作成（ラベルなし）
+							const wrapper: Element = {
+								type: 'element',
+								tagName: 'div',
+								properties: { className: ['code-block-wrapper'] },
+								children: [node],
+							};
+
+							// eslint-disable-next-line no-param-reassign
+							parent.children[index] = wrapper;
+						}
+					}
+				}
+			},
+		);
+	};
+};
+
 export const rehypePlugins = async () => [
+	preserveCodeBlockLangPlugin as any,
+	saveCodeBlockLangPlugin as any,
 	[
 		rehypeShiki,
 		{
 			highlighter: await getShikiHighlighter(),
 		},
 	],
+	restoreCodeBlockLangPlugin as any,
 	rehypeMathJaxSvg,
 	wrapTablePlugin as any,
+	addCodeBlockLabelPlugin as any,
 ];
