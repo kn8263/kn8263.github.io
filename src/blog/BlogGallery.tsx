@@ -23,7 +23,7 @@ const BlogGallery = (props: IBlogGalleryProps) => (
 
 					<div className="text-left clear-both">{elt.description}</div>
 					<p className="text-left text-sm ">
-						Posted {format(new Date(elt.date), 'LLL d, yyyy')}
+						公開: {format(new Date(elt.date), 'yyyy/MM/dd')}
 					</p>
 				</div>
 			);
