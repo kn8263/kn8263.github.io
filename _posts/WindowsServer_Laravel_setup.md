@@ -2,7 +2,7 @@
 title: WindowsServer×Laravelの環境をHyper-Vに構築する
 date: 2026-01-09T14:59:32+0900
 template: post
-draft: true
+draft: false
 category: blog
 description: XAMPPで開発が進んでいたプロジェクトの開発環境を本番環境であるWindowsServerに合わせて再構築しました。
 tags:
@@ -15,7 +15,10 @@ tags:
   - IIS
 ---
 
-本番環境がWindowsServer指定だが、社内の経験者が多いという理由でLaravelが選択されたプロジェクトの後任になり、<br>XAMPPからWindowsServer×IIS×SQLServer2022の環境構築をした際の備忘録です。
+本番環境がWindowsServer指定だが、社内の経験者が多いという理由でLaravelが選択されたプロジェクトの後任になり、<br>XAMPPからWindowsServer×IIS×SQLServer2022の環境構築をした際の備忘録です。<br><br>
+※あくまで備忘録であり、細かな設定については言及していません。<br>
+当時の案件の開発環境で最低限動作するセットアップ方法なので、環境に合わせて設定は見直す必要があります。
+
 
 ## 使用したライブラリ・ツール等一覧
 - [WindowsServer2022](https://www.microsoft.com/ja-jp/evalcenter/download-windows-server-2022)
@@ -23,6 +26,7 @@ tags:
 - [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/ja-jp/ssms/download-sql-server-management-studio-ssms?redirectedfrom=MSDN#available-languages)
 - [PHP 8.2](https://windows.php.net/download#php-8.2)（Non-Threadsafe x64）
 -   [Composer](https://getcomposer.org/doc/00-intro.md#installation-windows)
+- [Laravel 11.*](https://readouble.com/laravel/11.x/ja/releases.html)
 - Node.js ([NVM](https://github.com/coreybutler/nvm-windows/releases) )
 - [Hyper-V](https://learn.microsoft.com/ja-jp/windows-server/virtualization/hyper-v/overview#get-started-with-hyper-v)
 - [A5:SQL Mk-2](https://a5m2.mmatsubara.com/)
@@ -116,7 +120,7 @@ tags:
 ---
 ## 仮想マシン内の環境構築
 ### 1. IIS(Webサーバー)の設定
-**※XAMPPで開発したプログラムのソース一式をbookingappとします。**
+**※XAMPPで開発したプログラムのソース一式をappとします。**
 
 **IISのインストール**
 
@@ -131,51 +135,62 @@ tags:
     - 管理ツール > IIS 管理コンソール
 5. インストール完了後、ブラウザで `http://localhost` にアクセスして **IISの初期ページが表示されるか確認**
 
-Visual C++ Redistributable 2015-2022 をインストール
+**役割と機能の追加**
+![役割と機能の追加](IIS-install1.png)
+**インストールの種類**
+![インストールの種類](IIS-install2.png)
+**サーバーの役割**
+![サーバーの役割](IIS-install3.png)
+
+#### 他インストールしておくもの
+- Visual C++ Redistributable 2015-2022 をインストール
   [vc_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
 - URL Rewrite モジュールをインストール
   [IIS URL Rewrite](https://www.iis.net/downloads/microsoft/url-rewrite)
 #### アプリケーションプール等の設定
-- IIS起動
-- アプリケーションプール>右のメニューで「アプリケーションプールの追加」を選択。以下のように設定しOK
+- IISマネージャー起動
+![IISマネージャー](run-iis-manager.png)
+
+- 「アプリケーションプール」を右クリック→「アプリケーションプールの追加」を選択。以下のように設定しOK
+![サイト](app-pool.png)
 
 | 項目             | 値          |
 | -------------- | ---------- |
-| 名前             | kyg        |
+| 名前             | app(任意の名前)        |
 | .Net CLRバージョン  | マネージドコードなし |
 | マネージドパイプラインモード | 統合         |
 - 「サイト」を右クリック→Webサイトの追加。以下のように設定しOK
+![サイト](app-pool2.png)
+
 
 | 項目          | 値                                    |
 | ----------- | ------------------------------------ |
-| サイト名        | kyg.local                            |
-| アプリケーションプール | kyg                                  |
-| 物理パス        | C:\inetpub\wwwroot\bookingapp\public |
+| サイト名        | app.local                            |
+| アプリケーションプール | app                                  |
+| 物理パス        | C:\inetpub\wwwroot\app\public |
 | バインド)種類     | http                                 |
 | バインド)IPアドレス | 未使用の IP アドレスすべて                      |
 | バインド)ポート    | 80                                   |
-| バインド）ホスト名   | kyg.local                            |
+| バインド）ホスト名   | app.local                            |
 
 #### Hostsの設定(IIS外)
 VM内でIP確認：
-```
+```powershell
 ipconfig
-```
-example
-```
-イーサネット アダプター イーサネット 2:
 
-   接続固有の DNS サフィックス . . . . .:
-   リンクローカル IPv6 アドレス. . . . .: fe80::c1d1:7cf9:df61:89d1%7
-   IPv4 アドレス . . . . . . . . . . . .: 192.168.56.102
-   サブネット マスク . . . . . . . . . .: 255.255.255.0
-   デフォルト ゲートウェイ . . . . . . .:
+> イーサネット アダプター イーサネット 2:
+
+   > 接続固有の DNS サフィックス . . . . .:
+   > リンクローカル IPv6 アドレス. . . . .: fe80::c1d1:7cf9:df61:89d1%7
+   > IPv4 アドレス . . . . . . . . . . . .: 192.168.56.102
+   > サブネット マスク . . . . . . . . . .: 255.255.255.0
+   > デフォルト ゲートウェイ . . . . . . .:
 ```
 
 `C:\Windows\System32\drivers\etc\hosts`に以下を追記
-```
-192.168.56.102       kyg.local
+```text
+192.168.56.102       app.local
 ```
 
 
@@ -190,7 +205,7 @@ example
 - `php.ini-production` をコピーして `php.ini` を作成
 
 - php.ini の編集例
-```
+```ini
 extension_dir = "C:\php82\ext"
 
 extension=curl
@@ -202,17 +217,19 @@ extension=fileinfo
 ```
 
 - Microsoft PHP SQL Server ドライバを `C:\php82\ext` に配置
-  [PHP Drivers for SQL Server](https://learn.microsoft.com/en-us/sql/connect/php/download-drivers-php-sql-server?view=sql-server-ver15#download)
+  [PHP Drivers for SQL Server](https://learn.microsoft.com/en-us/sql/connect/php/download-drivers-php-sql-server?view=sql-server-ver15#download)<br>
 ※zipを解凍して以下のファイルを`C:\php82\ext`にコピーする
   - 必須ファイル：
-    - php_sqlsrv_82_nts_x64.dll
-    - php_pdo_sqlsrv_82_nts_x64.dll
+    - **php_sqlsrv_82_nts_x64.dll**
+    - **php_pdo_sqlsrv_82_nts_x64.dll**
 
 - システム環境変数に `C:\php82` を追加
 
 - IISマネージャー で PHP 8.2 を登録 (`php-cgi.exe`)
 	1. IISマネージャー起動 > サーバーを選択(WIN-XXXXXX) > 画面中央のメニューの中から「ハンドラーマッピング」　を選択
-	2. 画面右の「操作」メニュー内「モジュールマップの追加」を選択。以下の設定を記載しOK
+![ハンドラーマッピング](php1.png)
+	1. 画面右の「操作」メニュー内「モジュールマップの追加」を選択。以下の設定を記載しOK
+![モジュールマップ](php2.png)
 
 | 項目              | 値                      |
 | --------------- | ---------------------- |
@@ -221,15 +238,20 @@ extension=fileinfo
 | 実行可能ファイル(オプション) | `C:\php82\php-cgi.exe` |
 | 名前              | PHP_v8.2　(任意の名称で良い)    |
 
-- FastCGIの設定
-	サーバー選択 > FastCGIの設定 > 画面右操作メニューのアプリケーションの追加
-		完全なパス: `C:\php82\php-cgi.exe`
-		全般 > 環境変数 > コレクション
-			Name: `PHPRC`
-			Value: C:\php82
+- **FastCGIの設定**
+  1. サーバー選択 > FastCGIの設定 > 画面右操作メニューのアプリケーションの追加
+		![FastCGIの設定](fast-cgi.png)
+		![FastCGIの設定2](fast-cgi2.png)
+  2. 以下のように設定
+    - 完全なパス: `C:\php82\php-cgi.exe`
+    - 全般 > 環境変数 > コレクション
+      - Name: `PHPRC`
+      - Value: C:\php82
+		![FastCGIの設定3](fast-cgi3.png)
 
--  既定のドキュメント追加
-	- サイト>kyg.localを選択し、「既定のドキュメント」を選択
+
+-  **既定のドキュメント追加**
+	- サイト>app.localを選択し、「既定のドキュメント」を選択
 	- 画面右　操作タブの「追加」から`index.php`を追加しOK
 - 動作確認
   `C:\inetpub\wwwroot\index.php` に以下を作成
@@ -258,7 +280,7 @@ composer -V
 ---
 
 ### 4. Node.js の設定
-- [nvmのインストール(nvm-setup.exe)]([https://github.com/coreybutler/nvm-windows/releases](https://github.com/coreybutler/nvm-windows/releases))
+- [nvmのインストール(nvm-setup.exe)](https://github.com/coreybutler/nvm-windows/releases)
 
 バージョンチェック
 ```bash
@@ -296,12 +318,13 @@ npm -v
 
 - SQL Server Management Studio (SSMS) を起動
 - 接続したら「データベース」を右クリックして「新しいデータベース」を選択
-	- データベース名「kyg」を入力
+	- データベース名「app」を入力
 	- OKをクリック
 - サーバーインスタンス直下の「セキュリティ > ログイン」右クリック → 「新しいログイン」
-	- ログイン名に **`IIS APPPOOL\kyg` と入力**（検索ボタンは押さない）
+	- ログイン名に **`IIS APPPOOL\app` と入力**（検索ボタンは押さない）<br>
+   ※`IIS APPPOOL\` + アプリケーションプール名
 	- 「Windows 認証」を選択
-	- 「ユーザー マッピング」で使用するデータベース（ `kyg`）にチェック
+	- 「ユーザー マッピング」で使用するデータベース（ `app`）にチェック
 	- ロールとして `db_owner`（または必要な最低限の権限）を付与
 	- OK をクリック
 
@@ -333,14 +356,91 @@ start "" MailHog_windows_amd64.exe -storage=maildir -maildir-path=C:\mailhog\mai
 ```
 - バッチファイルのショートカットをデスクトップに置いておくと便利
 - シェルスクリプトはこちら
-```
+```sh
 #!/bin/bash
 ./MailHog_windows_amd64.exe -storage=maildir -maildir-path=./mails
 ```
+<br>
+
+<details><summary>※Mailpitの場合</summary>
+
+#### 1. mailpitダウンロード
+mailpit [ダウンロード](https://github.com/axllent/mailpit/releases/download/v1.28.0/mailpit-windows-amd64.zip)<br>
+※VMのホストに配置
+```bash
+mkdir /c/mailpit
+mv download_path/mailpit.exe /c/mailpit/mailpit.exe
+```
+<br>
+
+#### 2. mailpi起動スクリプト作成
+<details><summary>start_mailpit.sh</summary>
+
+```sh
+#!/bin/bash
+
+# Default values
+DEFAULT_LISTEN_PORT=8025
+DEFAULT_SMTP_PORT=1025
+DEFAULT_DB_FILE=mailpit.db
+
+# 引数があれば優先、なければ空
+LISTEN_PORT=$1
+SMTP_PORT=$2
+DB_FILE=$3
+
+# 対話入力（未指定時のみ）
+if [ -z "$LISTEN_PORT" ]; then
+  read -p "Listen port [$DEFAULT_LISTEN_PORT]: " LISTEN_PORT
+  LISTEN_PORT=${LISTEN_PORT:-$DEFAULT_LISTEN_PORT}
+fi
+
+if [ -z "$SMTP_PORT" ]; then
+  read -p "SMTP port [$DEFAULT_SMTP_PORT]: " SMTP_PORT
+  SMTP_PORT=${SMTP_PORT:-$DEFAULT_SMTP_PORT}
+fi
+
+if [ -z "$DB_FILE" ]; then
+  read -p "Database file [$DEFAULT_DB_FILE]: " DB_FILE
+  DB_FILE=${DB_FILE:-$DEFAULT_DB_FILE}
+fi
+
+# DB ファイル作成
+if [ ! -f "./$DB_FILE" ]; then
+  echo "Database file not found. Creating $DB_FILE..."
+  touch "./$DB_FILE"
+fi
+
+echo "Starting Mailpit..."
+echo " UI   : [::]:$LISTEN_PORT"
+echo " SMTP : [::]:$SMTP_PORT"
+echo " DB   : ./$DB_FILE"
+
+./mailpit.exe \
+  --listen "[::]:$LISTEN_PORT" \
+  --smtp "[::]:$SMTP_PORT" \
+  --database "./$DB_FILE"
+
+echo "Press Enter to exit..."
+read
+```
+</details>
+<br>
+
+#### 3. mailpit起動
+```bash
+pwd
+# > /c/mailpit
+./start_mail.sh
+```
+</details>
+<br>
 
 ### 7. Laravel プロジェクトセットアップ
-- Laravelプロジェクト内のpublicディレクトリに以下のweb.configを作成
-`C:\inetpub\wwwroot\bookingapp\public\web.config
+- Laravelプロジェクト内のpublicディレクトリに以下のweb.configを作成<br>
+
+<details><summary>C:\inetpub\wwwroot\app\public\web.config</summary>
+
 ```xml
 <configuration>
     <system.webServer>
@@ -359,51 +459,30 @@ start "" MailHog_windows_amd64.exe -storage=maildir -maildir-path=C:\mailhog\mai
     </system.webServer>
 </configuration>
 ```
+</details>
+
 - `storage/` と `bootstrap/cache` の書き込み権限を確認
 	- エクスプローラーでプロパティ>セキュリティタブで「IIS_IUSERS」にフルコントロールを付与
 
-- ホストの IP を確認
-ホスト側で以下を実行します：
-
-```bash
-ipconfig
-```
-example
-```
-・
-・
-・
-イーサネット アダプター イーサネット 2:
-	接続固有の DNS サフィックス . . . . .:
-	リンクローカル IPv6 アドレス. . . . .: fe80::ea2d:68b0:3af3:a74%63
-	IPv4 アドレス . . . . . . . . . . . .: 192.168.56.1
-	サブネット マスク . . . . . . . . . .:
-	255.255.255.0 デフォルト ゲートウェイ . . . . . . .:
-・
-・
-・
-```
-
-- PowerShell または CMD でプロジェクトディレクトリに移動
+- .env.exampleから.envを作成
 ```powershell
 cd C:\inetpub\wwwroot
 cp .env.example .env
 ```
+<br>
+<details><summary>.envの記載内容</summary> 
 
-- `.env` の設定例
-`ALLOWED_IPS`,`EXTERNAL_SYSTEM_BASE_URL`などはホストのIPに設定
-```
-APP_NAME=kuc_app
-APP_URL=http://kyg.local
-APP_TITLE="【ネットで予約】"
+```xml
+APP_NAME=app
+APP_URL=http://app.local
+APP_TITLE="アプリタイトル"
 
 DB_CONNECTION=sqlsrv
 DB_HOST=localhost
 DB_PORT=1433
-DB_DATABASE=kyg
+DB_DATABASE=app
 DB_USERNAME=
 DB_PASSWORD=
-DB_LAST_KNOWN_CUSTOMER_NO=0
 
 MAIL_MAILER=smtp
 MAIL_HOST=127.0.0.1
@@ -413,10 +492,10 @@ MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS=test@email.com
 MAIL_FROM_NAME="${APP_NAME}"
-
-ALLOWED_IPS=192.168.56.1
-EXTERNAL_SYSTEM_BASE_URL=http://192.168.56.1:3001
 ```
+
+</details>
+<br>
 
 - Laravel 初期セットアップ
 ```cmd
@@ -428,9 +507,3 @@ php artisan migrate
 php artisan db:seed
 php artisan optimize
 ```
----
-開発時
-- mailhogを起動(6. Mailhog設定で作成したスクリプトのショートカットから)
-- `npm run dev`
-- ホストマシン上でモックAPI起動`node server.js`
-- VM上のブラウザで`http://kyg.local`にアクセス
