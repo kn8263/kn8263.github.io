@@ -58,24 +58,25 @@ AWS で RAG（FAQ 型）を本番稼働させる場合の**典型構成**は次�
 
 ### 最もよくある標準構成（AWS公式寄り）
 
-```txt
-[ Frontend (CloudFront + S3 / React or Solid) ]
-                |
-                v
-[ API Gateway ]
-                |
-                v
-[ Lambda (Python + LangChain) ]
-        |                |
-        |                v
-        |        [ Amazon Bedrock (LLM) ]
-        |
-        v
-[ Amazon OpenSearch Serverless (Vector Search) ]
-        |
-        v
-[ S3 (FAQ元データ) ]
+```mermaid
+%%{init:{'theme':'base','flowchart':{'htmlLabels':false}}}%%
+flowchart TD
+    A["Frontend\nCloudFront + S3 (React/Solid)"] --> B["API Gateway"]
+    B --> C["Lambda\nPython + LangChain"]
+
+    C --> D["Amazon OpenSearch\nServerless\nVector Search"]
+    C --> E["Amazon Bedrock\nLLM"]
+
+    D --> F["S3\nFAQ元データ"]
+    
+    style D fill:#e1f5ff,stroke:#01579b
+    style E fill:#e1f5ff,stroke:#01579b
+    style F fill:#e1f5ff,stroke:#01579b
+    style A fill:#fff3e0,stroke:#e65100
+    style B fill:#f3e5f5,stroke:#4a148c
+    style C fill:#e8f5e9,stroke:#1b5e20
 ```
+
 <br>
 
 ### 役割対応（ローカルとの比較）
