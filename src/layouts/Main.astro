@@ -124,13 +124,43 @@ const { recents, tags, meta } = Astro.props;
 				
 				if (!tocContent) {
 					// 目次がない場合
-					if (tocWrapper) tocWrapper.style.display = 'none';
-					if (sidebarOnlyWrapper) sidebarOnlyWrapper.style.display = 'block';
+					if (tocWrapper) (tocWrapper as HTMLElement).style.display = 'none';
+					if (sidebarOnlyWrapper) (sidebarOnlyWrapper as HTMLElement).style.display = 'block';
 				} else {
 					// 目次がある場合
-					if (tocWrapper) tocWrapper.style.display = 'block';
-					if (sidebarOnlyWrapper) sidebarOnlyWrapper.style.display = 'none';
+					if (tocWrapper) (tocWrapper as HTMLElement).style.display = 'block';
+					if (sidebarOnlyWrapper) (sidebarOnlyWrapper as HTMLElement).style.display = 'none';
+					
+					// サイドバーの高さを動的に調整
+					adjustSidebarHeight();
 				}
+			}
+			
+			// サイドバーの高さを目次の高さに応じて調整
+			function adjustSidebarHeight() {
+				const tocScrollWrapper = document.querySelector('.toc-scroll-wrapper');
+				const sidebarWrapper = document.querySelector('.sidebar-wrapper');
+				
+				if (!tocScrollWrapper || !sidebarWrapper) return;
+				
+				// 利用可能な高さ（100vh - 40px）
+				const availableHeight = window.innerHeight - 40;
+				
+				// 目次の実際の高さを取得（スクロール可能な要素のscrollHeight）
+				const tocHeight = tocScrollWrapper.scrollHeight;
+				// 目次の最大高さ（5/8）
+				const maxTocHeight = availableHeight * 0.625;
+				// 実際に使用される目次の高さ（コンテンツの高さと最大高さの小さい方）
+				const actualTocHeight = Math.min(tocHeight, maxTocHeight);
+				
+				// マージン（mb-5 = 1.25rem = 20px）
+				const margin = 20;
+				
+				// サイドバーに割り当てる高さ = 利用可能な高さ - 目次の高さ - マージン
+				const sidebarHeight = availableHeight - actualTocHeight - margin;
+				
+				// サイドバーの最大高さを設定
+				(sidebarWrapper as HTMLElement).style.maxHeight = `${sidebarHeight}px`;
 			}
 			
 			// DOMContentLoaded時と、少し遅延してからもチェック（クライアント側コンポーネントのレンダリングを待つ）
@@ -147,6 +177,14 @@ const { recents, tags, meta } = Astro.props;
 				setTimeout(checkTocAndUpdateLayout, 500);
 				setTimeout(checkTocAndUpdateLayout, 1000);
 			}
+			
+			// ウィンドウリサイズ時にもサイドバーの高さを再調整
+			window.addEventListener('resize', () => {
+				const tocContent = document.querySelector('.toc-wrapper .table-of-contents');
+				if (tocContent) {
+					adjustSidebarHeight();
+				}
+			});
 		</script>
 	</body>
 </html>
