@@ -71,7 +71,7 @@ if (lang) {
 	
 	.code-block-wrapper .shiki pre {
 		margin: 0;
-		padding: 0;
+		padding: 0 1rem 0 0;
 		overflow-x: auto;
 		overflow-y: hidden;
 		display: block;
@@ -83,10 +83,24 @@ if (lang) {
 		overflow-x: auto;
 	}
 	
+	// すべての行の最後のspan要素に右側の余白を追加（最も長い行の右端に余白が表示される）
+	.code-block-wrapper .shiki code > span.line > span:last-child {
+		margin-right: 1rem;
+		display: inline-block;
+	}
+	
+	// すべての行の最後に余白を追加（フォールバック）
+	.code-block-wrapper .shiki code > span.line::after {
+		content: '';
+		display: inline-block;
+		width: 1rem;
+		height: 0;
+	}
+	
 	.code-block-wrapper pre:not(.shiki) {
 		margin: 0;
 		border-radius: 0 0.25rem 0.25rem 0.25rem;
-		padding: 1rem;
+		padding: 1rem 2rem 1rem 1rem;
 		background-color: #1e1e1e;
 		border: none;
 		box-shadow: none;
@@ -103,5 +117,12 @@ if (lang) {
 		background: transparent;
 		white-space: pre;
 		display: block;
+	}
+	
+	// コードブロックの最後の要素に右側の余白を追加
+	.code-block-wrapper pre:not(.shiki) code::after {
+		content: '';
+		display: inline-block;
+		width: 1rem;
 	}
 </style>

@@ -155,6 +155,20 @@
 			display: block;
 		}
 		
+		// すべての行の最後のspan要素に右側の余白を追加（最も長い行の右端に余白が表示される）
+		.code-block-wrapper .shiki code > span.line > span:last-child {
+			margin-right: 1rem;
+			display: inline-block;
+		}
+		
+		// すべての行の最後に余白を追加（フォールバック）
+		.code-block-wrapper .shiki code > span.line::after {
+			// content: '';
+			display: inline-block;
+			width: 1rem;
+			height: 0;
+		}
+		
 		.code-block-wrapper pre:not(.shiki) {
 			margin: 0;
 			border-radius: 0;
