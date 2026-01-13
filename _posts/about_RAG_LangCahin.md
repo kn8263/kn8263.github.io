@@ -69,12 +69,12 @@ flowchart TD
 
     D --> F["S3\nFAQ元データ"]
     
-    style D fill:#e1f5ff,stroke:#01579b
+    style D fill:#e1f5ff,stroke:#01579b %% 水色
     style E fill:#e1f5ff,stroke:#01579b
     style F fill:#e1f5ff,stroke:#01579b
-    style A fill:#fff3e0,stroke:#e65100
-    style B fill:#f3e5f5,stroke:#4a148c
-    style C fill:#e8f5e9,stroke:#1b5e20
+    style A fill:#fff3e0,stroke:#e65100 %% オレンジ
+    style B fill:#f3e5f5,stroke:#4a148c %% 紫
+    style C fill:#e8f5e9,stroke:#1b5e20 %% 薄緑
 ```
 
 <br>
