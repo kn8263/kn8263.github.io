@@ -4,12 +4,654 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Tue, 13 Jan 2026 02:12:18 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 13 Jan 2026 04:03:25 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
         <copyright>©Nakashima, Katsuhito Some Rights Reserved</copyright>
         <atom:link href="https://kn8263.github.io/feed" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[WindowsServer×Laravelの環境をHyper-Vに構築する]]></title>
+            <link>https://kn8263.github.io/posts/WindowsServer_Laravel_setup</link>
+            <guid>https://kn8263.github.io/posts/WindowsServer_Laravel_setup</guid>
+            <pubDate>Fri, 09 Jan 2026 05:59:32 GMT</pubDate>
+            <description><![CDATA[XAMPPで開発が進んでいたプロジェクトの開発環境を本番環境であるWindowsServerに合わせて再構築しました。]]></description>
+            <content:encoded><![CDATA[<p>本番環境がWindowsServer指定だが、社内の経験者が多いという理由でLaravelが選択されたプロジェクトの後任になり、<br>XAMPPからWindowsServer×IIS×SQLServer2022の環境構築をした際の備忘録です。<br><br>
+※あくまで備忘録であり、細かな設定については言及していません。<br>
+当時の案件の開発環境で最低限動作するセットアップ方法なので、環境に合わせて設定は見直す必要があります。</p>
+<h2>使用したライブラリ・ツール等一覧</h2>
+<ul>
+<li><a href="https://www.microsoft.com/ja-jp/evalcenter/download-windows-server-2022">WindowsServer2022</a></li>
+<li><a href="https://www.microsoft.com/ja-jp/sql-server/sql-server-downloads">SQL Server 2022</a></li>
+<li><a href="https://learn.microsoft.com/ja-jp/ssms/download-sql-server-management-studio-ssms?redirectedfrom=MSDN#available-languages">SQL Server Management Studio (SSMS)</a></li>
+<li><a href="https://windows.php.net/download#php-8.2">PHP 8.2</a>（Non-Threadsafe x64）</li>
+<li><a href="https://getcomposer.org/doc/00-intro.md#installation-windows">Composer</a></li>
+<li><a href="https://readouble.com/laravel/11.x/ja/releases.html">Laravel 11.*</a></li>
+<li>Node.js (<a href="https://github.com/coreybutler/nvm-windows/releases">NVM</a> )</li>
+<li><a href="https://learn.microsoft.com/ja-jp/windows-server/virtualization/hyper-v/overview#get-started-with-hyper-v">Hyper-V</a></li>
+<li><a href="https://a5m2.mmatsubara.com/">A5:SQL Mk-2</a></li>
+<li><a href="https://mailpit.axllent.org/docs/install/">Mailpit</a></li>
+<li>Visual C++ Redistributable 2015-2022 <a href="https://aka.ms/vs/17/release/vc_redist.x64.exe">vc_redist.x64.exe</a></li>
+<li>URL Rewrite モジュール<a href="https://www.iis.net/downloads/microsoft/url-rewrite">IIS URL Rewrite</a></li>
+</ul>
+<h2>事前準備</h2>
+<h3>Hyper-V有効化</h3>
+<p>有効化していない場合<a href="https://tenshoku.mynavi.jp/engineer/guide/articles/Y0oYbBEAADssjiX9">こちらの記事を参考に</a></p>
+<h3>ディレクトリの用意とWindowsServerのisoファイルダウンロード</h3>
+<p><code>C:\vm_iso</code>、<code>C:\vm_share</code>のディレクトリを作成しておく(任意）
+<code>C:\vm_iso</code>内にisoファイルを配置しておく</p>
+<h2>仮想マシン作成＋WindowsServerのインストール</h2>
+<h3>Hyper-Vマネージャー起動</h3>
+<p><code>Windows</code>ボタン押下→Hyper-Vで検索
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/Hyper-v.png" alt="Hyper-vマネージャー"></p>
+<h3>仮想スイッチ(ネットワーク）の設定</h3>
+<ul>
+<li>画面右の仮想スイッチマネージャーを選択
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/virtual-network-switch.png" alt="仮想スイッチマネージャー"></li>
+<li>仮想スイッチの作成で「内部」を選択して「仮想スイッチの作成」ボタンを押下
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/create-switch.png" alt="仮想スイッチの作成"></li>
+<li>任意の名前（以降はInernalSwitchとします)を付けてOKボタンを押下
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/InternalSwitch.png" alt="スイッチ命名"></li>
+<li>ホストの「設定」を開き「ネットワークとインターネット」＞「ネットワークの詳細設定」＞<strong>vEthernet(InernalSwitch)</strong> ＞ <strong>「追加のプロパティを表示」</strong> を選択
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/network-setting.png" alt="ネットワーク設定"></li>
+<li>IPの割り当ての「「編集」ボタンを押下</li>
+<li>以下のように設定して保存
+<ul>
+<li>IP 設定の編集: 手動</li>
+<li>IPv4: オン</li>
+</ul>
+</li>
+</ul>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IPアドレス</td>
+<td>192.168.200.1</td>
+</tr>
+<tr>
+<td>サブネットマスク</td>
+<td>255.255.255.0</td>
+</tr>
+<tr>
+<td>ゲートウェイ</td>
+<td>(ブランク)</td>
+</tr>
+<tr>
+<td>優先DNS</td>
+<td>(ブランク)</td>
+</tr>
+<tr>
+<td>HTTPS経由のDNS</td>
+<td>オフ</td>
+</tr>
+<tr>
+<td>代替DNS</td>
+<td>(ブランク)</td>
+</tr>
+<tr>
+<td>HTTPS経由のDNS</td>
+<td>オフ</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code>- IPv6: オフ
+</code></pre>
+<p><img src="/assets/images/posts/WindowsServer_Laravel_setup/ip-setting.png" alt="ip設定"></p>
+<h3>仮想マシン設定</h3>
+<ul>
+<li>
+<p>画面右の「新規」＞「仮想マシン」を選択
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/create-vm.png" alt="新規仮想マシン"></p>
+</li>
+<li>
+<p>以下のように進める</p>
+<ul>
+<li>開始する前に：　次へボタン</li>
+<li>名前と場所の指定：
+<ul>
+<li>名前：　任意の名前　(WSV2022など)</li>
+<li>場所：　任意　（デフォルトでOK)</li>
+</ul>
+</li>
+<li>世代の指定:　第2世代(2)
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/2nd.png" alt="第二世代"></li>
+<li>メモリの割り当て：　4096　MB(任意のメモリ)</li>
+<li>ネットワークの構成：　InternalSwitch
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/network-structure.png" alt="ネットワークの構成"></li>
+<li>仮想ハードディスクの接続：
+<ul>
+<li>名前：　任意　（デフォルトでOK)</li>
+<li>場所：　任意　（デフォルトでOK)</li>
+<li>サイズ：　任意　（60GB以上推奨)</li>
+</ul>
+</li>
+<li>インストールオプション：ブートイメージファイルからオペレーティングシステムをインストールする
+<ul>
+<li>メディア：　(インストールしたISOファイルのパスを指定)
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/install-ws.png" alt="インストールメディア"></li>
+</ul>
+</li>
+<li>要約：　完了ボタンを押下</li>
+</ul>
+</li>
+<li>
+<p>作成されたVMの設定を開く
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/vm-setting.png" alt="VM設定"></p>
+</li>
+<li>
+<p>「ハードウェアの追加」から「ネットワークアダプター」を選択し「追加」ボタンを押下</p>
+</li>
+<li>
+<p>仮想スイッチ：　Default Switch</p>
+</li>
+<li>
+<p>適用ボタンを押下
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/adapter.png" alt="ネットワークアダプター"></p>
+</li>
+<li>
+<p>左のメニューの「管理」＞「統合サービス」を選択し「ゲストサービス」にチェックを入れる</p>
+</li>
+<li>
+<p>OKボタンを押下
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/guest.png" alt="ゲストサービス"></p>
+</li>
+</ul>
+<h3>仮想マシン起動・OSセットアップ</h3>
+<ul>
+<li>作成した仮想マシンを起動・接続する</li>
+<li>Press any keyなど出たら何かキーボードのボタンを押下する
+<ul>
+<li>ここで失敗したら仮想マシンのウィンドウの上部のメニューからリスタートする</li>
+</ul>
+</li>
+<li>Hyper-V　が表示されたらOSのインストーラーが起動するまで待つ</li>
+<li>インストーラーが起動したら画面に沿ってインストールを進める
+<ul>
+<li>エディション：<code>Windows Server 2022 Standard (Desktop Experience)</code></li>
+<li>インストールの種類: カスタム</li>
+<li>パスワード設定</li>
+</ul>
+</li>
+<li>Windowsログイン画面が表示されたら設定したパスワードでログイン</li>
+</ul>
+<hr>
+<h2>仮想マシン内の環境構築</h2>
+<h3>1. IIS(Webサーバー)の設定</h3>
+<p><strong>※XAMPPで開発したプログラムのソース一式をappとします。</strong></p>
+<p><strong>IISのインストール</strong></p>
+<p>※仮想マシン内</p>
+<ol>
+<li>「サーバーマネージャー」 →「管理」→ 「役割と機能の追加」</li>
+<li>役割ベースまたは機能ベースのインストール→次へ</li>
+<li>サーバープールからサーバーを選択（デフォルトのままでOK)→次へ</li>
+<li>サーバーの役割：Webサーバー(IIS)にチェックし以下もチェックを入れて進める
+以下を選択
+<ul>
+<li>Webサーバー > アプリケーション開発 > CGI</li>
+<li>Webサーバー > パフォーマンス > 静的なコンテンツの圧縮</li>
+<li>管理ツール > IIS 管理コンソール</li>
+</ul>
+</li>
+<li>インストール完了後、ブラウザで <code>http://localhost</code> にアクセスして <strong>IISの初期ページが表示されるか確認</strong></li>
+</ol>
+<p><strong>役割と機能の追加</strong>
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/IIS-install1.png" alt="役割と機能の追加">
+<strong>インストールの種類</strong>
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/IIS-install2.png" alt="インストールの種類">
+<strong>サーバーの役割</strong>
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/IIS-install3.png" alt="サーバーの役割"></p>
+<h4>他インストールしておくもの</h4>
+<ul>
+<li>
+<p>Visual C++ Redistributable 2015-2022 をインストール
+<a href="https://aka.ms/vs/17/release/vc_redist.x64.exe">vc_redist.x64.exe</a></p>
+</li>
+<li>
+<p>URL Rewrite モジュールをインストール
+<a href="https://www.iis.net/downloads/microsoft/url-rewrite">IIS URL Rewrite</a></p>
+</li>
+</ul>
+<h4>アプリケーションプール等の設定</h4>
+<ul>
+<li>
+<p>IISマネージャー起動
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/run-iis-manager.png" alt="IISマネージャー"></p>
+</li>
+<li>
+<p>「アプリケーションプール」を右クリック→「アプリケーションプールの追加」を選択。以下のように設定しOK
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/app-pool.png" alt="サイト"></p>
+</li>
+</ul>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名前</td>
+<td>app(任意の名前)</td>
+</tr>
+<tr>
+<td>.Net CLRバージョン</td>
+<td>マネージドコードなし</td>
+</tr>
+<tr>
+<td>マネージドパイプラインモード</td>
+<td>統合</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>「サイト」を右クリック→Webサイトの追加。以下のように設定しOK
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/app-pool2.png" alt="サイト"></li>
+</ul>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>サイト名</td>
+<td>app.local</td>
+</tr>
+<tr>
+<td>アプリケーションプール</td>
+<td>app</td>
+</tr>
+<tr>
+<td>物理パス</td>
+<td>C:\inetpub\wwwroot\app\public</td>
+</tr>
+<tr>
+<td>バインド)種類</td>
+<td>http</td>
+</tr>
+<tr>
+<td>バインド)IPアドレス</td>
+<td>未使用の IP アドレスすべて</td>
+</tr>
+<tr>
+<td>バインド)ポート</td>
+<td>80</td>
+</tr>
+<tr>
+<td>バインド）ホスト名</td>
+<td>app.local</td>
+</tr>
+</tbody>
+</table></div>
+<h4>Hostsの設定(IIS外)</h4>
+<p>VM内でIP確認：</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">ipconfig</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #CF222E">></span><span style="color: #24292F"> イーサネット アダプター イーサネット </span><span style="color: #0550AE">2</span><span style="color: #24292F">:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> 接続固有の DNS サフィックス </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .:</span></span>
+<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> リンクローカル IPv6 アドレス. </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .: fe80::c1d1:7cf9:df61:89d1</span><span style="color: #CF222E">%</span><span style="color: #0550AE">7</span></span>
+<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> IPv4 アドレス </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .: </span><span style="color: #0550AE">192.168</span><span style="color: #24292F">.</span><span style="color: #0550AE">56.102</span></span>
+<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> サブネット マスク </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .: </span><span style="color: #0550AE">255.255</span><span style="color: #24292F">.</span><span style="color: #0550AE">255.0</span></span>
+<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> デフォルト ゲートウェイ </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .:</span></span></code></pre>
+<p><code>C:\Windows\System32\drivers\etc\hosts</code>に以下を追記</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292f">192.168.56.102       app.local</span></span></code></pre>
+<hr>
+<h3>2. PHP 8.2 設定（Non-Threadsafe x64）</h3>
+<ul>
+<li>
+<p>PHP ZIP をダウンロード → <code>C:\php82</code> に解凍
+<a href="https://windows.php.net/download#php-8.2">PHP 8.2</a></p>
+</li>
+<li>
+<p><code>php.ini-production</code> をコピーして <code>php.ini</code> を作成</p>
+</li>
+<li>
+<p>php.ini の編集例</p>
+</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #CF222E">extension_dir</span><span style="color: #24292F"> = </span><span style="color: #0A3069">"C:\php82\ext"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=curl</span></span>
+<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=gd</span></span>
+<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=mbstring</span></span>
+<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=php_sqlsrv_82_nts_x64.dll</span></span>
+<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=php_pdo_sqlsrv_82_nts_x64.dll</span></span>
+<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=fileinfo</span></span></code></pre>
+<ul>
+<li>
+<p>Microsoft PHP SQL Server ドライバを <code>C:\php82\ext</code> に配置
+<a href="https://learn.microsoft.com/en-us/sql/connect/php/download-drivers-php-sql-server?view=sql-server-ver15#download">PHP Drivers for SQL Server</a><br>
+※zipを解凍して以下のファイルを<code>C:\php82\ext</code>にコピーする</p>
+<ul>
+<li>必須ファイル：
+<ul>
+<li><strong>php_sqlsrv_82_nts_x64.dll</strong></li>
+<li><strong>php_pdo_sqlsrv_82_nts_x64.dll</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>システム環境変数に <code>C:\php82</code> を追加</p>
+</li>
+<li>
+<p>IISマネージャー で PHP 8.2 を登録 (<code>php-cgi.exe</code>)</p>
+<ol>
+<li>IISマネージャー起動 > サーバーを選択(WIN-XXXXXX) > 画面中央のメニューの中から「ハンドラーマッピング」　を選択
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/php1.png" alt="ハンドラーマッピング"></li>
+<li>画面右の「操作」メニュー内「モジュールマップの追加」を選択。以下の設定を記載しOK
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/php2.png" alt="モジュールマップ"></li>
+</ol>
+</li>
+</ul>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>要求パス</td>
+<td><code>*.php</code></td>
+</tr>
+<tr>
+<td>モジュール</td>
+<td><code>FastCgiModule</code></td>
+</tr>
+<tr>
+<td>実行可能ファイル(オプション)</td>
+<td><code>C:\php82\php-cgi.exe</code></td>
+</tr>
+<tr>
+<td>名前</td>
+<td>PHP_v8.2　(任意の名称で良い)</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>
+<p><strong>FastCGIの設定</strong></p>
+<ol>
+<li>サーバー選択 > FastCGIの設定 > 画面右操作メニューのアプリケーションの追加
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/fast-cgi.png" alt="FastCGIの設定">
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/fast-cgi2.png" alt="FastCGIの設定2"></li>
+<li>以下のように設定</li>
+</ol>
+<ul>
+<li>完全なパス: <code>C:\php82\php-cgi.exe</code></li>
+<li>全般 > 環境変数 > コレクション
+<ul>
+<li>Name: <code>PHPRC</code></li>
+<li>Value: C:\php82
+<img src="/assets/images/posts/WindowsServer_Laravel_setup/fast-cgi3.png" alt="FastCGIの設定3"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>既定のドキュメント追加</strong></p>
+<ul>
+<li>サイト>app.localを選択し、「既定のドキュメント」を選択</li>
+<li>画面右　操作タブの「追加」から<code>index.php</code>を追加しOK</li>
+</ul>
+</li>
+<li>
+<p>動作確認
+<code>C:\inetpub\wwwroot\index.php</code> に以下を作成</p>
+</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #CF222E">&#x3C;?</span><span style="color: #0550AE">php</span></span>
+<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0550AE">phpinfo</span><span style="color: #24292F">();</span></span></code></pre>
+<p>ブラウザで <code>http://localhost/index.php</code> にアクセス</p>
+<hr>
+<h3>3. Composer の設定</h3>
+<ul>
+<li>
+<p>Composer をインストール  <strong>(保存されるパスを環境変数設定用にメモしておく)</strong>
+<a href="https://getcomposer.org/doc/00-intro.md#installation-windows">Composer</a></p>
+</li>
+<li>
+<p>PHP 実行パスを <code>C:\php82\php.exe</code> に設定</p>
+</li>
+<li>
+<p>システム環境変数に Composer のパスを追加</p>
+</li>
+<li>
+<p>バージョン確認</p>
+</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">composer </span><span style="color: #CF222E">-</span><span style="color: #24292F">V</span></span></code></pre>
+<hr>
+<h3>4. Node.js の設定</h3>
+<ul>
+<li><a href="https://github.com/coreybutler/nvm-windows/releases">nvmのインストール(nvm-setup.exe)</a></li>
+</ul>
+<p>バージョンチェック</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm version</span></span></code></pre>
+<p>インストール可能なnode.jsバージョン確認</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm list available</span></span></code></pre>
+<p>バージョン指定でインストール</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm install 22.20.0</span></span></code></pre>
+<p>インストール済みのnode.jsのバージョン確認</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm list</span></span></code></pre>
+<p>使用するnode.jsのバージョン指定</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm use 22.20.0</span></span></code></pre>
+<ul>
+<li>バージョン確認</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">node </span><span style="color: #CF222E">-</span><span style="color: #24292F">v</span></span>
+<span class="line"><span style="color: #24292F">npm </span><span style="color: #CF222E">-</span><span style="color: #24292F">v</span></span></code></pre>
+<hr>
+<h3>5. SQL Server の設定</h3>
+<ul>
+<li>
+<p>SQL Server 2025 Developerをインストール <a href="https://www.microsoft.com/ja-jp/sql-server/sql-server-downloads">ダウンロード</a></p>
+</li>
+<li>
+<p>SSMSもインストール <a href="https://learn.microsoft.com/ja-jp/ssms/install/install">ダウンロード</a></p>
+</li>
+<li>
+<p>SQL Server Management Studio (SSMS) を起動</p>
+</li>
+<li>
+<p>接続したら「データベース」を右クリックして「新しいデータベース」を選択</p>
+<ul>
+<li>データベース名「app」を入力</li>
+<li>OKをクリック</li>
+</ul>
+</li>
+<li>
+<p>サーバーインスタンス直下の「セキュリティ > ログイン」右クリック → 「新しいログイン」</p>
+<ul>
+<li>ログイン名に <strong><code>IIS APPPOOL\app</code> と入力</strong>（検索ボタンは押さない）<br>
+※<code>IIS APPPOOL\</code> + アプリケーションプール名</li>
+<li>「Windows 認証」を選択</li>
+<li>「ユーザー マッピング」で使用するデータベース（ <code>app</code>）にチェック</li>
+<li>ロールとして <code>db_owner</code>（または必要な最低限の権限）を付与</li>
+<li>OK をクリック</li>
+</ul>
+</li>
+</ul>
+<p><strong>TCP/IP設定</strong></p>
+<ul>
+<li>windowsのメニューから <code>「SQL Server2022構成マネージャー」</code> のアプリを起動する</li>
+<li>画面左の<code>SQL Server ネットワークの構成</code>を選択</li>
+<li><code>MSSQLSERVERのプロトコル</code>を選択</li>
+</ul>
+<p>※TCP/IPが「有効」になっていない場合</p>
+<ul>
+<li>
+<p>クリックして開いたウィンドウの<code>プロトコルタブ</code>で<code>有効：いいえ</code>を<code>はい</code>に変更</p>
+</li>
+<li>
+<p><code>IPアドレス</code>タブを選択しIPアドレス<code>127.0.0.1</code>(localhost)の<code>有効：いいえ</code>を<code>はい</code>に変更（ポート番号が1433じゃなかったらメモしておく)</p>
+<p>※適用ボタンを押下すると再起動するまで云々言われるのでOKする
+上記設定が終わったら画面左のメニューの <code>SQL Serverのサービス</code>をクリック
+<code>SQL Server (MSSQLSERVER)</code>を右クリックして再起動を選択して再起動しておく</p>
+</li>
+</ul>
+<hr>
+<h3>6. Mailhog設定</h3>
+<ul>
+<li>MailHog_windows_amd64.exeをVMにダウンロード　 <a href="https://github.com/mailhog/MailHog/releases/v1.0.0">ダウンロード</a></li>
+<li>mailhog用のディレクトリ作成<code>C:\mailhog</code>, <code>C:\mailhog\mails</code></li>
+<li>ダウンロードしたexeを<code>C:\mailhog</code>内に配置</li>
+<li>以下を記載したバッチ（.bat）ファイルを作成(ファイル名は任意)しexeと同じディレクトリに配置</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #CF222E">@echo</span><span style="color: #24292F"> </span><span style="color: #CF222E">off</span></span>
+<span class="line"><span style="color: #CF222E">cd</span><span style="color: #24292F"> /d C:\mailhog</span></span>
+<span class="line"><span style="color: #CF222E">start</span><span style="color: #24292F"> </span><span style="color: #0A3069">""</span><span style="color: #24292F"> MailHog_windows_amd64.exe -storage=maildir -maildir-path=C:\mailhog\mails</span></span></code></pre>
+<ul>
+<li>バッチファイルのショートカットをデスクトップに置いておくと便利</li>
+<li>シェルスクリプトはこちら</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #6E7781">#!/bin/bash</span></span>
+<span class="line"><span style="color: #24292F">./MailHog_windows_amd64.exe -storage=maildir -maildir-path=./mails</span></span></code></pre>
+<br>
+<details><summary>※Mailpitの場合</summary>
+<h4>1. mailpitダウンロード</h4>
+<p>mailpit <a href="https://github.com/axllent/mailpit/releases/download/v1.28.0/mailpit-windows-amd64.zip">ダウンロード</a><br>
+※VMのホストに配置</p>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">mkdir /c/mailpit</span></span>
+<span class="line"><span style="color: #24292F">mv download_path/mailpit.exe /c/mailpit/mailpit.exe</span></span></code></pre>
+<br>
+<h4>2. mailpi起動スクリプト作成</h4>
+<details><summary>start_mailpit.sh</summary>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #6E7781">#!/bin/bash</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6E7781"># Default values</span></span>
+<span class="line"><span style="color: #24292F">DEFAULT_LISTEN_PORT=8025</span></span>
+<span class="line"><span style="color: #24292F">DEFAULT_SMTP_PORT=1025</span></span>
+<span class="line"><span style="color: #24292F">DEFAULT_DB_FILE=mailpit.db</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6E7781"># 引数があれば優先、なければ空</span></span>
+<span class="line"><span style="color: #24292F">LISTEN_PORT=$1</span></span>
+<span class="line"><span style="color: #24292F">SMTP_PORT=$2</span></span>
+<span class="line"><span style="color: #24292F">DB_FILE=$3</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6E7781"># 対話入力（未指定時のみ）</span></span>
+<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">-z</span><span style="color: #24292F"> </span><span style="color: #0A3069">"</span><span style="color: #24292F">$LISTEN_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
+<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">read</span><span style="color: #24292F"> -p </span><span style="color: #0A3069">"Listen port [</span><span style="color: #24292F">$DEFAULT_LISTEN_PORT</span><span style="color: #0A3069">]: "</span><span style="color: #24292F"> LISTEN_PORT</span></span>
+<span class="line"><span style="color: #24292F">  LISTEN_PORT=${LISTEN_PORT</span><span style="color: #CF222E">:-</span><span style="color: #24292F">$DEFAULT_LISTEN_PORT}</span></span>
+<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">-z</span><span style="color: #24292F"> </span><span style="color: #0A3069">"</span><span style="color: #24292F">$SMTP_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
+<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">read</span><span style="color: #24292F"> -p </span><span style="color: #0A3069">"SMTP port [</span><span style="color: #24292F">$DEFAULT_SMTP_PORT</span><span style="color: #0A3069">]: "</span><span style="color: #24292F"> SMTP_PORT</span></span>
+<span class="line"><span style="color: #24292F">  SMTP_PORT=${SMTP_PORT</span><span style="color: #CF222E">:-</span><span style="color: #24292F">$DEFAULT_SMTP_PORT}</span></span>
+<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">-z</span><span style="color: #24292F"> </span><span style="color: #0A3069">"</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
+<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">read</span><span style="color: #24292F"> -p </span><span style="color: #0A3069">"Database file [</span><span style="color: #24292F">$DEFAULT_DB_FILE</span><span style="color: #0A3069">]: "</span><span style="color: #24292F"> DB_FILE</span></span>
+<span class="line"><span style="color: #24292F">  DB_FILE=${DB_FILE</span><span style="color: #CF222E">:-</span><span style="color: #24292F">$DEFAULT_DB_FILE}</span></span>
+<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #6E7781"># DB ファイル作成</span></span>
+<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">!</span><span style="color: #24292F"> </span><span style="color: #CF222E">-f</span><span style="color: #24292F"> </span><span style="color: #0A3069">"./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
+<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Database file not found. Creating </span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">..."</span></span>
+<span class="line"><span style="color: #24292F">  touch </span><span style="color: #0A3069">"./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span></span>
+<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Starting Mailpit..."</span></span>
+<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">" UI   : [::]:</span><span style="color: #24292F">$LISTEN_PORT</span><span style="color: #0A3069">"</span></span>
+<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">" SMTP : [::]:</span><span style="color: #24292F">$SMTP_PORT</span><span style="color: #0A3069">"</span></span>
+<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">" DB   : ./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292F">./mailpit.exe \</span></span>
+<span class="line"><span style="color: #24292F">  --listen </span><span style="color: #0A3069">"[::]:</span><span style="color: #24292F">$LISTEN_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> \</span></span>
+<span class="line"><span style="color: #24292F">  --smtp </span><span style="color: #0A3069">"[::]:</span><span style="color: #24292F">$SMTP_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> \</span></span>
+<span class="line"><span style="color: #24292F">  --database </span><span style="color: #0A3069">"./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Press Enter to exit..."</span></span>
+<span class="line"><span style="color: #0550AE">read</span></span></code></pre>
+</details>
+<br>
+<h4>3. mailpit起動</h4>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #0550AE">pwd</span></span>
+<span class="line"><span style="color: #6E7781"># > /c/mailpit</span></span>
+<span class="line"><span style="color: #24292F">./start_mail.sh</span></span></code></pre>
+</details>
+<br>
+<h3>7. Laravel プロジェクトセットアップ</h3>
+<ul>
+<li>Laravelプロジェクト内のpublicディレクトリに以下のweb.configを作成<br></li>
+</ul>
+<details><summary>C:\inetpub\wwwroot\app\public\web.config</summary>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">&#x3C;</span><span style="color: #116329">configuration</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">    &#x3C;</span><span style="color: #116329">system.webServer</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">        &#x3C;</span><span style="color: #116329">rewrite</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">            &#x3C;</span><span style="color: #116329">rules</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">                &#x3C;</span><span style="color: #116329">rule</span><span style="color: #24292F"> </span><span style="color: #0550AE">name</span><span style="color: #24292F">=</span><span style="color: #0A3069">"Laravel"</span><span style="color: #24292F"> </span><span style="color: #0550AE">stopProcessing</span><span style="color: #24292F">=</span><span style="color: #0A3069">"true"</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">                    &#x3C;</span><span style="color: #116329">match</span><span style="color: #24292F"> </span><span style="color: #0550AE">url</span><span style="color: #24292F">=</span><span style="color: #0A3069">".*"</span><span style="color: #24292F"> /></span></span>
+<span class="line"><span style="color: #24292F">                    &#x3C;</span><span style="color: #116329">conditions</span><span style="color: #24292F"> </span><span style="color: #0550AE">logicalGrouping</span><span style="color: #24292F">=</span><span style="color: #0A3069">"MatchAll"</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">                        &#x3C;</span><span style="color: #116329">add</span><span style="color: #24292F"> </span><span style="color: #0550AE">input</span><span style="color: #24292F">=</span><span style="color: #0A3069">"{REQUEST_FILENAME}"</span><span style="color: #24292F"> </span><span style="color: #0550AE">matchType</span><span style="color: #24292F">=</span><span style="color: #0A3069">"IsFile"</span><span style="color: #24292F"> </span><span style="color: #0550AE">negate</span><span style="color: #24292F">=</span><span style="color: #0A3069">"true"</span><span style="color: #24292F"> /></span></span>
+<span class="line"><span style="color: #24292F">                        &#x3C;</span><span style="color: #116329">add</span><span style="color: #24292F"> </span><span style="color: #0550AE">input</span><span style="color: #24292F">=</span><span style="color: #0A3069">"{REQUEST_FILENAME}"</span><span style="color: #24292F"> </span><span style="color: #0550AE">matchType</span><span style="color: #24292F">=</span><span style="color: #0A3069">"IsDirectory"</span><span style="color: #24292F"> </span><span style="color: #0550AE">negate</span><span style="color: #24292F">=</span><span style="color: #0A3069">"true"</span><span style="color: #24292F"> /></span></span>
+<span class="line"><span style="color: #24292F">                    &#x3C;/</span><span style="color: #116329">conditions</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">                    &#x3C;</span><span style="color: #116329">action</span><span style="color: #24292F"> </span><span style="color: #0550AE">type</span><span style="color: #24292F">=</span><span style="color: #0A3069">"Rewrite"</span><span style="color: #24292F"> </span><span style="color: #0550AE">url</span><span style="color: #24292F">=</span><span style="color: #0A3069">"index.php/{R:0}"</span><span style="color: #24292F"> /></span></span>
+<span class="line"><span style="color: #24292F">                &#x3C;/</span><span style="color: #116329">rule</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">            &#x3C;/</span><span style="color: #116329">rules</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">        &#x3C;/</span><span style="color: #116329">rewrite</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">    &#x3C;/</span><span style="color: #116329">system.webServer</span><span style="color: #24292F">></span></span>
+<span class="line"><span style="color: #24292F">&#x3C;/</span><span style="color: #116329">configuration</span><span style="color: #24292F">></span></span></code></pre>
+</details>
+<ul>
+<li>
+<p><code>storage/</code> と <code>bootstrap/cache</code> の書き込み権限を確認</p>
+<ul>
+<li>エクスプローラーでプロパティ>セキュリティタブで「IIS_IUSERS」にフルコントロールを付与</li>
+</ul>
+</li>
+<li>
+<p>.env.exampleから.envを作成</p>
+</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">cd C:\inetpub\wwwroot</span></span>
+<span class="line"><span style="color: #24292F">cp .env.example .env</span></span></code></pre>
+<br>
+<details><summary>.envの記載内容</summary> 
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">APP_NAME=app</span></span>
+<span class="line"><span style="color: #24292F">APP_URL=http://app.local</span></span>
+<span class="line"><span style="color: #24292F">APP_TITLE="アプリタイトル"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292F">DB_CONNECTION=sqlsrv</span></span>
+<span class="line"><span style="color: #24292F">DB_HOST=localhost</span></span>
+<span class="line"><span style="color: #24292F">DB_PORT=1433</span></span>
+<span class="line"><span style="color: #24292F">DB_DATABASE=app</span></span>
+<span class="line"><span style="color: #24292F">DB_USERNAME=</span></span>
+<span class="line"><span style="color: #24292F">DB_PASSWORD=</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #24292F">MAIL_MAILER=smtp</span></span>
+<span class="line"><span style="color: #24292F">MAIL_HOST=127.0.0.1</span></span>
+<span class="line"><span style="color: #24292F">MAIL_PORT=1025</span></span>
+<span class="line"><span style="color: #24292F">MAIL_USERNAME=null</span></span>
+<span class="line"><span style="color: #24292F">MAIL_PASSWORD=null</span></span>
+<span class="line"><span style="color: #24292F">MAIL_ENCRYPTION=null</span></span>
+<span class="line"><span style="color: #24292F">MAIL_FROM_ADDRESS=test@email.com</span></span>
+<span class="line"><span style="color: #24292F">MAIL_FROM_NAME="${APP_NAME}"</span></span></code></pre>
+</details>
+<br>
+<ul>
+<li>Laravel 初期セットアップ</li>
+</ul>
+<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">composer install</span></span>
+<span class="line"><span style="color: #24292F">npm install</span></span>
+<span class="line"><span style="color: #24292F">php artisan key:generate</span></span>
+<span class="line"><span style="color: #24292F">php artisan storage:link</span></span>
+<span class="line"><span style="color: #24292F">php artisan migrate</span></span>
+<span class="line"><span style="color: #24292F">php artisan db:seed</span></span>
+<span class="line"><span style="color: #24292F">php artisan optimize</span></span></code></pre>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[テンプレート記事（Astro版）]]></title>
             <link>https://kn8263.github.io/articles/template</link>
@@ -533,7 +1175,7 @@ FAQ + 質問を LLM に渡す
 <h3>シーケンス図</h3>
 <p><div class="mermaid"><p><svg aria-roledescription="sequence" role="graphics-document document" viewBox="-50 -10 850 439" style="max-width: 850px;" xmlns="http://www.w3.org/2000/svg" width="100%" id="mermaid-1"><g><rect class="actor actor-bottom" ry="3" rx="3" name="D" height="65" width="150" stroke="#666" fill="#eaeaea" y="353" x="600"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="385.5" x="675"><tspan dy="0" x="675">データベース</tspan></text></g><g><rect class="actor actor-bottom" ry="3" rx="3" name="C" height="65" width="150" stroke="#666" fill="#eaeaea" y="353" x="400"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="385.5" x="475"><tspan dy="0" x="475">バックエンド</tspan></text></g><g><rect class="actor actor-bottom" ry="3" rx="3" name="B" height="65" width="150" stroke="#666" fill="#eaeaea" y="353" x="200"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="385.5" x="275"><tspan dy="0" x="275">フロントエンド</tspan></text></g><g><rect class="actor actor-bottom" ry="3" rx="3" name="A" height="65" width="150" stroke="#666" fill="#eaeaea" y="353" x="0"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="385.5" x="75"><tspan dy="0" x="75">ユーザー</tspan></text></g><g><line stroke="#999" stroke-width="0.5px" class="200" y2="353" x2="675" y1="5" x1="675" id="actor3"></line><g id="root-3"><rect class="actor actor-top" ry="3" rx="3" name="D" height="65" width="150" stroke="#666" fill="#eaeaea" y="0" x="600"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="32.5" x="675"><tspan dy="0" x="675">データベース</tspan></text></g></g><g><line stroke="#999" stroke-width="0.5px" class="200" y2="353" x2="475" y1="5" x1="475" id="actor2"></line><g id="root-2"><rect class="actor actor-top" ry="3" rx="3" name="C" height="65" width="150" stroke="#666" fill="#eaeaea" y="0" x="400"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="32.5" x="475"><tspan dy="0" x="475">バックエンド</tspan></text></g></g><g><line stroke="#999" stroke-width="0.5px" class="200" y2="353" x2="275" y1="5" x1="275" id="actor1"></line><g id="root-1"><rect class="actor actor-top" ry="3" rx="3" name="B" height="65" width="150" stroke="#666" fill="#eaeaea" y="0" x="200"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="32.5" x="275"><tspan dy="0" x="275">フロントエンド</tspan></text></g></g><g><line stroke="#999" stroke-width="0.5px" class="200" y2="353" x2="75" y1="5" x1="75" id="actor0"></line><g id="root-0"><rect class="actor actor-top" ry="3" rx="3" name="A" height="65" width="150" stroke="#666" fill="#eaeaea" y="0" x="0"></rect><text style="text-anchor: middle; font-size: 16px; font-weight: 400; font-family: arial, sans-serif;" class="actor" alignment-baseline="central" dominant-baseline="central" y="32.5" x="75"><tspan dy="0" x="75">ユーザー</tspan></text></g></g><style>#mermaid-1{font-family:arial,sans-serif;font-size:16px;fill:#333;}#mermaid-1 .error-icon{fill:#552222;}#mermaid-1 .error-text{fill:#552222;stroke:#552222;}#mermaid-1 .edge-thickness-normal{stroke-width:2px;}#mermaid-1 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1 .marker{fill:#333333;stroke:#333333;}#mermaid-1 .marker.cross{stroke:#333333;}#mermaid-1 svg{font-family:arial,sans-serif;font-size:16px;}#mermaid-1 .actor{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-1 text.actor>tspan{fill:black;stroke:none;}#mermaid-1 .actor-line{stroke:grey;}#mermaid-1 .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333;}#mermaid-1 .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333;}#mermaid-1 #arrowhead path{fill:#333;stroke:#333;}#mermaid-1 .sequenceNumber{fill:white;}#mermaid-1 #sequencenumber{fill:#333;}#mermaid-1 #crosshead path{fill:#333;stroke:#333;}#mermaid-1 .messageText{fill:#333;stroke:none;}#mermaid-1 .labelBox{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-1 .labelText,#mermaid-1 .labelText>tspan{fill:black;stroke:none;}#mermaid-1 .loopText,#mermaid-1 .loopText>tspan{fill:black;stroke:none;}#mermaid-1 .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);}#mermaid-1 .note{stroke:#aaaa33;fill:#fff5ad;}#mermaid-1 .noteText,#mermaid-1 .noteText>tspan{fill:black;stroke:none;}#mermaid-1 .activation0{fill:#f4f4f4;stroke:#666;}#mermaid-1 .activation1{fill:#f4f4f4;stroke:#666;}#mermaid-1 .activation2{fill:#f4f4f4;stroke:#666;}#mermaid-1 .actorPopupMenu{position:absolute;}#mermaid-1 .actorPopupMenuPanel{position:absolute;fill:#ECECFF;box-shadow:0px 8px 16px 0px rgba(0,0,0,0.2);filter:drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));}#mermaid-1 .actor-man line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;}#mermaid-1 .actor-man circle,#mermaid-1 line{stroke:hsl(259.6261682243, 59.7765363128%, 87.9019607843%);fill:#ECECFF;stroke-width:2px;}#mermaid-1 :root{--mermaid-font-family:arial,sans-serif;}</style><g></g><defs><symbol height="24" width="24" id="computer"><path d="M2 2v13h20v-13h-20zm18 11h-16v-9h16v9zm-10.228 6l.466-1h3.524l.467 1h-4.457zm14.228 3h-24l2-6h2.104l-1.33 4h18.45l-1.297-4h2.073l2 6zm-5-10h-14v-7h14v7z" transform="scale(.5)"></path></symbol></defs><defs><symbol clip-rule="evenodd" fill-rule="evenodd" id="database"><path d="M12.258.001l.256.004.255.005.253.008.251.01.249.012.247.015.246.016.242.019.241.02.239.023.236.024.233.027.231.028.229.031.225.032.223.034.22.036.217.038.214.04.211.041.208.043.205.045.201.046.198.048.194.05.191.051.187.053.183.054.18.056.175.057.172.059.168.06.163.061.16.063.155.064.15.066.074.033.073.033.071.034.07.034.069.035.068.035.067.035.066.035.064.036.064.036.062.036.06.036.06.037.058.037.058.037.055.038.055.038.053.038.052.038.051.039.05.039.048.039.047.039.045.04.044.04.043.04.041.04.04.041.039.041.037.041.036.041.034.041.033.042.032.042.03.042.029.042.027.042.026.043.024.043.023.043.021.043.02.043.018.044.017.043.015.044.013.044.012.044.011.045.009.044.007.045.006.045.004.045.002.045.001.045v17l-.001.045-.002.045-.004.045-.006.045-.007.045-.009.044-.011.045-.012.044-.013.044-.015.044-.017.043-.018.044-.02.043-.021.043-.023.043-.024.043-.026.043-.027.042-.029.042-.03.042-.032.042-.033.042-.034.041-.036.041-.037.041-.039.041-.04.041-.041.04-.043.04-.044.04-.045.04-.047.039-.048.039-.05.039-.051.039-.052.038-.053.038-.055.038-.055.038-.058.037-.058.037-.06.037-.06.036-.062.036-.064.036-.064.036-.066.035-.067.035-.068.035-.069.035-.07.034-.071.034-.073.033-.074.033-.15.066-.155.064-.16.063-.163.061-.168.06-.172.059-.175.057-.18.056-.183.054-.187.053-.191.051-.194.05-.198.048-.201.046-.205.045-.208.043-.211.041-.214.04-.217.038-.22.036-.223.034-.225.032-.229.031-.231.028-.233.027-.236.024-.239.023-.241.02-.242.019-.246.016-.247.015-.249.012-.251.01-.253.008-.255.005-.256.004-.258.001-.258-.001-.256-.004-.255-.005-.253-.008-.251-.01-.249-.012-.247-.015-.245-.016-.243-.019-.241-.02-.238-.023-.236-.024-.234-.027-.231-.028-.228-.031-.226-.032-.223-.034-.22-.036-.217-.038-.214-.04-.211-.041-.208-.043-.204-.045-.201-.046-.198-.048-.195-.05-.19-.051-.187-.053-.184-.054-.179-.056-.176-.057-.172-.059-.167-.06-.164-.061-.159-.063-.155-.064-.151-.066-.074-.033-.072-.033-.072-.034-.07-.034-.069-.035-.068-.035-.067-.035-.066-.035-.064-.036-.063-.036-.062-.036-.061-.036-.06-.037-.058-.037-.057-.037-.056-.038-.055-.038-.053-.038-.052-.038-.051-.039-.049-.039-.049-.039-.046-.039-.046-.04-.044-.04-.043-.04-.041-.04-.04-.041-.039-.041-.037-.041-.036-.041-.034-.041-.033-.042-.032-.042-.03-.042-.029-.042-.027-.042-.026-.043-.024-.043-.023-.043-.021-.043-.02-.043-.018-.044-.017-.043-.015-.044-.013-.044-.012-.044-.011-.045-.009-.044-.007-.045-.006-.045-.004-.045-.002-.045-.001-.045v-17l.001-.045.002-.045.004-.045.006-.045.007-.045.009-.044.011-.045.012-.044.013-.044.015-.044.017-.043.018-.044.02-.043.021-.043.023-.043.024-.043.026-.043.027-.042.029-.042.03-.042.032-.042.033-.042.034-.041.036-.041.037-.041.039-.041.04-.041.041-.04.043-.04.044-.04.046-.04.046-.039.049-.039.049-.039.051-.039.052-.038.053-.038.055-.038.056-.038.057-.037.058-.037.06-.037.061-.036.062-.036.063-.036.064-.036.066-.035.067-.035.068-.035.069-.035.07-.034.072-.034.072-.033.074-.033.151-.066.155-.064.159-.063.164-.061.167-.06.172-.059.176-.057.179-.056.184-.054.187-.053.19-.051.195-.05.198-.048.201-.046.204-.045.208-.043.211-.041.214-.04.217-.038.22-.036.223-.034.226-.032.228-.031.231-.028.234-.027.236-.024.238-.023.241-.02.243-.019.245-.016.247-.015.249-.012.251-.01.253-.008.255-.005.256-.004.258-.001.258.001zm-9.258 20.499v.01l.001.021.003.021.004.022.005.021.006.022.007.022.009.023.01.022.011.023.012.023.013.023.015.023.016.024.017.023.018.024.019.024.021.024.022.025.023.024.024.025.052.049.056.05.061.051.066.051.07.051.075.051.079.052.084.052.088.052.092.052.097.052.102.051.105.052.11.052.114.051.119.051.123.051.127.05.131.05.135.05.139.048.144.049.147.047.152.047.155.047.16.045.163.045.167.043.171.043.176.041.178.041.183.039.187.039.19.037.194.035.197.035.202.033.204.031.209.03.212.029.216.027.219.025.222.024.226.021.23.02.233.018.236.016.24.015.243.012.246.01.249.008.253.005.256.004.259.001.26-.001.257-.004.254-.005.25-.008.247-.011.244-.012.241-.014.237-.016.233-.018.231-.021.226-.021.224-.024.22-.026.216-.027.212-.028.21-.031.205-.031.202-.034.198-.034.194-.036.191-.037.187-.039.183-.04.179-.04.175-.042.172-.043.168-.044.163-.045.16-.046.155-.046.152-.047.148-.048.143-.049.139-.049.136-.05.131-.05.126-.05.123-.051.118-.052.114-.051.11-.052.106-.052.101-.052.096-.052.092-.052.088-.053.083-.051.079-.052.074-.052.07-.051.065-.051.06-.051.056-.05.051-.05.023-.024.023-.025.021-.024.02-.024.019-.024.018-.024.017-.024.015-.023.014-.024.013-.023.012-.023.01-.023.01-.022.008-.022.006-.022.006-.022.004-.022.004-.021.001-.021.001-.021v-4.127l-.077.055-.08.053-.083.054-.085.053-.087.052-.09.052-.093.051-.095.05-.097.05-.1.049-.102.049-.105.048-.106.047-.109.047-.111.046-.114.045-.115.045-.118.044-.12.043-.122.042-.124.042-.126.041-.128.04-.13.04-.132.038-.134.038-.135.037-.138.037-.139.035-.142.035-.143.034-.144.033-.147.032-.148.031-.15.03-.151.03-.153.029-.154.027-.156.027-.158.026-.159.025-.161.024-.162.023-.163.022-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.011-.178.01-.179.008-.179.008-.181.006-.182.005-.182.004-.184.003-.184.002h-.37l-.184-.002-.184-.003-.182-.004-.182-.005-.181-.006-.179-.008-.179-.008-.178-.01-.176-.011-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.022-.162-.023-.161-.024-.159-.025-.157-.026-.156-.027-.155-.027-.153-.029-.151-.03-.15-.03-.148-.031-.146-.032-.145-.033-.143-.034-.141-.035-.14-.035-.137-.037-.136-.037-.134-.038-.132-.038-.13-.04-.128-.04-.126-.041-.124-.042-.122-.042-.12-.044-.117-.043-.116-.045-.113-.045-.112-.046-.109-.047-.106-.047-.105-.048-.102-.049-.1-.049-.097-.05-.095-.05-.093-.052-.09-.051-.087-.052-.085-.053-.083-.054-.08-.054-.077-.054v4.127zm0-5.654v.011l.001.021.003.021.004.021.005.022.006.022.007.022.009.022.01.022.011.023.012.023.013.023.015.024.016.023.017.024.018.024.019.024.021.024.022.024.023.025.024.024.052.05.056.05.061.05.066.051.07.051.075.052.079.051.084.052.088.052.092.052.097.052.102.052.105.052.11.051.114.051.119.052.123.05.127.051.131.05.135.049.139.049.144.048.147.048.152.047.155.046.16.045.163.045.167.044.171.042.176.042.178.04.183.04.187.038.19.037.194.036.197.034.202.033.204.032.209.03.212.028.216.027.219.025.222.024.226.022.23.02.233.018.236.016.24.014.243.012.246.01.249.008.253.006.256.003.259.001.26-.001.257-.003.254-.006.25-.008.247-.01.244-.012.241-.015.237-.016.233-.018.231-.02.226-.022.224-.024.22-.025.216-.027.212-.029.21-.03.205-.032.202-.033.198-.035.194-.036.191-.037.187-.039.183-.039.179-.041.175-.042.172-.043.168-.044.163-.045.16-.045.155-.047.152-.047.148-.048.143-.048.139-.05.136-.049.131-.05.126-.051.123-.051.118-.051.114-.052.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.051.07-.052.065-.051.06-.05.056-.051.051-.049.023-.025.023-.024.021-.025.02-.024.019-.024.018-.024.017-.024.015-.023.014-.023.013-.024.012-.022.01-.023.01-.023.008-.022.006-.022.006-.022.004-.021.004-.022.001-.021.001-.021v-4.139l-.077.054-.08.054-.083.054-.085.052-.087.053-.09.051-.093.051-.095.051-.097.05-.1.049-.102.049-.105.048-.106.047-.109.047-.111.046-.114.045-.115.044-.118.044-.12.044-.122.042-.124.042-.126.041-.128.04-.13.039-.132.039-.134.038-.135.037-.138.036-.139.036-.142.035-.143.033-.144.033-.147.033-.148.031-.15.03-.151.03-.153.028-.154.028-.156.027-.158.026-.159.025-.161.024-.162.023-.163.022-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.011-.178.009-.179.009-.179.007-.181.007-.182.005-.182.004-.184.003-.184.002h-.37l-.184-.002-.184-.003-.182-.004-.182-.005-.181-.007-.179-.007-.179-.009-.178-.009-.176-.011-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.022-.162-.023-.161-.024-.159-.025-.157-.026-.156-.027-.155-.028-.153-.028-.151-.03-.15-.03-.148-.031-.146-.033-.145-.033-.143-.033-.141-.035-.14-.036-.137-.036-.136-.037-.134-.038-.132-.039-.13-.039-.128-.04-.126-.041-.124-.042-.122-.043-.12-.043-.117-.044-.116-.044-.113-.046-.112-.046-.109-.046-.106-.047-.105-.048-.102-.049-.1-.049-.097-.05-.095-.051-.093-.051-.09-.051-.087-.053-.085-.052-.083-.054-.08-.054-.077-.054v4.139zm0-5.666v.011l.001.02.003.022.004.021.005.022.006.021.007.022.009.023.01.022.011.023.012.023.013.023.015.023.016.024.017.024.018.023.019.024.021.025.022.024.023.024.024.025.052.05.056.05.061.05.066.051.07.051.075.052.079.051.084.052.088.052.092.052.097.052.102.052.105.051.11.052.114.051.119.051.123.051.127.05.131.05.135.05.139.049.144.048.147.048.152.047.155.046.16.045.163.045.167.043.171.043.176.042.178.04.183.04.187.038.19.037.194.036.197.034.202.033.204.032.209.03.212.028.216.027.219.025.222.024.226.021.23.02.233.018.236.017.24.014.243.012.246.01.249.008.253.006.256.003.259.001.26-.001.257-.003.254-.006.25-.008.247-.01.244-.013.241-.014.237-.016.233-.018.231-.02.226-.022.224-.024.22-.025.216-.027.212-.029.21-.03.205-.032.202-.033.198-.035.194-.036.191-.037.187-.039.183-.039.179-.041.175-.042.172-.043.168-.044.163-.045.16-.045.155-.047.152-.047.148-.048.143-.049.139-.049.136-.049.131-.051.126-.05.123-.051.118-.052.114-.051.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.052.07-.051.065-.051.06-.051.056-.05.051-.049.023-.025.023-.025.021-.024.02-.024.019-.024.018-.024.017-.024.015-.023.014-.024.013-.023.012-.023.01-.022.01-.023.008-.022.006-.022.006-.022.004-.022.004-.021.001-.021.001-.021v-4.153l-.077.054-.08.054-.083.053-.085.053-.087.053-.09.051-.093.051-.095.051-.097.05-.1.049-.102.048-.105.048-.106.048-.109.046-.111.046-.114.046-.115.044-.118.044-.12.043-.122.043-.124.042-.126.041-.128.04-.13.039-.132.039-.134.038-.135.037-.138.036-.139.036-.142.034-.143.034-.144.033-.147.032-.148.032-.15.03-.151.03-.153.028-.154.028-.156.027-.158.026-.159.024-.161.024-.162.023-.163.023-.165.021-.166.02-.167.019-.169.018-.169.017-.171.016-.173.015-.173.014-.175.013-.175.012-.177.01-.178.01-.179.009-.179.007-.181.006-.182.006-.182.004-.184.003-.184.001-.185.001-.185-.001-.184-.001-.184-.003-.182-.004-.182-.006-.181-.006-.179-.007-.179-.009-.178-.01-.176-.01-.176-.012-.175-.013-.173-.014-.172-.015-.171-.016-.17-.017-.169-.018-.167-.019-.166-.02-.165-.021-.163-.023-.162-.023-.161-.024-.159-.024-.157-.026-.156-.027-.155-.028-.153-.028-.151-.03-.15-.03-.148-.032-.146-.032-.145-.033-.143-.034-.141-.034-.14-.036-.137-.036-.136-.037-.134-.038-.132-.039-.13-.039-.128-.041-.126-.041-.124-.041-.122-.043-.12-.043-.117-.044-.116-.044-.113-.046-.112-.046-.109-.046-.106-.048-.105-.048-.102-.048-.1-.05-.097-.049-.095-.051-.093-.051-.09-.052-.087-.052-.085-.053-.083-.053-.08-.054-.077-.054v4.153zm8.74-8.179l-.257.004-.254.005-.25.008-.247.011-.244.012-.241.014-.237.016-.233.018-.231.021-.226.022-.224.023-.22.026-.216.027-.212.028-.21.031-.205.032-.202.033-.198.034-.194.036-.191.038-.187.038-.183.04-.179.041-.175.042-.172.043-.168.043-.163.045-.16.046-.155.046-.152.048-.148.048-.143.048-.139.049-.136.05-.131.05-.126.051-.123.051-.118.051-.114.052-.11.052-.106.052-.101.052-.096.052-.092.052-.088.052-.083.052-.079.052-.074.051-.07.052-.065.051-.06.05-.056.05-.051.05-.023.025-.023.024-.021.024-.02.025-.019.024-.018.024-.017.023-.015.024-.014.023-.013.023-.012.023-.01.023-.01.022-.008.022-.006.023-.006.021-.004.022-.004.021-.001.021-.001.021.001.021.001.021.004.021.004.022.006.021.006.023.008.022.01.022.01.023.012.023.013.023.014.023.015.024.017.023.018.024.019.024.02.025.021.024.023.024.023.025.051.05.056.05.06.05.065.051.07.052.074.051.079.052.083.052.088.052.092.052.096.052.101.052.106.052.11.052.114.052.118.051.123.051.126.051.131.05.136.05.139.049.143.048.148.048.152.048.155.046.16.046.163.045.168.043.172.043.175.042.179.041.183.04.187.038.191.038.194.036.198.034.202.033.205.032.21.031.212.028.216.027.22.026.224.023.226.022.231.021.233.018.237.016.241.014.244.012.247.011.25.008.254.005.257.004.26.001.26-.001.257-.004.254-.005.25-.008.247-.011.244-.012.241-.014.237-.016.233-.018.231-.021.226-.022.224-.023.22-.026.216-.027.212-.028.21-.031.205-.032.202-.033.198-.034.194-.036.191-.038.187-.038.183-.04.179-.041.175-.042.172-.043.168-.043.163-.045.16-.046.155-.046.152-.048.148-.048.143-.048.139-.049.136-.05.131-.05.126-.051.123-.051.118-.051.114-.052.11-.052.106-.052.101-.052.096-.052.092-.052.088-.052.083-.052.079-.052.074-.051.07-.052.065-.051.06-.05.056-.05.051-.05.023-.025.023-.024.021-.024.02-.025.019-.024.018-.024.017-.023.015-.024.014-.023.013-.023.012-.023.01-.023.01-.022.008-.022.006-.023.006-.021.004-.022.004-.021.001-.021.001-.021-.001-.021-.001-.021-.004-.021-.004-.022-.006-.021-.006-.023-.008-.022-.01-.022-.01-.023-.012-.023-.013-.023-.014-.023-.015-.024-.017-.023-.018-.024-.019-.024-.02-.025-.021-.024-.023-.024-.023-.025-.051-.05-.056-.05-.06-.05-.065-.051-.07-.052-.074-.051-.079-.052-.083-.052-.088-.052-.092-.052-.096-.052-.101-.052-.106-.052-.11-.052-.114-.052-.118-.051-.123-.051-.126-.051-.131-.05-.136-.05-.139-.049-.143-.048-.148-.048-.152-.048-.155-.046-.16-.046-.163-.045-.168-.043-.172-.043-.175-.042-.179-.041-.183-.04-.187-.038-.191-.038-.194-.036-.198-.034-.202-.033-.205-.032-.21-.031-.212-.028-.216-.027-.22-.026-.224-.023-.226-.022-.231-.021-.233-.018-.237-.016-.241-.014-.244-.012-.247-.011-.25-.008-.254-.005-.257-.004-.26-.001-.26.001z" transform="scale(.5)"></path></symbol></defs><defs><symbol height="24" width="24" id="clock"><path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.848 12.459c.202.038.202.333.001.372-1.907.361-6.045 1.111-6.547 1.111-.719 0-1.301-.582-1.301-1.301 0-.512.77-5.447 1.125-7.445.034-.192.312-.181.343.014l.985 6.238 5.394 1.011z" transform="scale(.5)"></path></symbol></defs><defs><marker orient="auto" markerHeight="12" markerWidth="12" markerUnits="userSpaceOnUse" refY="5" refX="7.9" id="arrowhead"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs><defs><marker refY="4.5" refX="4" orient="auto" markerHeight="8" markerWidth="15" id="crosshead"><path style="stroke-dasharray: 0, 0;" d="M 1,2 L 6,7 M 6,2 L 1,7" stroke-width="1pt" stroke="#000000" fill="none"></path></marker></defs><defs><marker orient="auto" markerHeight="28" markerWidth="20" refY="7" refX="15.5" id="filled-head"><path d="M 18,7 L9,13 L14,7 L9,1 Z"></path></marker></defs><defs><marker orient="auto" markerHeight="40" markerWidth="60" refY="15" refX="15" id="sequencenumber"><circle r="6" cy="15" cx="15"></circle></marker></defs><text style="font-family: arial, sans-serif; font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle" dominant-baseline="middle" text-anchor="middle" y="80" x="174">リクエスト送信</text><line style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" class="messageLine0" y2="109" x2="271" y1="109" x1="76"></line><text style="font-family: arial, sans-serif; font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle" dominant-baseline="middle" text-anchor="middle" y="124" x="374">API呼び出し</text><line style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" class="messageLine0" y2="153" x2="471" y1="153" x1="276"></line><text style="font-family: arial, sans-serif; font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle" dominant-baseline="middle" text-anchor="middle" y="168" x="574">データ取得</text><line style="fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" class="messageLine0" y2="199" x2="671" y1="199" x1="476"></line><text style="font-family: arial, sans-serif; font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle" dominant-baseline="middle" text-anchor="middle" y="214" x="577">データ返却</text><line style="stroke-dasharray: 3, 3; fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" class="messageLine1" y2="245" x2="479" y1="245" x1="674"></line><text style="font-family: arial, sans-serif; font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle" dominant-baseline="middle" text-anchor="middle" y="260" x="377">レスポンス返却</text><line style="stroke-dasharray: 3, 3; fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" class="messageLine1" y2="289" x2="279" y1="289" x1="474"></line><text style="font-family: arial, sans-serif; font-size: 16px; font-weight: 400;" dy="1em" class="messageText" alignment-baseline="middle" dominant-baseline="middle" text-anchor="middle" y="304" x="177">結果表示</text><line style="stroke-dasharray: 3, 3; fill: none;" marker-end="url(#arrowhead)" stroke="none" stroke-width="2" class="messageLine1" y2="333" x2="79" y1="333" x1="274"></line></svg></p></div></p>
 <h3>ガントチャート</h3>
-<p><div class="mermaid"><p><svg aria-roledescription="gantt" role="graphics-document document" style="max-width: 1264px;" viewBox="0 0 1264 244" xmlns="http://www.w3.org/2000/svg" width="100%" id="mermaid-2"><style>#mermaid-2{font-family:arial,sans-serif;font-size:16px;fill:#333;}#mermaid-2 .error-icon{fill:#552222;}#mermaid-2 .error-text{fill:#552222;stroke:#552222;}#mermaid-2 .edge-thickness-normal{stroke-width:2px;}#mermaid-2 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-2 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-2 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-2 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-2 .marker{fill:#333333;stroke:#333333;}#mermaid-2 .marker.cross{stroke:#333333;}#mermaid-2 svg{font-family:arial,sans-serif;font-size:16px;}#mermaid-2 .mermaid-main-font{font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .exclude-range{fill:#eeeeee;}#mermaid-2 .section{stroke:none;opacity:0.2;}#mermaid-2 .section0{fill:rgba(102, 102, 255, 0.49);}#mermaid-2 .section2{fill:#fff400;}#mermaid-2 .section1,#mermaid-2 .section3{fill:white;opacity:0.2;}#mermaid-2 .sectionTitle0{fill:#333;}#mermaid-2 .sectionTitle1{fill:#333;}#mermaid-2 .sectionTitle2{fill:#333;}#mermaid-2 .sectionTitle3{fill:#333;}#mermaid-2 .sectionTitle{text-anchor:start;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .grid .tick{stroke:lightgrey;opacity:0.8;shape-rendering:crispEdges;}#mermaid-2 .grid .tick text{font-family:arial,sans-serif;fill:#333;}#mermaid-2 .grid path{stroke-width:0;}#mermaid-2 .today{fill:none;stroke:red;stroke-width:2px;}#mermaid-2 .task{stroke-width:2;}#mermaid-2 .taskText{text-anchor:middle;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .taskTextOutsideRight{fill:black;text-anchor:start;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .taskTextOutsideLeft{fill:black;text-anchor:end;}#mermaid-2 .task.clickable{cursor:pointer;}#mermaid-2 .taskText.clickable{cursor:pointer;fill:#003163!important;font-weight:bold;}#mermaid-2 .taskTextOutsideLeft.clickable{cursor:pointer;fill:#003163!important;font-weight:bold;}#mermaid-2 .taskTextOutsideRight.clickable{cursor:pointer;fill:#003163!important;font-weight:bold;}#mermaid-2 .taskText0,#mermaid-2 .taskText1,#mermaid-2 .taskText2,#mermaid-2 .taskText3{fill:white;}#mermaid-2 .task0,#mermaid-2 .task1,#mermaid-2 .task2,#mermaid-2 .task3{fill:#8a90dd;stroke:#534fbc;}#mermaid-2 .taskTextOutside0,#mermaid-2 .taskTextOutside2{fill:black;}#mermaid-2 .taskTextOutside1,#mermaid-2 .taskTextOutside3{fill:black;}#mermaid-2 .active0,#mermaid-2 .active1,#mermaid-2 .active2,#mermaid-2 .active3{fill:#bfc7ff;stroke:#534fbc;}#mermaid-2 .activeText0,#mermaid-2 .activeText1,#mermaid-2 .activeText2,#mermaid-2 .activeText3{fill:black!important;}#mermaid-2 .done0,#mermaid-2 .done1,#mermaid-2 .done2,#mermaid-2 .done3{stroke:grey;fill:lightgrey;stroke-width:2;}#mermaid-2 .doneText0,#mermaid-2 .doneText1,#mermaid-2 .doneText2,#mermaid-2 .doneText3{fill:black!important;}#mermaid-2 .crit0,#mermaid-2 .crit1,#mermaid-2 .crit2,#mermaid-2 .crit3{stroke:#ff8888;fill:red;stroke-width:2;}#mermaid-2 .activeCrit0,#mermaid-2 .activeCrit1,#mermaid-2 .activeCrit2,#mermaid-2 .activeCrit3{stroke:#ff8888;fill:#bfc7ff;stroke-width:2;}#mermaid-2 .doneCrit0,#mermaid-2 .doneCrit1,#mermaid-2 .doneCrit2,#mermaid-2 .doneCrit3{stroke:#ff8888;fill:lightgrey;stroke-width:2;cursor:pointer;shape-rendering:crispEdges;}#mermaid-2 .milestone{transform:rotate(45deg) scale(0.8,0.8);}#mermaid-2 .milestoneText{font-style:italic;}#mermaid-2 .doneCritText0,#mermaid-2 .doneCritText1,#mermaid-2 .doneCritText2,#mermaid-2 .doneCritText3{fill:black!important;}#mermaid-2 .activeCritText0,#mermaid-2 .activeCritText1,#mermaid-2 .activeCritText2,#mermaid-2 .activeCritText3{fill:black!important;}#mermaid-2 .titleText{text-anchor:middle;font-size:18px;fill:#333;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 :root{--mermaid-font-family:arial,sans-serif;}</style><g></g><g text-anchor="middle" font-family="sans-serif" font-size="10" fill="none" transform="translate(75, 194)" class="grid"><path d="M0.5,-159V0.5H1114.5V-159" stroke="currentColor" class="domain"></path><g transform="translate(155.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-07</text></g><g transform="translate(337.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-14</text></g><g transform="translate(518.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-21</text></g><g transform="translate(699.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-28</text></g><g transform="translate(881.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-02-04</text></g><g transform="translate(1062.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-02-11</text></g></g><g><rect class="section section0" height="24" width="1226.5" y="48" x="0"></rect><rect class="section section0" height="24" width="1226.5" y="72" x="0"></rect><rect class="section section1" height="24" width="1226.5" y="96" x="0"></rect><rect class="section section1" height="24" width="1226.5" y="120" x="0"></rect><rect class="section section2" height="24" width="1226.5" y="144" x="0"></rect><rect class="section section2" height="24" width="1226.5" y="168" x="0"></rect></g><g><rect class="task task0" transform-origin="165.5px 60px" height="20" width="181" y="50" x="75" ry="3" rx="3" id="a1"></rect><rect class="task task0" transform-origin="385.5px 84px" height="20" width="259" y="74" x="256" ry="3" rx="3" id="a2"></rect><rect class="task task1" transform-origin="696.5px 108px" height="20" width="363" y="98" x="515" ry="3" rx="3" id="b1"></rect><rect class="task task1" transform-origin="696.5px 132px" height="20" width="363" y="122" x="515" ry="3" rx="3" id="b2"></rect><rect class="task task2" transform-origin="968.5px 156px" height="20" width="181" y="146" x="878" ry="3" rx="3" id="c1"></rect><rect class="task task2" transform-origin="1124px 180px" height="20" width="130" y="170" x="1059" ry="3" rx="3" id="c2"></rect><text class="taskText taskText0 width-44" y="63.5" x="165.5" font-size="11" id="a1-text">要件定義           </text><text class="taskText taskText0 width-44" y="87.5" x="385.5" font-size="11" id="a2-text">基本設計           </text><text class="taskText taskText1 width-99" y="111.5" x="696.5" font-size="11" id="b1-text">フロントエンド開発  </text><text class="taskText taskText1 width-88" y="135.5" x="696.5" font-size="11" id="b2-text">バックエンド開発    </text><text class="taskText taskText2 width-55" y="159.5" x="968.5" font-size="11" id="c1-text">結合テスト         </text><text class="taskText taskText2 width-55" y="183.5" x="1124" font-size="11" id="c2-text">総合テスト         </text></g><g><text class="sectionTitle sectionTitle0" font-size="11" y="74" x="10" dy="0em"><tspan x="10" alignment-baseline="central">設計</tspan></text><text class="sectionTitle sectionTitle1" font-size="11" y="122" x="10" dy="0em"><tspan x="10" alignment-baseline="central">開発</tspan></text><text class="sectionTitle sectionTitle2" font-size="11" y="170" x="10" dy="0em"><tspan x="10" alignment-baseline="central">テスト</tspan></text></g><g class="today"><line class="today" y2="219" y1="25" x2="19336" x1="19336"></line></g><text class="titleText" y="25" x="632">プロジェクトスケジュール</text></svg></p></div></p>
+<p><div class="mermaid"><p><svg aria-roledescription="gantt" role="graphics-document document" style="max-width: 1264px;" viewBox="0 0 1264 244" xmlns="http://www.w3.org/2000/svg" width="100%" id="mermaid-2"><style>#mermaid-2{font-family:arial,sans-serif;font-size:16px;fill:#333;}#mermaid-2 .error-icon{fill:#552222;}#mermaid-2 .error-text{fill:#552222;stroke:#552222;}#mermaid-2 .edge-thickness-normal{stroke-width:2px;}#mermaid-2 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-2 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-2 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-2 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-2 .marker{fill:#333333;stroke:#333333;}#mermaid-2 .marker.cross{stroke:#333333;}#mermaid-2 svg{font-family:arial,sans-serif;font-size:16px;}#mermaid-2 .mermaid-main-font{font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .exclude-range{fill:#eeeeee;}#mermaid-2 .section{stroke:none;opacity:0.2;}#mermaid-2 .section0{fill:rgba(102, 102, 255, 0.49);}#mermaid-2 .section2{fill:#fff400;}#mermaid-2 .section1,#mermaid-2 .section3{fill:white;opacity:0.2;}#mermaid-2 .sectionTitle0{fill:#333;}#mermaid-2 .sectionTitle1{fill:#333;}#mermaid-2 .sectionTitle2{fill:#333;}#mermaid-2 .sectionTitle3{fill:#333;}#mermaid-2 .sectionTitle{text-anchor:start;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .grid .tick{stroke:lightgrey;opacity:0.8;shape-rendering:crispEdges;}#mermaid-2 .grid .tick text{font-family:arial,sans-serif;fill:#333;}#mermaid-2 .grid path{stroke-width:0;}#mermaid-2 .today{fill:none;stroke:red;stroke-width:2px;}#mermaid-2 .task{stroke-width:2;}#mermaid-2 .taskText{text-anchor:middle;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .taskTextOutsideRight{fill:black;text-anchor:start;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 .taskTextOutsideLeft{fill:black;text-anchor:end;}#mermaid-2 .task.clickable{cursor:pointer;}#mermaid-2 .taskText.clickable{cursor:pointer;fill:#003163!important;font-weight:bold;}#mermaid-2 .taskTextOutsideLeft.clickable{cursor:pointer;fill:#003163!important;font-weight:bold;}#mermaid-2 .taskTextOutsideRight.clickable{cursor:pointer;fill:#003163!important;font-weight:bold;}#mermaid-2 .taskText0,#mermaid-2 .taskText1,#mermaid-2 .taskText2,#mermaid-2 .taskText3{fill:white;}#mermaid-2 .task0,#mermaid-2 .task1,#mermaid-2 .task2,#mermaid-2 .task3{fill:#8a90dd;stroke:#534fbc;}#mermaid-2 .taskTextOutside0,#mermaid-2 .taskTextOutside2{fill:black;}#mermaid-2 .taskTextOutside1,#mermaid-2 .taskTextOutside3{fill:black;}#mermaid-2 .active0,#mermaid-2 .active1,#mermaid-2 .active2,#mermaid-2 .active3{fill:#bfc7ff;stroke:#534fbc;}#mermaid-2 .activeText0,#mermaid-2 .activeText1,#mermaid-2 .activeText2,#mermaid-2 .activeText3{fill:black!important;}#mermaid-2 .done0,#mermaid-2 .done1,#mermaid-2 .done2,#mermaid-2 .done3{stroke:grey;fill:lightgrey;stroke-width:2;}#mermaid-2 .doneText0,#mermaid-2 .doneText1,#mermaid-2 .doneText2,#mermaid-2 .doneText3{fill:black!important;}#mermaid-2 .crit0,#mermaid-2 .crit1,#mermaid-2 .crit2,#mermaid-2 .crit3{stroke:#ff8888;fill:red;stroke-width:2;}#mermaid-2 .activeCrit0,#mermaid-2 .activeCrit1,#mermaid-2 .activeCrit2,#mermaid-2 .activeCrit3{stroke:#ff8888;fill:#bfc7ff;stroke-width:2;}#mermaid-2 .doneCrit0,#mermaid-2 .doneCrit1,#mermaid-2 .doneCrit2,#mermaid-2 .doneCrit3{stroke:#ff8888;fill:lightgrey;stroke-width:2;cursor:pointer;shape-rendering:crispEdges;}#mermaid-2 .milestone{transform:rotate(45deg) scale(0.8,0.8);}#mermaid-2 .milestoneText{font-style:italic;}#mermaid-2 .doneCritText0,#mermaid-2 .doneCritText1,#mermaid-2 .doneCritText2,#mermaid-2 .doneCritText3{fill:black!important;}#mermaid-2 .activeCritText0,#mermaid-2 .activeCritText1,#mermaid-2 .activeCritText2,#mermaid-2 .activeCritText3{fill:black!important;}#mermaid-2 .titleText{text-anchor:middle;font-size:18px;fill:#333;font-family:var(--mermaid-font-family, "trebuchet ms", verdana, arial, sans-serif);}#mermaid-2 :root{--mermaid-font-family:arial,sans-serif;}</style><g></g><g text-anchor="middle" font-family="sans-serif" font-size="10" fill="none" transform="translate(75, 194)" class="grid"><path d="M0.5,-159V0.5H1114.5V-159" stroke="currentColor" class="domain"></path><g transform="translate(155.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-07</text></g><g transform="translate(337.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-14</text></g><g transform="translate(518.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-21</text></g><g transform="translate(699.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-01-28</text></g><g transform="translate(881.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-02-04</text></g><g transform="translate(1062.5,0)" opacity="1" class="tick"><line y2="-159" stroke="currentColor"></line><text style="text-anchor: middle;" font-size="10" stroke="none" dy="1em" y="3" fill="#000">2024-02-11</text></g></g><g><rect class="section section0" height="24" width="1226.5" y="48" x="0"></rect><rect class="section section0" height="24" width="1226.5" y="72" x="0"></rect><rect class="section section1" height="24" width="1226.5" y="96" x="0"></rect><rect class="section section1" height="24" width="1226.5" y="120" x="0"></rect><rect class="section section2" height="24" width="1226.5" y="144" x="0"></rect><rect class="section section2" height="24" width="1226.5" y="168" x="0"></rect></g><g><rect class="task task0" transform-origin="165.5px 60px" height="20" width="181" y="50" x="75" ry="3" rx="3" id="a1"></rect><rect class="task task0" transform-origin="385.5px 84px" height="20" width="259" y="74" x="256" ry="3" rx="3" id="a2"></rect><rect class="task task1" transform-origin="696.5px 108px" height="20" width="363" y="98" x="515" ry="3" rx="3" id="b1"></rect><rect class="task task1" transform-origin="696.5px 132px" height="20" width="363" y="122" x="515" ry="3" rx="3" id="b2"></rect><rect class="task task2" transform-origin="968.5px 156px" height="20" width="181" y="146" x="878" ry="3" rx="3" id="c1"></rect><rect class="task task2" transform-origin="1124px 180px" height="20" width="130" y="170" x="1059" ry="3" rx="3" id="c2"></rect><text class="taskText taskText0 width-44" y="63.5" x="165.5" font-size="11" id="a1-text">要件定義           </text><text class="taskText taskText0 width-44" y="87.5" x="385.5" font-size="11" id="a2-text">基本設計           </text><text class="taskText taskText1 width-99" y="111.5" x="696.5" font-size="11" id="b1-text">フロントエンド開発  </text><text class="taskText taskText1 width-88" y="135.5" x="696.5" font-size="11" id="b2-text">バックエンド開発    </text><text class="taskText taskText2 width-55" y="159.5" x="968.5" font-size="11" id="c1-text">結合テスト         </text><text class="taskText taskText2 width-55" y="183.5" x="1124" font-size="11" id="c2-text">総合テスト         </text></g><g><text class="sectionTitle sectionTitle0" font-size="11" y="74" x="10" dy="0em"><tspan x="10" alignment-baseline="central">設計</tspan></text><text class="sectionTitle sectionTitle1" font-size="11" y="122" x="10" dy="0em"><tspan x="10" alignment-baseline="central">開発</tspan></text><text class="sectionTitle sectionTitle2" font-size="11" y="170" x="10" dy="0em"><tspan x="10" alignment-baseline="central">テスト</tspan></text></g><g class="today"><line class="today" y2="219" y1="25" x2="19338" x1="19338"></line></g><text class="titleText" y="25" x="632">プロジェクトスケジュール</text></svg></p></div></p>
 <h2>PlantUML図</h2>
 <p>PlantUMLを使用して図表を作成できます。</p>
 <h3>クラス図</h3>
