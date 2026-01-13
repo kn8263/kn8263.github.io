@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Tue, 13 Jan 2026 05:02:29 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 13 Jan 2026 08:47:12 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -100,8 +100,7 @@
 </tr>
 </tbody>
 </table></div>
-<pre><code>- IPv6: オフ
-</code></pre>
+<div class="code-block-wrapper"><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">- IPv6: オフ</span></span></code></pre></div>
 <p><img src="/assets/images/posts/WindowsServer_Laravel_setup/ip-setting.png" alt="ip設定"></p>
 <h3>仮想マシン設定</h3>
 <ul>
@@ -294,17 +293,17 @@
 </table></div>
 <h4>Hostsの設定(IIS外)</h4>
 <p>VM内でIP確認：</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">ipconfig</span></span>
+<div class="code-block-wrapper"><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">ipconfig</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #CF222E">></span><span style="color: #24292F"> イーサネット アダプター イーサネット </span><span style="color: #0550AE">2</span><span style="color: #24292F">:</span></span>
+<span class="line"><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> イーサネット アダプター イーサネット </span><span style="color: #79C0FF">2</span><span style="color: #C9D1D9">:</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> 接続固有の DNS サフィックス </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .:</span></span>
-<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> リンクローカル IPv6 アドレス. </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .: fe80::c1d1:7cf9:df61:89d1</span><span style="color: #CF222E">%</span><span style="color: #0550AE">7</span></span>
-<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> IPv4 アドレス </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .: </span><span style="color: #0550AE">192.168</span><span style="color: #24292F">.</span><span style="color: #0550AE">56.102</span></span>
-<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> サブネット マスク </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .: </span><span style="color: #0550AE">255.255</span><span style="color: #24292F">.</span><span style="color: #0550AE">255.0</span></span>
-<span class="line"><span style="color: #24292F">   </span><span style="color: #CF222E">></span><span style="color: #24292F"> デフォルト ゲートウェイ </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> </span><span style="color: #CF222E">.</span><span style="color: #24292F"> .:</span></span></code></pre>
+<span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> 接続固有の DNS サフィックス </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .:</span></span>
+<span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> リンクローカル IPv6 アドレス. </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .: fe80::c1d1:7cf9:df61:89d1</span><span style="color: #FF7B72">%</span><span style="color: #79C0FF">7</span></span>
+<span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> IPv4 アドレス </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .: </span><span style="color: #79C0FF">192.168</span><span style="color: #C9D1D9">.</span><span style="color: #79C0FF">56.102</span></span>
+<span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> サブネット マスク </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .: </span><span style="color: #79C0FF">255.255</span><span style="color: #C9D1D9">.</span><span style="color: #79C0FF">255.0</span></span>
+<span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> デフォルト ゲートウェイ </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .:</span></span></code></pre></div>
 <p><code>C:\Windows\System32\drivers\etc\hosts</code>に以下を追記</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292f">192.168.56.102       app.local</span></span></code></pre>
+<div class="code-block-wrapper"><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">192.168.56.102       app.local</span></span></code></pre></div>
 <hr>
 <h3>2. PHP 8.2 設定（Non-Threadsafe x64）</h3>
 <ul>
@@ -319,14 +318,14 @@
 <p>php.ini の編集例</p>
 </li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #CF222E">extension_dir</span><span style="color: #24292F"> = </span><span style="color: #0A3069">"C:\php82\ext"</span></span>
+<div class="code-block-wrapper"><div class="code-block-label">ini</div><pre class="shiki" style="background-color: #0d1117" data-lang="ini"><code><span class="line"><span style="color: #FF7B72">extension_dir</span><span style="color: #C9D1D9"> = </span><span style="color: #A5D6FF">"C:\php82\ext"</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=curl</span></span>
-<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=gd</span></span>
-<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=mbstring</span></span>
-<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=php_sqlsrv_82_nts_x64.dll</span></span>
-<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=php_pdo_sqlsrv_82_nts_x64.dll</span></span>
-<span class="line"><span style="color: #CF222E">extension</span><span style="color: #24292F">=fileinfo</span></span></code></pre>
+<span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=curl</span></span>
+<span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=gd</span></span>
+<span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=mbstring</span></span>
+<span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=php_sqlsrv_82_nts_x64.dll</span></span>
+<span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=php_pdo_sqlsrv_82_nts_x64.dll</span></span>
+<span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=fileinfo</span></span></code></pre></div>
 <ul>
 <li>
 <p>Microsoft PHP SQL Server ドライバを <code>C:\php82\ext</code> に配置
@@ -412,8 +411,8 @@
 <code>C:\inetpub\wwwroot\index.php</code> に以下を作成</p>
 </li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #CF222E">&#x3C;?</span><span style="color: #0550AE">php</span></span>
-<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0550AE">phpinfo</span><span style="color: #24292F">();</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">php</div><pre class="shiki" style="background-color: #0d1117" data-lang="php"><code><span class="line"><span style="color: #FF7B72">&#x3C;?</span><span style="color: #79C0FF">php</span></span>
+<span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">phpinfo</span><span style="color: #C9D1D9">();</span></span></code></pre></div>
 <p>ブラウザで <code>http://localhost/index.php</code> にアクセス</p>
 <hr>
 <h3>3. Composer の設定</h3>
@@ -432,27 +431,31 @@
 <p>バージョン確認</p>
 </li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">composer </span><span style="color: #CF222E">-</span><span style="color: #24292F">V</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">cmd</div><pre class="shiki" style="background-color: #0d1117" data-lang="cmd"><code><span class="line"><span style="color: #C9D1D9">composer </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">V</span></span></code></pre></div>
 <hr>
 <h3>4. Node.js の設定</h3>
 <ul>
 <li><a href="https://github.com/coreybutler/nvm-windows/releases">nvmのインストール(nvm-setup.exe)</a></li>
 </ul>
-<p>バージョンチェック</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm version</span></span></code></pre>
-<p>インストール可能なnode.jsバージョン確認</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm list available</span></span></code></pre>
-<p>バージョン指定でインストール</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm install 22.20.0</span></span></code></pre>
-<p>インストール済みのnode.jsのバージョン確認</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm list</span></span></code></pre>
-<p>使用するnode.jsのバージョン指定</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">nvm use 22.20.0</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #8B949E"># バージョンチェック</span></span>
+<span class="line"><span style="color: #C9D1D9">nvm version</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #8B949E"># インストール可能なnode.jsバージョン確認</span></span>
+<span class="line"><span style="color: #C9D1D9">nvm list available</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #8B949E"># バージョン指定でインストール</span></span>
+<span class="line"><span style="color: #C9D1D9">nvm install 22.20.0</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #8B949E"># インストール済みのnode.jsのバージョン確認</span></span>
+<span class="line"><span style="color: #C9D1D9">nvm list</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #8B949E"># 使用するnode.jsのバージョン指定</span></span>
+<span class="line"><span style="color: #C9D1D9">nvm use 22.20.0</span></span></code></pre></div>
 <ul>
 <li>バージョン確認</li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">node </span><span style="color: #CF222E">-</span><span style="color: #24292F">v</span></span>
-<span class="line"><span style="color: #24292F">npm </span><span style="color: #CF222E">-</span><span style="color: #24292F">v</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">node </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">v</span></span>
+<span class="line"><span style="color: #C9D1D9">npm </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">v</span></span></code></pre></div>
 <hr>
 <h3>5. SQL Server の設定</h3>
 <ul>
@@ -510,77 +513,77 @@
 <li>ダウンロードしたexeを<code>C:\mailhog</code>内に配置</li>
 <li>以下を記載したバッチ（.bat）ファイルを作成(ファイル名は任意)しexeと同じディレクトリに配置</li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #CF222E">@echo</span><span style="color: #24292F"> </span><span style="color: #CF222E">off</span></span>
-<span class="line"><span style="color: #CF222E">cd</span><span style="color: #24292F"> /d C:\mailhog</span></span>
-<span class="line"><span style="color: #CF222E">start</span><span style="color: #24292F"> </span><span style="color: #0A3069">""</span><span style="color: #24292F"> MailHog_windows_amd64.exe -storage=maildir -maildir-path=C:\mailhog\mails</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">bat</div><pre class="shiki" style="background-color: #0d1117" data-lang="bat"><code><span class="line"><span style="color: #FF7B72">@echo</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">off</span></span>
+<span class="line"><span style="color: #FF7B72">cd</span><span style="color: #C9D1D9"> /d C:\mailhog</span></span>
+<span class="line"><span style="color: #FF7B72">start</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9"> MailHog_windows_amd64.exe -storage=maildir -maildir-path=C:\mailhog\mails</span></span></code></pre></div>
 <ul>
 <li>バッチファイルのショートカットをデスクトップに置いておくと便利</li>
 <li>シェルスクリプトはこちら</li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #6E7781">#!/bin/bash</span></span>
-<span class="line"><span style="color: #24292F">./MailHog_windows_amd64.exe -storage=maildir -maildir-path=./mails</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">sh</div><pre class="shiki" style="background-color: #0d1117" data-lang="sh"><code><span class="line"><span style="color: #8B949E">#!/bin/bash</span></span>
+<span class="line"><span style="color: #C9D1D9">./MailHog_windows_amd64.exe -storage=maildir -maildir-path=./mails</span></span></code></pre></div>
 <br>
 <details><summary>※Mailpitの場合</summary>
 <h4>1. mailpitダウンロード</h4>
 <p>mailpit <a href="https://github.com/axllent/mailpit/releases/download/v1.28.0/mailpit-windows-amd64.zip">ダウンロード</a><br>
 ※VMのホストに配置</p>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">mkdir /c/mailpit</span></span>
-<span class="line"><span style="color: #24292F">mv download_path/mailpit.exe /c/mailpit/mailpit.exe</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #C9D1D9">mkdir /c/mailpit</span></span>
+<span class="line"><span style="color: #C9D1D9">mv download_path/mailpit.exe /c/mailpit/mailpit.exe</span></span></code></pre></div>
 <br>
 <h4>2. mailpi起動スクリプト作成</h4>
 <details><summary>start_mailpit.sh</summary>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #6E7781">#!/bin/bash</span></span>
+<div class="code-block-wrapper"><div class="code-block-label">sh</div><pre class="shiki" style="background-color: #0d1117" data-lang="sh"><code><span class="line"><span style="color: #8B949E">#!/bin/bash</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #6E7781"># Default values</span></span>
-<span class="line"><span style="color: #24292F">DEFAULT_LISTEN_PORT=8025</span></span>
-<span class="line"><span style="color: #24292F">DEFAULT_SMTP_PORT=1025</span></span>
-<span class="line"><span style="color: #24292F">DEFAULT_DB_FILE=mailpit.db</span></span>
+<span class="line"><span style="color: #8B949E"># Default values</span></span>
+<span class="line"><span style="color: #C9D1D9">DEFAULT_LISTEN_PORT=8025</span></span>
+<span class="line"><span style="color: #C9D1D9">DEFAULT_SMTP_PORT=1025</span></span>
+<span class="line"><span style="color: #C9D1D9">DEFAULT_DB_FILE=mailpit.db</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #6E7781"># 引数があれば優先、なければ空</span></span>
-<span class="line"><span style="color: #24292F">LISTEN_PORT=$1</span></span>
-<span class="line"><span style="color: #24292F">SMTP_PORT=$2</span></span>
-<span class="line"><span style="color: #24292F">DB_FILE=$3</span></span>
+<span class="line"><span style="color: #8B949E"># 引数があれば優先、なければ空</span></span>
+<span class="line"><span style="color: #C9D1D9">LISTEN_PORT=$1</span></span>
+<span class="line"><span style="color: #C9D1D9">SMTP_PORT=$2</span></span>
+<span class="line"><span style="color: #C9D1D9">DB_FILE=$3</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #6E7781"># 対話入力（未指定時のみ）</span></span>
-<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">-z</span><span style="color: #24292F"> </span><span style="color: #0A3069">"</span><span style="color: #24292F">$LISTEN_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
-<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">read</span><span style="color: #24292F"> -p </span><span style="color: #0A3069">"Listen port [</span><span style="color: #24292F">$DEFAULT_LISTEN_PORT</span><span style="color: #0A3069">]: "</span><span style="color: #24292F"> LISTEN_PORT</span></span>
-<span class="line"><span style="color: #24292F">  LISTEN_PORT=${LISTEN_PORT</span><span style="color: #CF222E">:-</span><span style="color: #24292F">$DEFAULT_LISTEN_PORT}</span></span>
-<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"><span style="color: #8B949E"># 対話入力（未指定時のみ）</span></span>
+<span class="line"><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> [ </span><span style="color: #FF7B72">-z</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9">$LISTEN_PORT</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> ]</span><span style="color: #FF7B72">;</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">then</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #79C0FF">read</span><span style="color: #C9D1D9"> -p </span><span style="color: #A5D6FF">"Listen port [</span><span style="color: #C9D1D9">$DEFAULT_LISTEN_PORT</span><span style="color: #A5D6FF">]: "</span><span style="color: #C9D1D9"> LISTEN_PORT</span></span>
+<span class="line"><span style="color: #C9D1D9">  LISTEN_PORT=${LISTEN_PORT</span><span style="color: #FF7B72">:-</span><span style="color: #C9D1D9">$DEFAULT_LISTEN_PORT}</span></span>
+<span class="line"><span style="color: #FF7B72">fi</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">-z</span><span style="color: #24292F"> </span><span style="color: #0A3069">"</span><span style="color: #24292F">$SMTP_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
-<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">read</span><span style="color: #24292F"> -p </span><span style="color: #0A3069">"SMTP port [</span><span style="color: #24292F">$DEFAULT_SMTP_PORT</span><span style="color: #0A3069">]: "</span><span style="color: #24292F"> SMTP_PORT</span></span>
-<span class="line"><span style="color: #24292F">  SMTP_PORT=${SMTP_PORT</span><span style="color: #CF222E">:-</span><span style="color: #24292F">$DEFAULT_SMTP_PORT}</span></span>
-<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> [ </span><span style="color: #FF7B72">-z</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9">$SMTP_PORT</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> ]</span><span style="color: #FF7B72">;</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">then</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #79C0FF">read</span><span style="color: #C9D1D9"> -p </span><span style="color: #A5D6FF">"SMTP port [</span><span style="color: #C9D1D9">$DEFAULT_SMTP_PORT</span><span style="color: #A5D6FF">]: "</span><span style="color: #C9D1D9"> SMTP_PORT</span></span>
+<span class="line"><span style="color: #C9D1D9">  SMTP_PORT=${SMTP_PORT</span><span style="color: #FF7B72">:-</span><span style="color: #C9D1D9">$DEFAULT_SMTP_PORT}</span></span>
+<span class="line"><span style="color: #FF7B72">fi</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">-z</span><span style="color: #24292F"> </span><span style="color: #0A3069">"</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
-<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">read</span><span style="color: #24292F"> -p </span><span style="color: #0A3069">"Database file [</span><span style="color: #24292F">$DEFAULT_DB_FILE</span><span style="color: #0A3069">]: "</span><span style="color: #24292F"> DB_FILE</span></span>
-<span class="line"><span style="color: #24292F">  DB_FILE=${DB_FILE</span><span style="color: #CF222E">:-</span><span style="color: #24292F">$DEFAULT_DB_FILE}</span></span>
-<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> [ </span><span style="color: #FF7B72">-z</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9">$DB_FILE</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> ]</span><span style="color: #FF7B72">;</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">then</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #79C0FF">read</span><span style="color: #C9D1D9"> -p </span><span style="color: #A5D6FF">"Database file [</span><span style="color: #C9D1D9">$DEFAULT_DB_FILE</span><span style="color: #A5D6FF">]: "</span><span style="color: #C9D1D9"> DB_FILE</span></span>
+<span class="line"><span style="color: #C9D1D9">  DB_FILE=${DB_FILE</span><span style="color: #FF7B72">:-</span><span style="color: #C9D1D9">$DEFAULT_DB_FILE}</span></span>
+<span class="line"><span style="color: #FF7B72">fi</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #6E7781"># DB ファイル作成</span></span>
-<span class="line"><span style="color: #CF222E">if</span><span style="color: #24292F"> [ </span><span style="color: #CF222E">!</span><span style="color: #24292F"> </span><span style="color: #CF222E">-f</span><span style="color: #24292F"> </span><span style="color: #0A3069">"./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span><span style="color: #24292F"> ]</span><span style="color: #CF222E">;</span><span style="color: #24292F"> </span><span style="color: #CF222E">then</span></span>
-<span class="line"><span style="color: #24292F">  </span><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Database file not found. Creating </span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">..."</span></span>
-<span class="line"><span style="color: #24292F">  touch </span><span style="color: #0A3069">"./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span></span>
-<span class="line"><span style="color: #CF222E">fi</span></span>
+<span class="line"><span style="color: #8B949E"># DB ファイル作成</span></span>
+<span class="line"><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> [ </span><span style="color: #FF7B72">!</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">-f</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"./</span><span style="color: #C9D1D9">$DB_FILE</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> ]</span><span style="color: #FF7B72">;</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">then</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Database file not found. Creating </span><span style="color: #C9D1D9">$DB_FILE</span><span style="color: #A5D6FF">..."</span></span>
+<span class="line"><span style="color: #C9D1D9">  touch </span><span style="color: #A5D6FF">"./</span><span style="color: #C9D1D9">$DB_FILE</span><span style="color: #A5D6FF">"</span></span>
+<span class="line"><span style="color: #FF7B72">fi</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Starting Mailpit..."</span></span>
-<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">" UI   : [::]:</span><span style="color: #24292F">$LISTEN_PORT</span><span style="color: #0A3069">"</span></span>
-<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">" SMTP : [::]:</span><span style="color: #24292F">$SMTP_PORT</span><span style="color: #0A3069">"</span></span>
-<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">" DB   : ./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span></span>
+<span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Starting Mailpit..."</span></span>
+<span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" UI   : [::]:</span><span style="color: #C9D1D9">$LISTEN_PORT</span><span style="color: #A5D6FF">"</span></span>
+<span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" SMTP : [::]:</span><span style="color: #C9D1D9">$SMTP_PORT</span><span style="color: #A5D6FF">"</span></span>
+<span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" DB   : ./</span><span style="color: #C9D1D9">$DB_FILE</span><span style="color: #A5D6FF">"</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #24292F">./mailpit.exe \</span></span>
-<span class="line"><span style="color: #24292F">  --listen </span><span style="color: #0A3069">"[::]:</span><span style="color: #24292F">$LISTEN_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> \</span></span>
-<span class="line"><span style="color: #24292F">  --smtp </span><span style="color: #0A3069">"[::]:</span><span style="color: #24292F">$SMTP_PORT</span><span style="color: #0A3069">"</span><span style="color: #24292F"> \</span></span>
-<span class="line"><span style="color: #24292F">  --database </span><span style="color: #0A3069">"./</span><span style="color: #24292F">$DB_FILE</span><span style="color: #0A3069">"</span></span>
+<span class="line"><span style="color: #C9D1D9">./mailpit.exe \</span></span>
+<span class="line"><span style="color: #C9D1D9">  --listen </span><span style="color: #A5D6FF">"[::]:</span><span style="color: #C9D1D9">$LISTEN_PORT</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> \</span></span>
+<span class="line"><span style="color: #C9D1D9">  --smtp </span><span style="color: #A5D6FF">"[::]:</span><span style="color: #C9D1D9">$SMTP_PORT</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> \</span></span>
+<span class="line"><span style="color: #C9D1D9">  --database </span><span style="color: #A5D6FF">"./</span><span style="color: #C9D1D9">$DB_FILE</span><span style="color: #A5D6FF">"</span></span>
 <span class="line"></span>
-<span class="line"><span style="color: #0550AE">echo</span><span style="color: #24292F"> </span><span style="color: #0A3069">"Press Enter to exit..."</span></span>
-<span class="line"><span style="color: #0550AE">read</span></span></code></pre>
+<span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Press Enter to exit..."</span></span>
+<span class="line"><span style="color: #79C0FF">read</span></span></code></pre></div>
 </details>
 <br>
 <h4>3. mailpit起動</h4>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #0550AE">pwd</span></span>
-<span class="line"><span style="color: #6E7781"># > /c/mailpit</span></span>
-<span class="line"><span style="color: #24292F">./start_mail.sh</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #79C0FF">pwd</span></span>
+<span class="line"><span style="color: #8B949E"># > /c/mailpit</span></span>
+<span class="line"><span style="color: #C9D1D9">./start_mail.sh</span></span></code></pre></div>
 </details>
 <br>
 <h3>7. Laravel プロジェクトセットアップ</h3>
@@ -588,22 +591,22 @@
 <li>Laravelプロジェクト内のpublicディレクトリに以下のweb.configを作成<br></li>
 </ul>
 <details><summary>C:\inetpub\wwwroot\app\public\web.config</summary>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">&#x3C;</span><span style="color: #116329">configuration</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">    &#x3C;</span><span style="color: #116329">system.webServer</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">        &#x3C;</span><span style="color: #116329">rewrite</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">            &#x3C;</span><span style="color: #116329">rules</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">                &#x3C;</span><span style="color: #116329">rule</span><span style="color: #24292F"> </span><span style="color: #0550AE">name</span><span style="color: #24292F">=</span><span style="color: #0A3069">"Laravel"</span><span style="color: #24292F"> </span><span style="color: #0550AE">stopProcessing</span><span style="color: #24292F">=</span><span style="color: #0A3069">"true"</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">                    &#x3C;</span><span style="color: #116329">match</span><span style="color: #24292F"> </span><span style="color: #0550AE">url</span><span style="color: #24292F">=</span><span style="color: #0A3069">".*"</span><span style="color: #24292F"> /></span></span>
-<span class="line"><span style="color: #24292F">                    &#x3C;</span><span style="color: #116329">conditions</span><span style="color: #24292F"> </span><span style="color: #0550AE">logicalGrouping</span><span style="color: #24292F">=</span><span style="color: #0A3069">"MatchAll"</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">                        &#x3C;</span><span style="color: #116329">add</span><span style="color: #24292F"> </span><span style="color: #0550AE">input</span><span style="color: #24292F">=</span><span style="color: #0A3069">"{REQUEST_FILENAME}"</span><span style="color: #24292F"> </span><span style="color: #0550AE">matchType</span><span style="color: #24292F">=</span><span style="color: #0A3069">"IsFile"</span><span style="color: #24292F"> </span><span style="color: #0550AE">negate</span><span style="color: #24292F">=</span><span style="color: #0A3069">"true"</span><span style="color: #24292F"> /></span></span>
-<span class="line"><span style="color: #24292F">                        &#x3C;</span><span style="color: #116329">add</span><span style="color: #24292F"> </span><span style="color: #0550AE">input</span><span style="color: #24292F">=</span><span style="color: #0A3069">"{REQUEST_FILENAME}"</span><span style="color: #24292F"> </span><span style="color: #0550AE">matchType</span><span style="color: #24292F">=</span><span style="color: #0A3069">"IsDirectory"</span><span style="color: #24292F"> </span><span style="color: #0550AE">negate</span><span style="color: #24292F">=</span><span style="color: #0A3069">"true"</span><span style="color: #24292F"> /></span></span>
-<span class="line"><span style="color: #24292F">                    &#x3C;/</span><span style="color: #116329">conditions</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">                    &#x3C;</span><span style="color: #116329">action</span><span style="color: #24292F"> </span><span style="color: #0550AE">type</span><span style="color: #24292F">=</span><span style="color: #0A3069">"Rewrite"</span><span style="color: #24292F"> </span><span style="color: #0550AE">url</span><span style="color: #24292F">=</span><span style="color: #0A3069">"index.php/{R:0}"</span><span style="color: #24292F"> /></span></span>
-<span class="line"><span style="color: #24292F">                &#x3C;/</span><span style="color: #116329">rule</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">            &#x3C;/</span><span style="color: #116329">rules</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">        &#x3C;/</span><span style="color: #116329">rewrite</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">    &#x3C;/</span><span style="color: #116329">system.webServer</span><span style="color: #24292F">></span></span>
-<span class="line"><span style="color: #24292F">&#x3C;/</span><span style="color: #116329">configuration</span><span style="color: #24292F">></span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">xml</div><pre class="shiki" style="background-color: #0d1117" data-lang="xml"><code><span class="line"><span style="color: #C9D1D9">&#x3C;</span><span style="color: #7EE787">configuration</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">    &#x3C;</span><span style="color: #7EE787">system.webServer</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">        &#x3C;</span><span style="color: #7EE787">rewrite</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">            &#x3C;</span><span style="color: #7EE787">rules</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">                &#x3C;</span><span style="color: #7EE787">rule</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">name</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"Laravel"</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">stopProcessing</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"true"</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">                    &#x3C;</span><span style="color: #7EE787">match</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">url</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">".*"</span><span style="color: #C9D1D9"> /></span></span>
+<span class="line"><span style="color: #C9D1D9">                    &#x3C;</span><span style="color: #7EE787">conditions</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">logicalGrouping</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"MatchAll"</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">                        &#x3C;</span><span style="color: #7EE787">add</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">input</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"{REQUEST_FILENAME}"</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">matchType</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"IsFile"</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">negate</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"true"</span><span style="color: #C9D1D9"> /></span></span>
+<span class="line"><span style="color: #C9D1D9">                        &#x3C;</span><span style="color: #7EE787">add</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">input</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"{REQUEST_FILENAME}"</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">matchType</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"IsDirectory"</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">negate</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"true"</span><span style="color: #C9D1D9"> /></span></span>
+<span class="line"><span style="color: #C9D1D9">                    &#x3C;/</span><span style="color: #7EE787">conditions</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">                    &#x3C;</span><span style="color: #7EE787">action</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">type</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"Rewrite"</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">url</span><span style="color: #C9D1D9">=</span><span style="color: #A5D6FF">"index.php/{R:0}"</span><span style="color: #C9D1D9"> /></span></span>
+<span class="line"><span style="color: #C9D1D9">                &#x3C;/</span><span style="color: #7EE787">rule</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">            &#x3C;/</span><span style="color: #7EE787">rules</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">        &#x3C;/</span><span style="color: #7EE787">rewrite</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">    &#x3C;/</span><span style="color: #7EE787">system.webServer</span><span style="color: #C9D1D9">></span></span>
+<span class="line"><span style="color: #C9D1D9">&#x3C;/</span><span style="color: #7EE787">configuration</span><span style="color: #C9D1D9">></span></span></code></pre></div>
 </details>
 <ul>
 <li>
@@ -616,41 +619,41 @@
 <p>.env.exampleから.envを作成</p>
 </li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">cd C:\inetpub\wwwroot</span></span>
-<span class="line"><span style="color: #24292F">cp .env.example .env</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">cd C:\inetpub\wwwroot</span></span>
+<span class="line"><span style="color: #C9D1D9">cp .env.example .env</span></span></code></pre></div>
 <br>
 <details><summary>.envの記載内容</summary> 
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">APP_NAME=app</span></span>
-<span class="line"><span style="color: #24292F">APP_URL=http://app.local</span></span>
-<span class="line"><span style="color: #24292F">APP_TITLE="アプリタイトル"</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292F">DB_CONNECTION=sqlsrv</span></span>
-<span class="line"><span style="color: #24292F">DB_HOST=localhost</span></span>
-<span class="line"><span style="color: #24292F">DB_PORT=1433</span></span>
-<span class="line"><span style="color: #24292F">DB_DATABASE=app</span></span>
-<span class="line"><span style="color: #24292F">DB_USERNAME=</span></span>
-<span class="line"><span style="color: #24292F">DB_PASSWORD=</span></span>
-<span class="line"></span>
-<span class="line"><span style="color: #24292F">MAIL_MAILER=smtp</span></span>
-<span class="line"><span style="color: #24292F">MAIL_HOST=127.0.0.1</span></span>
-<span class="line"><span style="color: #24292F">MAIL_PORT=1025</span></span>
-<span class="line"><span style="color: #24292F">MAIL_USERNAME=null</span></span>
-<span class="line"><span style="color: #24292F">MAIL_PASSWORD=null</span></span>
-<span class="line"><span style="color: #24292F">MAIL_ENCRYPTION=null</span></span>
-<span class="line"><span style="color: #24292F">MAIL_FROM_ADDRESS=test@email.com</span></span>
-<span class="line"><span style="color: #24292F">MAIL_FROM_NAME="${APP_NAME}"</span></span></code></pre>
+<div class="code-block-wrapper"><div class="code-block-label">.env</div><pre class="shiki" style="background-color: #0d1117" data-lang="txt" data-meta=".env"><code><span class="line"><span style="color: #c9d1d9">APP_NAME=app</span></span>
+<span class="line"><span style="color: #c9d1d9">APP_URL=http://app.local</span></span>
+<span class="line"><span style="color: #c9d1d9">APP_TITLE="アプリタイトル"</span></span>
+<span class="line"><span style="color: #c9d1d9"></span></span>
+<span class="line"><span style="color: #c9d1d9">DB_CONNECTION=sqlsrv</span></span>
+<span class="line"><span style="color: #c9d1d9">DB_HOST=localhost</span></span>
+<span class="line"><span style="color: #c9d1d9">DB_PORT=1433</span></span>
+<span class="line"><span style="color: #c9d1d9">DB_DATABASE=app</span></span>
+<span class="line"><span style="color: #c9d1d9">DB_USERNAME=</span></span>
+<span class="line"><span style="color: #c9d1d9">DB_PASSWORD=</span></span>
+<span class="line"><span style="color: #c9d1d9"></span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_MAILER=smtp</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_HOST=127.0.0.1</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_PORT=1025</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_USERNAME=null</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_PASSWORD=null</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_ENCRYPTION=null</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_FROM_ADDRESS=test@email.com</span></span>
+<span class="line"><span style="color: #c9d1d9">MAIL_FROM_NAME="${APP_NAME}"</span></span></code></pre></div>
 </details>
 <br>
 <ul>
 <li>Laravel 初期セットアップ</li>
 </ul>
-<pre class="shiki" style="background-color: #ffffff"><code><span class="line"><span style="color: #24292F">composer install</span></span>
-<span class="line"><span style="color: #24292F">npm install</span></span>
-<span class="line"><span style="color: #24292F">php artisan key:generate</span></span>
-<span class="line"><span style="color: #24292F">php artisan storage:link</span></span>
-<span class="line"><span style="color: #24292F">php artisan migrate</span></span>
-<span class="line"><span style="color: #24292F">php artisan db:seed</span></span>
-<span class="line"><span style="color: #24292F">php artisan optimize</span></span></code></pre>]]></content:encoded>
+<div class="code-block-wrapper"><div class="code-block-label">cmd</div><pre class="shiki" style="background-color: #0d1117" data-lang="cmd"><code><span class="line"><span style="color: #C9D1D9">composer install</span></span>
+<span class="line"><span style="color: #C9D1D9">npm install</span></span>
+<span class="line"><span style="color: #C9D1D9">php artisan key:generate</span></span>
+<span class="line"><span style="color: #C9D1D9">php artisan storage:link</span></span>
+<span class="line"><span style="color: #C9D1D9">php artisan migrate</span></span>
+<span class="line"><span style="color: #C9D1D9">php artisan db:seed</span></span>
+<span class="line"><span style="color: #C9D1D9">php artisan optimize</span></span></code></pre></div>]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[RAGについて]]></title>
@@ -800,24 +803,23 @@
 <li>小規模向き</li>
 </ul>
 <p>【全体の処理フロー】</p>
-<pre><code>ユーザー質問
-   ↓
-Frontend
-   ↓
-API Gateway
-   ↓
-Lambda
-   ↓
-Embedding生成
-   ↓
-OpenSearchで類似FAQ検索
-   ↓
-FAQ + 質問を LLM に渡す
-   ↓
-回答生成
-   ↓
-ユーザーへ返却
-</code></pre>
+<div class="code-block-wrapper"><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">ユーザー質問</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">Frontend</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">API Gateway</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">Lambda</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">Embedding生成</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">OpenSearchで類似FAQ検索</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">FAQ + 質問を LLM に渡す</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">回答生成</span></span>
+<span class="line"><span style="color: #c9d1d9">   ↓</span></span>
+<span class="line"><span style="color: #c9d1d9">ユーザーへ返却</span></span></code></pre></div>
 <h2>【考えられる具体的内容】</h2>
 <h3>✔ ベクトルデータベースを準備して RAG を実装</h3>
 <p>Lambda（Python 側）で：</p>
