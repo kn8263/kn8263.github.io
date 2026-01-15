@@ -28,8 +28,8 @@ fi
 # 現在の日時をISO 8601形式で取得（+0900タイムゾーン）
 DATE=$(date +"%Y-%m-%dT%H:%M:%S%z")
 
-# テンプレートファイルを作成
-cat > "$OUTPUT_FILE" << EOF
+# テンプレートファイルをUTF-8エンコーディングで作成
+cat << EOF | iconv -f UTF-8 -t UTF-8 > "$OUTPUT_FILE"
 ---
 title: ${TITLE}
 date: ${DATE}
