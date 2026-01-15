@@ -153,6 +153,11 @@
 		.code-block-wrapper .shiki code {
 			white-space: pre;
 			display: block;
+			// diff形式の場合、tableレイアウトを使用
+			&[data-diff-mode="with-bg"] {
+				display: table;
+				width: 100%;
+			}
 		}
 		
 		// すべての行の最後のspan要素に右側の余白を追加（最も長い行の右端に余白が表示される）
@@ -200,7 +205,7 @@
 			overflow-x: auto;
 			font-size: 0.875rem;
 			line-height: 1.6;
-			background-color: #1e1e1e;
+			background-color: #1a2638 !important;
 			border: none;
 		}
 		code {
@@ -215,6 +220,124 @@
 				font-variant-numeric: slashed-zero;
 				color: #6e7781;
 				padding-right: 0.25rem;
+			}
+		}
+		
+		// diff形式のコードブロックスタイル（with-bgモード: {言語}:diff形式）
+		.shiki[data-diff-mode="with-bg"] {
+			code {
+				display: table;
+				width: 100%;
+				.line.diff-line-remove {
+					background-color: #ff80954d;
+					display: table-row;
+					position: relative;
+					margin: 0;
+					padding: 0;
+					// 行番号（::before）には背景を付けない
+					&::before {
+						background-color: #1a2638 !important;
+						position: relative;
+						z-index: 1;
+					}
+					// -記号の文字色を変更（最初のspan要素のテキストノードまたはspan要素自体）
+					> span:first-child {
+						color: #ff8095 !important;
+					}
+				}
+				.line.diff-line-add {
+					background-color: #8cdf4c42;
+					display: table-row;
+					position: relative;
+					margin: 0;
+					padding: 0;
+					// 行番号（::before）には背景を付けない
+					&::before {
+						background-color: #1a2638 !important;
+						position: relative;
+						z-index: 1;
+					}
+					// +記号の文字色を変更（最初のspan要素のテキストノードまたはspan要素自体）
+					> span:first-child {
+						color: #8bdf4c !important;
+					}
+				}
+			}
+		}
+		
+		.code-block-wrapper .shiki[data-diff-mode="with-bg"] {
+			code {
+				display: table;
+				width: 100%;
+				.line.diff-line-remove {
+					background-color: #ff80954d;
+					display: table-row;
+					position: relative;
+					margin: 0;
+					padding: 0;
+					// 行番号（::before）には背景を付けない
+					&::before {
+						background-color: #1a2638 !important;
+						position: relative;
+						z-index: 1;
+					}
+					// -記号の文字色を変更（最初のspan要素のテキストノードまたはspan要素自体）
+					> span:first-child {
+						color: #ff8095 !important;
+					}
+				}
+				.line.diff-line-add {
+					background-color: #8cdf4c42;
+					display: table-row;
+					position: relative;
+					margin: 0;
+					padding: 0;
+					// 行番号（::before）には背景を付けない
+					&::before {
+						background-color: #1a2638 !important;
+						position: relative;
+						z-index: 1;
+					}
+					// +記号の文字色を変更（最初のspan要素のテキストノードまたはspan要素自体）
+					> span:first-child {
+						color: #8bdf4c !important;
+					}
+				}
+			}
+		}
+		
+		// diff形式のコードブロックスタイル（text-onlyモード: diff言語）
+		.shiki[data-diff-mode="text-only"] {
+			code {
+				.line.diff-text-remove {
+					// -記号の文字色を変更
+					> span:first-child {
+						color: #ff8095 !important;
+					}
+				}
+				.line.diff-text-add {
+					// +記号の文字色を変更
+					> span:first-child {
+						color: #8bdf4c !important;
+					}
+				}
+			}
+		}
+		
+		.code-block-wrapper .shiki[data-diff-mode="text-only"] {
+			code {
+				.line.diff-text-remove {
+					// -記号の文字色を変更
+					> span:first-child {
+						color: #ff8095 !important;
+					}
+				}
+				.line.diff-text-add {
+					// +記号の文字色を変更
+					> span:first-child {
+						color: #8bdf4c !important;
+					}
+				}
 			}
 		}
 		.note {

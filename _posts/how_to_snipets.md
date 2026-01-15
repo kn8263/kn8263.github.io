@@ -234,3 +234,17 @@ HyperSnipsとは、動的スニペットを実現するVS Codeの拡張機能の
 ※セパレーターの色が違うのはスニペットとは関係ありません。VS Codeの表示設定です。
 
 ### 設定方法
+```diff
+- console.log
++ console.diff
+```
+
+```javascript:diff
+- console.log("log")console.log("log")console.log("log")console.log("log")console.log("log")console.log("log")console.log("log")console.log("log")console.log("log")
++ console.warn("warn")
+```
+```python:diff_diff.py
+class test
+- print
++ logger
+```

@@ -13,6 +13,7 @@ import {
 	preserveCodeBlockLangPlugin,
 	saveCodeBlockLangPlugin,
 	restoreCodeBlockLangPlugin,
+	addDiffLineClassesPlugin,
 	addCodeBlockLabelPlugin,
 } from './markdown-plugins';
 
@@ -45,6 +46,7 @@ export const markdownToHtml = async (
 				highlighter: await getShikiHighlighter(),
 			})
 			.use(restoreCodeBlockLangPlugin as any)
+			.use(addDiffLineClassesPlugin as any)
 			.use(rehypeMathJaxSvg)
 			.use(wrapTablePlugin as any)
 			.use(addCodeBlockLabelPlugin as any)

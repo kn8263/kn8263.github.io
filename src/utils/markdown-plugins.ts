@@ -174,6 +174,18 @@ export const extractCodeBlockMetaPlugin = () => {
 				codeNode.data.hProperties['data-meta'] = filename;
 			}
 
+			// diff形式の検出とdata-diff-mode属性の設定
+			// {言語}:diff や {言語}:diff_{ファイル名} 形式の場合
+			if (filename && (filename === 'diff' || filename.startsWith('diff_'))) {
+				// eslint-disable-next-line no-param-reassign
+				codeNode.data.hProperties['data-diff-mode'] = 'with-bg';
+			}
+			// diff や diff:差分 形式の場合
+			else if (lang === 'diff') {
+				// eslint-disable-next-line no-param-reassign
+				codeNode.data.hProperties['data-diff-mode'] = 'text-only';
+			}
+
 			// node.langも分離後の言語名に更新（rehypeShikiに正しい言語名を渡すため）
 			// eslint-disable-next-line no-param-reassign
 			codeNode.lang = lang;
@@ -288,6 +300,19 @@ export const preserveCodeBlockLangPlugin = () => {
 						filename = String(codeElement.properties['data-meta']);
 					}
 
+					// data-diff-mode属性を取得
+					// remark-rehypeで変換された後、data.hPropertiesがpropertiesに反映される
+					let diffMode: string | null = null;
+					if (codeElement.properties['data-diff-mode']) {
+						diffMode = String(codeElement.properties['data-diff-mode']);
+					}
+					// data属性からも確認（フォールバック）
+					else if ((codeElement as any).data?.hProperties?.['data-diff-mode']) {
+						diffMode = String(
+							(codeElement as any).data.hProperties['data-diff-mode'],
+						);
+					}
+
 					// code要素のクラス名を修正（言語名のみに）
 					if (lang && codeElement.properties.className) {
 						if (
@@ -315,6 +340,11 @@ export const preserveCodeBlockLangPlugin = () => {
 							// eslint-disable-next-line no-param-reassign
 							node.properties['data-meta'] = filename;
 						}
+						// data-diff-mode属性も転送
+						if (diffMode) {
+							// eslint-disable-next-line no-param-reassign
+							node.properties['data-diff-mode'] = diffMode;
+						}
 					}
 				}
 			}
@@ -324,7 +354,11 @@ export const preserveCodeBlockLangPlugin = () => {
 
 // rehypeShikiの処理前に言語情報を一時保存し、処理後に復元するプラグイン
 // rehypeShikiがpre要素を完全に置き換えるため、言語情報を一時的に保存する必要がある
-const langInfoArray: Array<{ lang: string; filename: string | null }> = [];
+const langInfoArray: Array<{
+	lang: string;
+	filename: string | null;
+	diffMode: string | null;
+}> = [];
 
 // rehypeShikiの処理前に言語情報を一時保存（順序を保持）
 export const saveCodeBlockLangPlugin = () => {
@@ -354,8 +388,11 @@ export const saveCodeBlockLangPlugin = () => {
 					const filename = node.properties['data-meta']
 						? String(node.properties['data-meta'])
 						: null;
+					const diffMode = node.properties['data-diff-mode']
+						? String(node.properties['data-diff-mode'])
+						: null;
 
-					langInfoArray.push({ lang, filename });
+					langInfoArray.push({ lang, filename, diffMode });
 				}
 			}
 		});
@@ -385,12 +422,124 @@ export const restoreCodeBlockLangPlugin = () => {
 							// eslint-disable-next-line no-param-reassign
 							node.properties['data-meta'] = savedInfo.filename;
 						}
+						if (savedInfo.diffMode) {
+							// eslint-disable-next-line no-param-reassign
+							node.properties['data-diff-mode'] = savedInfo.diffMode;
+						}
 					}
 					index += 1;
 				} else {
-					// data-langが既に存在する場合もインデックスを進める
+					// data-langが既に存在する場合も、data-diff-modeを復元する
+					const savedInfo = langInfoArray[index];
+					if (
+						savedInfo &&
+						savedInfo.diffMode &&
+						!node.properties['data-diff-mode']
+					) {
+						// eslint-disable-next-line no-param-reassign
+						node.properties['data-diff-mode'] = savedInfo.diffMode;
+					}
+					// インデックスを進める
 					index += 1;
 				}
+			}
+		});
+	};
+};
+
+// diff形式のコードブロックで-/+で始まる行にクラスを追加するrehypeプラグイン
+export const addDiffLineClassesPlugin = () => {
+	return (tree: Node) => {
+		visit(tree, 'element', (node: Element) => {
+			// shiki処理後の<pre class="shiki">要素を検出
+			if (
+				node.tagName === 'pre' &&
+				node.properties &&
+				typeof node.properties.className === 'object' &&
+				Array.isArray(node.properties.className) &&
+				node.properties.className.includes('shiki') &&
+				node.properties['data-diff-mode']
+			) {
+				const diffMode = String(node.properties['data-diff-mode']);
+				if (diffMode !== 'with-bg' && diffMode !== 'text-only') {
+					return;
+				}
+
+				// code要素を検索
+				const codeElement = node.children?.find(
+					(child: any) => child.type === 'element' && child.tagName === 'code',
+				) as Element | undefined;
+
+				if (!codeElement || !codeElement.children) {
+					return;
+				}
+
+				// 各行（span.line）を走査
+				codeElement.children.forEach((lineNode: any) => {
+					if (
+						lineNode.type === 'element' &&
+						lineNode.tagName === 'span' &&
+						lineNode.properties &&
+						typeof lineNode.properties.className === 'object' &&
+						Array.isArray(lineNode.properties.className) &&
+						lineNode.properties.className.includes('line')
+					) {
+						// 行の最初の非空白文字を取得
+						// 行の最初の子要素（spanまたはテキストノード）から取得
+						const getFirstChar = (element: any): string | null => {
+							// テキストノードの場合
+							if (element.type === 'text') {
+								const text = element.value?.trimStart();
+								return text?.[0] || null;
+							}
+							// 要素の場合、最初の子要素を再帰的に確認
+							if (
+								element.type === 'element' &&
+								element.children &&
+								element.children.length > 0
+							) {
+								// 最初の子要素から順に確認
+								for (const child of element.children) {
+									const char = getFirstChar(child);
+									if (char) {
+										return char;
+									}
+								}
+							}
+							return null;
+						};
+
+						// 行の最初の非空白文字を取得
+						const firstChild = lineNode.children?.[0];
+						const firstChar = firstChild ? getFirstChar(firstChild) : null;
+
+						// -/+で始まる行にクラスを追加
+						if (firstChar === '-' || firstChar === '+') {
+							const className = lineNode.properties.className as string[];
+							if (diffMode === 'with-bg') {
+								if (firstChar === '-') {
+									if (!className.includes('diff-line-remove')) {
+										className.push('diff-line-remove');
+									}
+								} else if (firstChar === '+') {
+									if (!className.includes('diff-line-add')) {
+										className.push('diff-line-add');
+									}
+								}
+							} else if (diffMode === 'text-only') {
+								if (firstChar === '-') {
+									if (!className.includes('diff-text-remove')) {
+										className.push('diff-text-remove');
+									}
+								} else if (firstChar === '+') {
+									if (!className.includes('diff-text-add')) {
+										className.push('diff-text-add');
+									}
+								}
+							}
+						}
+					}
+				});
 			}
 		});
 	};
@@ -560,6 +709,7 @@ export const rehypePlugins = async () => [
 		},
 	],
 	restoreCodeBlockLangPlugin as any,
+	addDiffLineClassesPlugin as any,
 	rehypeMathJaxSvg,
 	wrapTablePlugin as any,
 	addCodeBlockLabelPlugin as any,

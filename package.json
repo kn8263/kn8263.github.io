@@ -28,6 +28,7 @@
 		"@leafac/rehype-shiki": "^2.2.1",
 		"@mui/icons-material": "^6.1.1",
 		"@mui/material": "^6.1.1",
+		"@shikijs/transformers": "^3.21.0",
 		"astro": "^4.0.0",
 		"bech32": "^2.0.0",
 		"bs58": "^6.0.0",
