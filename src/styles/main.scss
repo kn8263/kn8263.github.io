@@ -256,16 +256,20 @@
 		}
 		// テーブルを横スクロール可能にするラッパー
 		.table-container {
-			@apply overflow-x-auto my-6;
+			@apply my-6;
 			width: 100%;
-			-webkit-overflow-scrolling: touch;
+			overflow: hidden;
+			// 横スクロールを有効化する場合は以下のコメントを外す
+			// -webkit-overflow-scrolling: touch;
+			// overflow-x: auto;
 		}
 		table {
 			@apply border-collapse border border-gray-300;
-			width: 100%;
-			min-width: max-content;
+			width: auto;
+			max-width: 100%;
 			border-spacing: 0;
 			margin: 0;
+			table-layout: auto;
 		}
 		thead {
 			@apply bg-gray-50;
@@ -273,9 +277,14 @@
 		th,
 		td {
 			@apply border border-gray-300 px-4 py-2;
+			word-wrap: break-word;
+			overflow-wrap: break-word;
+			word-break: break-word;
+			white-space: normal;
 		}
 		th {
 			@apply font-semibold text-left;
+			white-space: nowrap;
 		}
 	}
 }
