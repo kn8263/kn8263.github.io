@@ -4,7 +4,7 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Fri, 16 Jan 2026 02:36:46 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 16 Jan 2026 08:15:40 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
@@ -293,7 +293,7 @@
 </table></div>
 <h4>Hostsの設定(IIS外)</h4>
 <p>VM内でIP確認：</p>
-<div class="code-block-wrapper"><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">ipconfig</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">ipconfig</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> イーサネット アダプター イーサネット </span><span style="color: #79C0FF">2</span><span style="color: #C9D1D9">:</span></span>
 <span class="line"></span>
@@ -303,7 +303,7 @@
 <span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> サブネット マスク </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .: </span><span style="color: #79C0FF">255.255</span><span style="color: #C9D1D9">.</span><span style="color: #79C0FF">255.0</span></span>
 <span class="line"><span style="color: #C9D1D9">   </span><span style="color: #FF7B72">></span><span style="color: #C9D1D9"> デフォルト ゲートウェイ </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">.</span><span style="color: #C9D1D9"> .:</span></span></code></pre></div>
 <p><code>C:\Windows\System32\drivers\etc\hosts</code>に以下を追記</p>
-<div class="code-block-wrapper"><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">192.168.56.102       app.local</span></span></code></pre></div>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">192.168.56.102       app.local</span></span></code></pre></div>
 <hr>
 <h3>2. PHP 8.2 設定（Non-Threadsafe x64）</h3>
 <ul>
@@ -318,7 +318,7 @@
 <p>php.ini の編集例</p>
 </li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">ini</div><pre class="shiki" style="background-color: #0d1117" data-lang="ini"><code><span class="line"><span style="color: #FF7B72">extension_dir</span><span style="color: #C9D1D9"> = </span><span style="color: #A5D6FF">"C:\php82\ext"</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">ini</div><pre class="shiki" style="background-color: #0d1117" data-lang="ini"><code><span class="line"><span style="color: #FF7B72">extension_dir</span><span style="color: #C9D1D9"> = </span><span style="color: #A5D6FF">"C:\php82\ext"</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=curl</span></span>
 <span class="line"><span style="color: #FF7B72">extension</span><span style="color: #C9D1D9">=gd</span></span>
@@ -411,7 +411,7 @@
 <code>C:\inetpub\wwwroot\index.php</code> に以下を作成</p>
 </li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">php</div><pre class="shiki" style="background-color: #0d1117" data-lang="php"><code><span class="line"><span style="color: #FF7B72">&#x3C;?</span><span style="color: #79C0FF">php</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">php</div><pre class="shiki" style="background-color: #0d1117" data-lang="php"><code><span class="line"><span style="color: #FF7B72">&#x3C;?</span><span style="color: #79C0FF">php</span></span>
 <span class="line"><span style="color: #79C0FF">echo</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">phpinfo</span><span style="color: #C9D1D9">();</span></span></code></pre></div>
 <p>ブラウザで <code>http://localhost/index.php</code> にアクセス</p>
 <hr>
@@ -431,13 +431,13 @@
 <p>バージョン確認</p>
 </li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">cmd</div><pre class="shiki" style="background-color: #0d1117" data-lang="cmd"><code><span class="line"><span style="color: #C9D1D9">composer </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">V</span></span></code></pre></div>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">cmd</div><pre class="shiki" style="background-color: #0d1117" data-lang="cmd"><code><span class="line"><span style="color: #C9D1D9">composer </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">V</span></span></code></pre></div>
 <hr>
 <h3>4. Node.js の設定</h3>
 <ul>
 <li><a href="https://github.com/coreybutler/nvm-windows/releases">nvmのインストール(nvm-setup.exe)</a></li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #8B949E"># バージョンチェック</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #8B949E"># バージョンチェック</span></span>
 <span class="line"><span style="color: #C9D1D9">nvm version</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #8B949E"># インストール可能なnode.jsバージョン確認</span></span>
@@ -454,7 +454,7 @@
 <ul>
 <li>バージョン確認</li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">node </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">v</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">node </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">v</span></span>
 <span class="line"><span style="color: #C9D1D9">npm </span><span style="color: #FF7B72">-</span><span style="color: #C9D1D9">v</span></span></code></pre></div>
 <hr>
 <h3>5. SQL Server の設定</h3>
@@ -513,26 +513,26 @@
 <li>ダウンロードしたexeを<code>C:\mailhog</code>内に配置</li>
 <li>以下を記載したバッチ（.bat）ファイルを作成(ファイル名は任意)しexeと同じディレクトリに配置</li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">bat</div><pre class="shiki" style="background-color: #0d1117" data-lang="bat"><code><span class="line"><span style="color: #FF7B72">@echo</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">off</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">bat</div><pre class="shiki" style="background-color: #0d1117" data-lang="bat"><code><span class="line"><span style="color: #FF7B72">@echo</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">off</span></span>
 <span class="line"><span style="color: #FF7B72">cd</span><span style="color: #C9D1D9"> /d C:\mailhog</span></span>
 <span class="line"><span style="color: #FF7B72">start</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9"> MailHog_windows_amd64.exe -storage=maildir -maildir-path=C:\mailhog\mails</span></span></code></pre></div>
 <ul>
 <li>バッチファイルのショートカットをデスクトップに置いておくと便利</li>
 <li>シェルスクリプトはこちら</li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">sh</div><pre class="shiki" style="background-color: #0d1117" data-lang="sh"><code><span class="line"><span style="color: #8B949E">#!/bin/bash</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">sh</div><pre class="shiki" style="background-color: #0d1117" data-lang="sh"><code><span class="line"><span style="color: #8B949E">#!/bin/bash</span></span>
 <span class="line"><span style="color: #C9D1D9">./MailHog_windows_amd64.exe -storage=maildir -maildir-path=./mails</span></span></code></pre></div>
 <br>
 <details><summary>※Mailpitの場合</summary>
 <h4>1. mailpitダウンロード</h4>
 <p>mailpit <a href="https://github.com/axllent/mailpit/releases/download/v1.28.0/mailpit-windows-amd64.zip">ダウンロード</a><br>
 ※VMのホストに配置</p>
-<div class="code-block-wrapper"><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #C9D1D9">mkdir /c/mailpit</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #C9D1D9">mkdir /c/mailpit</span></span>
 <span class="line"><span style="color: #C9D1D9">mv download_path/mailpit.exe /c/mailpit/mailpit.exe</span></span></code></pre></div>
 <br>
 <h4>2. mailpi起動スクリプト作成</h4>
 <details><summary>start_mailpit.sh</summary>
-<div class="code-block-wrapper"><div class="code-block-label">sh</div><pre class="shiki" style="background-color: #0d1117" data-lang="sh"><code><span class="line"><span style="color: #8B949E">#!/bin/bash</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">sh</div><pre class="shiki" style="background-color: #0d1117" data-lang="sh"><code><span class="line"><span style="color: #8B949E">#!/bin/bash</span></span>
 <span class="line"></span>
 <span class="line"><span style="color: #8B949E"># Default values</span></span>
 <span class="line"><span style="color: #C9D1D9">DEFAULT_LISTEN_PORT=8025</span></span>
@@ -581,7 +581,7 @@
 </details>
 <br>
 <h4>3. mailpit起動</h4>
-<div class="code-block-wrapper"><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #79C0FF">pwd</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">bash</div><pre class="shiki" style="background-color: #0d1117" data-lang="bash"><code><span class="line"><span style="color: #79C0FF">pwd</span></span>
 <span class="line"><span style="color: #8B949E"># > /c/mailpit</span></span>
 <span class="line"><span style="color: #C9D1D9">./start_mail.sh</span></span></code></pre></div>
 </details>
@@ -591,7 +591,7 @@
 <li>Laravelプロジェクト内のpublicディレクトリに以下のweb.configを作成<br></li>
 </ul>
 <details><summary>C:\inetpub\wwwroot\app\public\web.config</summary>
-<div class="code-block-wrapper"><div class="code-block-label">xml</div><pre class="shiki" style="background-color: #0d1117" data-lang="xml"><code><span class="line"><span style="color: #C9D1D9">&#x3C;</span><span style="color: #7EE787">configuration</span><span style="color: #C9D1D9">></span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">xml</div><pre class="shiki" style="background-color: #0d1117" data-lang="xml"><code><span class="line"><span style="color: #C9D1D9">&#x3C;</span><span style="color: #7EE787">configuration</span><span style="color: #C9D1D9">></span></span>
 <span class="line"><span style="color: #C9D1D9">    &#x3C;</span><span style="color: #7EE787">system.webServer</span><span style="color: #C9D1D9">></span></span>
 <span class="line"><span style="color: #C9D1D9">        &#x3C;</span><span style="color: #7EE787">rewrite</span><span style="color: #C9D1D9">></span></span>
 <span class="line"><span style="color: #C9D1D9">            &#x3C;</span><span style="color: #7EE787">rules</span><span style="color: #C9D1D9">></span></span>
@@ -619,11 +619,11 @@
 <p>.env.exampleから.envを作成</p>
 </li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">cd C:\inetpub\wwwroot</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">powershell</div><pre class="shiki" style="background-color: #0d1117" data-lang="powershell"><code><span class="line"><span style="color: #C9D1D9">cd C:\inetpub\wwwroot</span></span>
 <span class="line"><span style="color: #C9D1D9">cp .env.example .env</span></span></code></pre></div>
 <br>
 <details><summary>.envの記載内容</summary> 
-<div class="code-block-wrapper"><div class="code-block-label">.env</div><pre class="shiki" style="background-color: #0d1117" data-lang="txt" data-meta=".env"><code><span class="line"><span style="color: #c9d1d9">APP_NAME=app</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">.env</div><pre class="shiki" style="background-color: #0d1117" data-lang="txt" data-meta=".env"><code><span class="line"><span style="color: #c9d1d9">APP_NAME=app</span></span>
 <span class="line"><span style="color: #c9d1d9">APP_URL=http://app.local</span></span>
 <span class="line"><span style="color: #c9d1d9">APP_TITLE="アプリタイトル"</span></span>
 <span class="line"><span style="color: #c9d1d9"></span></span>
@@ -647,7 +647,7 @@
 <ul>
 <li>Laravel 初期セットアップ</li>
 </ul>
-<div class="code-block-wrapper"><div class="code-block-label">cmd</div><pre class="shiki" style="background-color: #0d1117" data-lang="cmd"><code><span class="line"><span style="color: #C9D1D9">composer install</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">cmd</div><pre class="shiki" style="background-color: #0d1117" data-lang="cmd"><code><span class="line"><span style="color: #C9D1D9">composer install</span></span>
 <span class="line"><span style="color: #C9D1D9">npm install</span></span>
 <span class="line"><span style="color: #C9D1D9">php artisan key:generate</span></span>
 <span class="line"><span style="color: #C9D1D9">php artisan storage:link</span></span>
@@ -803,7 +803,7 @@
 <li>小規模向き</li>
 </ul>
 <p>【全体の処理フロー】</p>
-<div class="code-block-wrapper"><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">ユーザー質問</span></span>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><pre class="shiki" style="background-color: #0d1117" data-lang="text"><code><span class="line"><span style="color: #c9d1d9">ユーザー質問</span></span>
 <span class="line"><span style="color: #c9d1d9">   ↓</span></span>
 <span class="line"><span style="color: #c9d1d9">Frontend</span></span>
 <span class="line"><span style="color: #c9d1d9">   ↓</span></span>
