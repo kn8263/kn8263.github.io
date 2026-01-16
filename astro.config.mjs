@@ -9,11 +9,6 @@ import sitemap from '@astrojs/sitemap';
 import { remarkPlugins, rehypePlugins } from './src/utils/markdown-plugins.ts';
 import { rssPlugin } from './scripts/rss-plugin.mjs';
 
-// https://astro.build/config
-// rehypePluginsを先に取得してからdefineConfigに渡す
-// eslint-disable-next-line no-await-in-loop
-const plugins = await rehypePlugins();
-
 export default defineConfig({
 	site: 'https://kn8263.github.io',
 	base: '/',
@@ -23,7 +18,6 @@ export default defineConfig({
 		react(),
 		mdx({
 			remarkPlugins,
-			rehypePlugins: plugins,
 		}),
 		tailwind({
 			applyBaseStyles: false,
