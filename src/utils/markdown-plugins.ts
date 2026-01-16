@@ -655,31 +655,82 @@ export const addCodeBlockLabelPlugin = () => {
 
 						// 言語が存在する場合のみラベルを追加（textの場合は表示しない）
 						if (lang && lang !== 'text') {
-							// ラベルテキスト（ファイル名があればファイル名、なければ言語名）
-							const labelText = filename || lang;
+							// diffで始まる言語指定の特別処理
+							let labelText: string | null = null;
+							let shouldShowLabel = true;
 
-							const label: Element = {
-								type: 'element',
-								tagName: 'div',
-								properties: { className: ['code-block-label'] },
-								children: [
-									{
-										type: 'text',
-										value: labelText,
-									},
-								],
-							};
+							// パターン1: diffのみ → ラベル非表示
+							if (lang === 'diff') {
+								shouldShowLabel = false;
+							}
+							// パターン2: diff:xxx → ラベル: xxx
+							else if (lang.startsWith('diff:')) {
+								const afterDiff = lang.substring(5); // 'diff:'を除く
+								if (afterDiff) {
+									labelText = afterDiff;
+								} else {
+									shouldShowLabel = false;
+								}
+							}
+							// パターン3: 言語:diff → ラベル非表示（filenameがdiffの場合）
+							else if (filename === 'diff') {
+								shouldShowLabel = false;
+							}
+							// パターン4: 言語:diff_xxx → ラベル: xxx（langに:diff_が含まれる場合）
+							else if (lang.includes(':diff_')) {
+								const diffIndex = lang.indexOf(':diff_');
+								const afterDiff = lang.substring(diffIndex + 6); // ':diff_'を除く
+								if (afterDiff) {
+									labelText = afterDiff;
+								} else {
+									shouldShowLabel = false;
+								}
+							}
+							// パターン5: 言語:diff_xxx → ラベル: xxx（filenameがdiff_で始まる場合）
+							else if (filename && filename.startsWith('diff_')) {
+								labelText = filename.substring(5); // 'diff_'を除く
+							}
+							// パターン6: それ以外（通常の言語指定） → 通常通り
+							else {
+								labelText = filename || lang;
+							}
 
-							// ラッパーdivを作成
-							const wrapper: Element = {
-								type: 'element',
-								tagName: 'div',
-								properties: { className: ['code-block-wrapper'] },
-								children: [label, node],
-							};
+							// ラベルを表示する場合のみラベル要素を作成
+							if (shouldShowLabel && labelText) {
+								const label: Element = {
+									type: 'element',
+									tagName: 'div',
+									properties: { className: ['code-block-label'] },
+									children: [
+										{
+											type: 'text',
+											value: labelText,
+										},
+									],
+								};
 
-							// eslint-disable-next-line no-param-reassign
-							parent.children[index] = wrapper;
+								// ラッパーdivを作成
+								const wrapper: Element = {
+									type: 'element',
+									tagName: 'div',
+									properties: { className: ['code-block-wrapper'] },
+									children: [label, node],
+								};
+
+								// eslint-disable-next-line no-param-reassign
+								parent.children[index] = wrapper;
+							} else {
+								// ラベル非表示の場合はラッパーのみ作成
+								const wrapper: Element = {
+									type: 'element',
+									tagName: 'div',
+									properties: { className: ['code-block-wrapper'] },
+									children: [node],
+								};
+
+								// eslint-disable-next-line no-param-reassign
+								parent.children[index] = wrapper;
+							}
 						} else if (lang === 'text') {
 							// textの場合はラッパーのみ作成（ラベルなし）
 							const wrapper: Element = {
