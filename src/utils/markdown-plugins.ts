@@ -695,6 +695,45 @@ export const addCodeBlockLabelPlugin = () => {
 								labelText = filename || lang;
 							}
 
+							// 折り返しボタンを作成
+							const wrapButton: Element = {
+								type: 'element',
+								tagName: 'button',
+								properties: {
+									className: ['code-block-wrap-button'],
+									'aria-label': '折り返し',
+									type: 'button',
+								},
+								children: [
+									{
+										type: 'element',
+										tagName: 'i',
+										properties: {
+											className: [
+												'fa-solid',
+												'fa-turn-down',
+												'wrap-icon',
+												'wrap-icon-scroll',
+											],
+										},
+										children: [],
+									},
+									{
+										type: 'element',
+										tagName: 'i',
+										properties: {
+											className: [
+												'fa-solid',
+												'fa-right-long',
+												'wrap-icon',
+												'wrap-icon-wrapped',
+											],
+										},
+										children: [],
+									},
+								],
+							};
+
 							// コピーボタンを作成
 							const copyButton: Element = {
 								type: 'element',
@@ -748,29 +787,68 @@ export const addCodeBlockLabelPlugin = () => {
 									],
 								};
 
-								// ラッパーdivを作成（コピーボタンを含む）
+								// ラッパーdivを作成（折り返しボタンとコピーボタンを含む）
 								const wrapper: Element = {
 									type: 'element',
 									tagName: 'div',
 									properties: { className: ['code-block-wrapper'] },
-									children: [copyButton, label, node],
+									children: [wrapButton, copyButton, label, node],
 								};
 
 								// eslint-disable-next-line no-param-reassign
 								parent.children[index] = wrapper;
 							} else {
-								// ラベル非表示の場合はラッパーのみ作成（コピーボタンを含む）
+								// ラベル非表示の場合はラッパーのみ作成（折り返しボタンとコピーボタンを含む）
 								const wrapper: Element = {
 									type: 'element',
 									tagName: 'div',
 									properties: { className: ['code-block-wrapper'] },
-									children: [copyButton, node],
+									children: [wrapButton, copyButton, node],
 								};
 
 								// eslint-disable-next-line no-param-reassign
 								parent.children[index] = wrapper;
 							}
 						} else if (lang === 'text') {
+							// 折り返しボタンを作成
+							const wrapButton: Element = {
+								type: 'element',
+								tagName: 'button',
+								properties: {
+									className: ['code-block-wrap-button'],
+									'aria-label': '折り返し',
+									type: 'button',
+								},
+								children: [
+									{
+										type: 'element',
+										tagName: 'i',
+										properties: {
+											className: [
+												'fa-solid',
+												'fa-turn-down',
+												'wrap-icon',
+												'wrap-icon-scroll',
+											],
+										},
+										children: [],
+									},
+									{
+										type: 'element',
+										tagName: 'i',
+										properties: {
+											className: [
+												'fa-solid',
+												'fa-right-long',
+												'wrap-icon',
+												'wrap-icon-wrapped',
+											],
+										},
+										children: [],
+									},
+								],
+							};
+
 							// コピーボタンを作成
 							const copyButton: Element = {
 								type: 'element',
@@ -810,12 +888,12 @@ export const addCodeBlockLabelPlugin = () => {
 								],
 							};
 
-							// textの場合はラッパーのみ作成（ラベルなし、コピーボタンを含む）
+							// textの場合はラッパーのみ作成（ラベルなし、折り返しボタンとコピーボタンを含む）
 							const wrapper: Element = {
 								type: 'element',
 								tagName: 'div',
 								properties: { className: ['code-block-wrapper'] },
-								children: [copyButton, node],
+								children: [wrapButton, copyButton, node],
 							};
 
 							// eslint-disable-next-line no-param-reassign

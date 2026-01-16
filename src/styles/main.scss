@@ -119,10 +119,10 @@ $code-block-bg: #1a2638;
 			// background-color: $code-block-bg;
 		}
 		
+		.code-block-wrap-button,
 		.code-block-copy-button {
 			position: absolute;
 			top: 0.5rem;
-			right: 0.5rem;
 			background-color: #323e52cc;
 			border: 1px solid #ffffff1a;
 			border-radius: 0.25rem;
@@ -141,6 +141,44 @@ $code-block-bg: #1a2638;
 			&:hover {
 				background-color: #323e52;
 			}
+		}
+		
+		.code-block-wrap-button {
+			right: 2.5rem; // コピーボタンの左側に配置
+			
+			.wrap-icon {
+				font-size: 1rem;
+				line-height: 1;
+				flex-shrink: 0;
+				display: inline-block;
+			}
+			
+			// スクロールモードのアイコン（turn-downを90°右回転）
+			.wrap-icon-scroll {
+				transform: rotate(90deg);
+				display: inline-block;
+			}
+			
+			// 折り返しモードのアイコン（right-long）
+			.wrap-icon-wrapped {
+				display: none !important;
+			}
+			
+			&.active {
+				background-color: #323e52;
+				
+				.wrap-icon-scroll {
+					display: none !important;
+				}
+				
+				.wrap-icon-wrapped {
+					display: inline-block !important;
+				}
+			}
+		}
+		
+		.code-block-copy-button {
+			right: 0.5rem;
 			
 			.copy-icon {
 				font-size: 1rem;
@@ -167,12 +205,55 @@ $code-block-bg: #1a2638;
 		
 		// ラベルがある場合、ボタンをラベルの下（コードブロックの開始位置）に配置
 		// ラベルの高さ（padding: 0.3rem * 2 + font-size: 0.75rem * line-height）を考慮
+		.code-block-wrapper:has(.code-block-label) .code-block-wrap-button,
 		.code-block-wrapper:has(.code-block-label) .code-block-copy-button {
 			top: calc(0.6rem + 0.75rem * 1.2 + 0.75rem);
 		}
 		
+		.code-block-wrapper:hover .code-block-wrap-button,
 		.code-block-wrapper:hover .code-block-copy-button {
 			opacity: 1;
+		}
+		
+		// 折り返しモードのスタイル
+		.code-block-wrapper.wrapped {
+			.shiki {
+				overflow-x: visible !important;
+				overflow-y: visible !important;
+			}
+			
+			.shiki pre {
+				overflow-x: visible !important;
+				overflow-y: visible !important;
+				white-space: pre-wrap !important;
+			}
+			
+			.shiki code {
+				white-space: pre-wrap !important;
+				word-break: break-all;
+				overflow-x: visible !important;
+				overflow-y: visible !important;
+			}
+			
+			// Shikiの行構造も折り返しに対応
+			.shiki code > span.line {
+				white-space: pre-wrap !important;
+				word-break: break-all;
+				// display: block;
+			}
+			
+			// 通常のpre要素も折り返しに対応
+			pre:not(.shiki) {
+				overflow-x: visible !important;
+				overflow-y: visible !important;
+				white-space: pre-wrap !important;
+			}
+			
+			pre:not(.shiki) code {
+				white-space: pre-wrap !important;
+				word-break: break-all;
+				overflow-x: visible !important;
+			}
 		}
 		
 		.code-block-label {
@@ -273,7 +354,7 @@ $code-block-bg: #1a2638;
 				display: inline-block;
 				content: counter(code-step-counter);
 				counter-increment: code-step-counter;
-				width: 2.5rem;
+				width: 1.5rem;
 				margin-right: 0.75rem;
 				text-align: right;
 				font-variant-numeric: slashed-zero;

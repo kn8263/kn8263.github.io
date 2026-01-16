@@ -245,15 +245,67 @@ const { recents, tags, meta } = Astro.props;
 				});
 			}
 			
-			// DOMContentLoaded時にコピーボタンを初期化
-			document.addEventListener('DOMContentLoaded', () => {
-				initCodeBlockCopyButtons();
-			});
-			
-			// ページが既に読み込まれている場合
-			if (document.readyState === 'complete' || document.readyState === 'interactive') {
-				initCodeBlockCopyButtons();
+			// コードブロックの折り返し機能
+			function initCodeBlockWrapButtons() {
+				const wrapButtons = document.querySelectorAll('.code-block-wrap-button');
+				console.log('折り返しボタンの数:', wrapButtons.length);
+				
+				wrapButtons.forEach((button) => {
+					const wrapper = button.closest('.code-block-wrapper');
+					if (!wrapper) {
+						console.log('ラッパーが見つかりません');
+						return;
+					}
+					
+					// 横スクロールがあるかチェック
+					const codeElement = wrapper.querySelector('.shiki') || wrapper.querySelector('pre:not(.shiki)');
+					if (codeElement) {
+						const hasHorizontalScroll = codeElement.scrollWidth > codeElement.clientWidth;
+						console.log('横スクロールチェック:', {
+							scrollWidth: codeElement.scrollWidth,
+							clientWidth: codeElement.clientWidth,
+							hasHorizontalScroll
+						});
+						if (!hasHorizontalScroll) {
+							// 横スクロールがない場合はボタンを非表示
+							(button as HTMLElement).style.display = 'none';
+							return;
+						}
+					} else {
+						console.log('コード要素が見つかりません');
+					}
+					
+					button.addEventListener('click', (e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						console.log('折り返しボタンがクリックされました');
+						// 折り返しモードを切り替え
+						wrapper.classList.toggle('wrapped');
+						button.classList.toggle('active');
+						console.log('wrappedクラス:', wrapper.classList.contains('wrapped'));
+						console.log('activeクラス:', button.classList.contains('active'));
+					});
+				});
 			}
+			
+			// 初期化関数
+			function initCodeBlocks() {
+				console.log('コードブロックを初期化中...');
+				initCodeBlockCopyButtons();
+				initCodeBlockWrapButtons();
+			}
+			
+			// DOMContentLoaded時にコピーボタンと折り返しボタンを初期化
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initCodeBlocks);
+			} else {
+				// ページが既に読み込まれている場合
+				initCodeBlocks();
+			}
+			
+			// 少し遅延してからも初期化（動的に追加されるコンテンツに対応）
+			setTimeout(initCodeBlocks, 100);
+			setTimeout(initCodeBlocks, 500);
 		</script>
 	</body>
 </html>
