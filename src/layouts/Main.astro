@@ -185,6 +185,75 @@ const { recents, tags, meta } = Astro.props;
 					adjustSidebarHeight();
 				}
 			});
+			
+			// コードブロックのコピー機能
+			function initCodeBlockCopyButtons() {
+				const copyButtons = document.querySelectorAll('.code-block-copy-button');
+				
+				copyButtons.forEach((button) => {
+					button.addEventListener('click', async () => {
+						const wrapper = button.closest('.code-block-wrapper');
+						if (!wrapper) return;
+						
+						// コードを取得
+						let codeText = '';
+						
+						// Shikiでハイライトされたコードの場合
+						const shikiCode = wrapper.querySelector('.shiki code');
+						if (shikiCode) {
+							// すべてのテキストノードを取得
+							const textNodes: string[] = [];
+							const walker = document.createTreeWalker(
+								shikiCode,
+								NodeFilter.SHOW_TEXT,
+								null
+							);
+							let node;
+							while ((node = walker.nextNode())) {
+								if (node.textContent) {
+									textNodes.push(node.textContent);
+								}
+							}
+							codeText = textNodes.join('');
+							
+							// テキストノードが見つからない場合、innerTextを使用
+							if (!codeText) {
+								codeText = (shikiCode as HTMLElement).innerText || '';
+							}
+						}
+						// 通常のコードブロックの場合
+						else {
+							const codeElement = wrapper.querySelector('pre code') || wrapper.querySelector('code');
+							if (codeElement) {
+								codeText = (codeElement as HTMLElement).innerText || codeElement.textContent || '';
+							}
+						}
+						
+						// クリップボードにコピー
+						try {
+							await navigator.clipboard.writeText(codeText);
+							
+							// コピー成功時のフィードバック
+							button.classList.add('copied');
+							setTimeout(() => {
+								button.classList.remove('copied');
+							}, 1500);
+						} catch (err) {
+							console.error('コピーに失敗しました:', err);
+						}
+					});
+				});
+			}
+			
+			// DOMContentLoaded時にコピーボタンを初期化
+			document.addEventListener('DOMContentLoaded', () => {
+				initCodeBlockCopyButtons();
+			});
+			
+			// ページが既に読み込まれている場合
+			if (document.readyState === 'complete' || document.readyState === 'interactive') {
+				initCodeBlockCopyButtons();
+			}
 		</script>
 	</body>
 </html>

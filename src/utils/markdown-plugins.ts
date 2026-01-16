@@ -695,6 +695,45 @@ export const addCodeBlockLabelPlugin = () => {
 								labelText = filename || lang;
 							}
 
+							// コピーボタンを作成
+							const copyButton: Element = {
+								type: 'element',
+								tagName: 'button',
+								properties: {
+									className: ['code-block-copy-button'],
+									'aria-label': 'コードをコピー',
+									type: 'button',
+								},
+								children: [
+									{
+										type: 'element',
+										tagName: 'i',
+										properties: {
+											className: ['fa', 'copy-icon'],
+										},
+										children: [
+											{
+												type: 'text',
+												value: '',
+											},
+										],
+									},
+									{
+										type: 'element',
+										tagName: 'span',
+										properties: {
+											className: ['copy-feedback'],
+										},
+										children: [
+											{
+												type: 'text',
+												value: 'クリップボードにコピーしました！',
+											},
+										],
+									},
+								],
+							};
+
 							// ラベルを表示する場合のみラベル要素を作成
 							if (shouldShowLabel && labelText) {
 								const label: Element = {
@@ -709,35 +748,74 @@ export const addCodeBlockLabelPlugin = () => {
 									],
 								};
 
-								// ラッパーdivを作成
+								// ラッパーdivを作成（コピーボタンを含む）
 								const wrapper: Element = {
 									type: 'element',
 									tagName: 'div',
 									properties: { className: ['code-block-wrapper'] },
-									children: [label, node],
+									children: [copyButton, label, node],
 								};
 
 								// eslint-disable-next-line no-param-reassign
 								parent.children[index] = wrapper;
 							} else {
-								// ラベル非表示の場合はラッパーのみ作成
+								// ラベル非表示の場合はラッパーのみ作成（コピーボタンを含む）
 								const wrapper: Element = {
 									type: 'element',
 									tagName: 'div',
 									properties: { className: ['code-block-wrapper'] },
-									children: [node],
+									children: [copyButton, node],
 								};
 
 								// eslint-disable-next-line no-param-reassign
 								parent.children[index] = wrapper;
 							}
 						} else if (lang === 'text') {
-							// textの場合はラッパーのみ作成（ラベルなし）
+							// コピーボタンを作成
+							const copyButton: Element = {
+								type: 'element',
+								tagName: 'button',
+								properties: {
+									className: ['code-block-copy-button'],
+									'aria-label': 'コードをコピー',
+									type: 'button',
+								},
+								children: [
+									{
+										type: 'element',
+										tagName: 'i',
+										properties: {
+											className: ['fa', 'copy-icon'],
+										},
+										children: [
+											{
+												type: 'text',
+												value: '',
+											},
+										],
+									},
+									{
+										type: 'element',
+										tagName: 'span',
+										properties: {
+											className: ['copy-feedback'],
+										},
+										children: [
+											{
+												type: 'text',
+												value: 'クリップボードにコピーしました！',
+											},
+										],
+									},
+								],
+							};
+
+							// textの場合はラッパーのみ作成（ラベルなし、コピーボタンを含む）
 							const wrapper: Element = {
 								type: 'element',
 								tagName: 'div',
 								properties: { className: ['code-block-wrapper'] },
-								children: [node],
+								children: [copyButton, node],
 							};
 
 							// eslint-disable-next-line no-param-reassign
