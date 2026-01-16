@@ -19,9 +19,6 @@ const Sidebar = ({ recents, tags }: SidebarProps) => {
 	return (
 		<div className="sidebar-container">
 			<CheckMeRibbon />
-			<a href="/index.html" className="break-all">
-				TOP PAGE
-			</a>
 			<Author />
 			<Menu menu={AppConfig.sidebar_links} />
 			<Recents posts={recents} />

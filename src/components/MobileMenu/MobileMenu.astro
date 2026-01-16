@@ -1,0 +1,101 @@
+---
+import { Sidebar } from '../../templates/SideBar';
+import type { PostItems } from '../../types/Content';
+
+interface Props {
+	recents: PostItems[];
+	tags: string[];
+}
+
+const { recents, tags } = Astro.props;
+---
+
+<!-- モバイル版ハンバーガーメニュー -->
+<div class="lg:hidden sticky top-0 z-40 bg-slate-100 border-b border-gray-300">
+	<button
+		id="mobile-menu-button"
+		class="mobile-menu-button flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-200 rounded"
+		aria-label="メニューを開く"
+	>
+		<i class="fa fa-bars text-xl"></i>
+		<span class="font-semibold">MENU</span>
+	</button>
+</div>
+
+<!-- モバイル版メニューオーバーレイ -->
+<div
+	id="mobile-menu-overlay"
+	class="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
+>
+	<div class="mobile-menu-panel fixed left-0 top-0 h-full bg-white shadow-xl overflow-hidden" style="max-width: 90%;">
+		<!-- メニューヘッダー -->
+		<div class="flex items-center justify-between p-[0.4rem] border-b border-gray-300 bg-white sticky top-0 z-10" style="position: sticky;">
+			<span class="font-semibold text-lg">MENU</span>
+			<button
+				id="mobile-menu-close"
+				class="mobile-menu-close text-gray-600 hover:text-gray-800 text-2xl"
+				aria-label="メニューを閉じる"
+			>
+				<i class="fa fa-times"></i>
+			</button>
+		</div>
+		
+		<!-- メニューコンテンツ（サイドバー） -->
+		<div class="mobile-menu-content p-4 text-left overflow-y-auto" style="height: calc(100% - 64px);">
+			<div id="mobile-sidebar-content" class="text-left">
+				<Sidebar recents={recents} tags={tags} client:load />
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	// モバイル版ハンバーガーメニューの機能
+	function initMobileMenu() {
+		const menuButton = document.getElementById('mobile-menu-button');
+		const menuOverlay = document.getElementById('mobile-menu-overlay');
+		const menuClose = document.getElementById('mobile-menu-close');
+		
+		if (!menuButton || !menuOverlay || !menuClose) return;
+		
+		// メニューを閉じる
+		const closeMenu = () => {
+			menuOverlay.classList.add('hidden');
+			document.body.style.overflow = ''; // 背景のスクロールを有効化
+		};
+		
+		// メニューを開く
+		menuButton.addEventListener('click', () => {
+			menuOverlay.classList.remove('hidden');
+			document.body.style.overflow = 'hidden'; // 背景のスクロールを無効化
+		});
+		
+		menuClose.addEventListener('click', closeMenu);
+		
+		// オーバーレイをクリックしても閉じる
+		menuOverlay.addEventListener('click', (e) => {
+			if (e.target === menuOverlay) {
+				closeMenu();
+			}
+		});
+		
+		// ESCキーで閉じる
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !menuOverlay.classList.contains('hidden')) {
+				closeMenu();
+			}
+		});
+	}
+	
+	// DOMContentLoaded時に初期化
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initMobileMenu);
+	} else {
+		// ページが既に読み込まれている場合
+		initMobileMenu();
+	}
+	
+	// 少し遅延してからも初期化（動的に追加されるコンテンツに対応）
+	setTimeout(initMobileMenu, 100);
+	setTimeout(initMobileMenu, 500);
+</script>

@@ -1,0 +1,336 @@
+---
+import { Sidebar } from '../../templates/SideBar';
+import type { PostItems } from '../../types/Content';
+
+interface Props {
+	recents: PostItems[];
+	tags: string[];
+}
+
+const { recents, tags } = Astro.props;
+---
+
+<!-- モバイル版ヘッダー -->
+<header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-300">
+	<div class="flex items-center justify-between px-4 py-2">
+		<!-- メニューボタン -->
+		<button
+			id="mobile-menu-button"
+			class="mobile-menu-button flex items-center gap-2 text-gray-800 hover:bg-gray-100 rounded px-2 py-1"
+			aria-label="メニューを開く"
+		>
+			<i class="fa fa-bars text-xl"></i>
+			<span class="font-semibold">MENU</span>
+		</button>
+		
+		<!-- 目次ボタン -->
+		<button
+			id="mobile-toc-button"
+			class="mobile-toc-button items-center gap-1 text-gray-800 hover:bg-gray-100 rounded px-2 py-1 hidden"
+			aria-label="目次を開く"
+		>
+			<span class="font-semibold text-sm">目次</span>
+			<span id="mobile-toc-icon" class="text-xs">∨</span>
+		</button>
+	</div>
+	
+	<!-- 目次コンテンツ（ヘッダーの下に表示、上に重ねる） -->
+	<div
+		id="mobile-toc-content"
+		class="mobile-toc-content hidden border-t border-gray-200 bg-white max-h-[60vh] overflow-y-auto shadow-lg"
+		style="position: fixed; right: 0.75rem; width: auto; min-width: 30%; max-width: 80%; padding: 1rem; z-index: 60; box-sizing: border-box;"
+	>
+		<!-- 目次はJavaScriptで動的に挿入 -->
+	</div>
+</header>
+
+<!-- ヘッダーの高さ分のスペーサー（モバイルのみ） -->
+<div id="mobile-header-spacer" class="lg:hidden"></div>
+
+<!-- モバイル版メニューオーバーレイ -->
+<div
+	id="mobile-menu-overlay"
+	class="mobile-menu-overlay fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
+>
+	<div class="mobile-menu-panel fixed left-0 top-0 h-full bg-white shadow-xl overflow-hidden" style="max-width: 90%;">
+		<!-- メニューヘッダー -->
+		<div class="flex items-center px-4 py-2 border-b border-gray-300 bg-white sticky top-0 z-10" style="position: sticky;">
+			<button
+				id="mobile-menu-header-close"
+				class="flex items-center gap-2 px-2 py-1 text-gray-800 hover:bg-gray-100 rounded"
+				aria-label="メニューを閉じる"
+			>
+				<i class="fa fa-times text-xl"></i>
+				<span class="font-semibold">MENU</span>
+			</button>
+		</div>
+		
+		<!-- メニューコンテンツ（サイドバー） -->
+		<div class="mobile-menu-content p-4 text-left overflow-y-auto" style="height: calc(100% - 64px);">
+			<div id="mobile-sidebar-content" class="text-left">
+				<Sidebar recents={recents} tags={tags} client:load />
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	// モバイル版ヘッダーの機能
+	function initMobileHeader() {
+		const menuButton = document.getElementById('mobile-menu-button');
+		const menuOverlay = document.getElementById('mobile-menu-overlay');
+		const menuHeaderClose = document.getElementById('mobile-menu-header-close');
+		const tocButton = document.getElementById('mobile-toc-button');
+		const tocContent = document.getElementById('mobile-toc-content');
+		const tocIcon = document.getElementById('mobile-toc-icon');
+		const headerSpacer = document.getElementById('mobile-header-spacer');
+		const header = document.querySelector('header.lg\\:hidden');
+		
+		if (!menuButton || !menuOverlay || !menuHeaderClose || !tocButton || !tocContent || !tocIcon) return;
+		
+		// ヘッダーの高さを取得してスペーサーと目次コンテンツの位置を調整
+		const updateHeaderHeight = () => {
+			if (header && headerSpacer && tocContent) {
+				const headerHeight = (header as HTMLElement).offsetHeight;
+				headerSpacer.style.height = `${headerHeight}px`;
+				tocContent.style.top = `${headerHeight}px`;
+			}
+		};
+		
+		updateHeaderHeight();
+		window.addEventListener('resize', updateHeaderHeight);
+		
+		// メニュー機能
+		const closeMenu = () => {
+			menuOverlay.classList.add('hidden');
+			document.body.style.overflow = '';
+		};
+		
+		menuButton.addEventListener('click', () => {
+			menuOverlay.classList.remove('hidden');
+			document.body.style.overflow = 'hidden';
+		});
+		
+		menuHeaderClose.addEventListener('click', closeMenu);
+		
+		menuOverlay.addEventListener('click', (e) => {
+			if (e.target === menuOverlay) {
+				closeMenu();
+			}
+		});
+		
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !menuOverlay.classList.contains('hidden')) {
+				closeMenu();
+			}
+		});
+		
+		// 目次機能
+		// 目次を取得する関数
+		let desktopToc: Element | null = null;
+		const findToc = () => {
+			// .toc-scroll-wrapper内を優先的に確認
+			desktopToc = document.querySelector('.toc-scroll-wrapper .table-of-contents');
+			
+			// 見つからない場合は、slot="toc"の内容を確認
+			if (!desktopToc) {
+				const tocSlot = document.querySelector('slot[name="toc"]');
+				if (tocSlot) {
+					const assignedNodes = (tocSlot as HTMLSlotElement).assignedNodes();
+					for (const node of assignedNodes) {
+						if (node.nodeType === Node.ELEMENT_NODE) {
+							const toc = (node as Element).querySelector('.table-of-contents');
+							if (toc) {
+								desktopToc = toc;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			// まだ見つからない場合は、直接.table-of-contentsを探す
+			if (!desktopToc) {
+				desktopToc = document.querySelector('.table-of-contents');
+			}
+			
+			if (!desktopToc) {
+				tocButton.classList.add('hidden');
+				return false;
+			}
+			
+			// 目次が見つかった場合、リストが空でないか確認
+			const tocList = desktopToc.querySelector('.table-of-contents-list');
+			if (tocList && tocList.children.length === 0) {
+				tocButton.classList.add('hidden');
+				return false;
+			}
+			
+			tocButton.classList.remove('hidden');
+			return true;
+		};
+		
+		// MutationObserverで目次の追加を監視
+		const observer = new MutationObserver(() => {
+			if (!desktopToc) {
+				findToc();
+			}
+		});
+		
+		const tocWrapper = document.querySelector('.toc-wrapper');
+		if (tocWrapper) {
+			observer.observe(tocWrapper, {
+				childList: true,
+				subtree: true,
+			});
+		}
+		
+		// 最初にチェック
+		findToc();
+		
+		// 目次を開く
+		const openToc = () => {
+			if (!desktopToc) {
+				if (!findToc()) {
+					return;
+				}
+			}
+			
+			tocContent.classList.remove('hidden');
+			tocIcon.textContent = '∧';
+			
+			// 目次が既に表示されている場合は再読み込みしない
+			if (tocContent.children.length > 0) {
+				return;
+			}
+			
+			// 目次をクローンして表示
+			const tocClone = desktopToc!.cloneNode(true) as HTMLElement;
+			// ヘッダー部分を削除
+			const header = tocClone.querySelector('.table-of-contents-header');
+			if (header) {
+				header.remove();
+			}
+			// 既存の内容をクリアしてから追加
+			tocContent.innerHTML = '';
+			tocContent.appendChild(tocClone);
+			
+			// ページヘッダーの高さを取得
+			const pageHeader = document.querySelector('header.lg\\:hidden');
+			const actualHeaderHeight = pageHeader ? (pageHeader as HTMLElement).offsetHeight : 48;
+			
+			// 目次のリンクにクリックイベントを追加
+			const tocLinks = tocContent.querySelectorAll('.table-of-contents-link');
+			tocLinks.forEach((link) => {
+				link.addEventListener('click', (e) => {
+					e.preventDefault();
+					const href = link.getAttribute('href');
+					if (href && href.startsWith('#')) {
+						const id = href.substring(1);
+						const element = document.getElementById(id);
+						if (element) {
+							// モバイル版のヘッダー高さを考慮したオフセット
+							const offset = 100 + actualHeaderHeight;
+							const elementPosition = element.getBoundingClientRect().top;
+							const offsetPosition = elementPosition + window.pageYOffset - offset;
+							
+							window.scrollTo({
+								top: offsetPosition,
+								behavior: 'smooth',
+							});
+						}
+					}
+					closeToc();
+				});
+			});
+			
+			// モバイル版の目次にもIntersectionObserverを設定（PC版と同じロジック）
+			const setupMobileTocObserver = () => {
+				const observerOptions = {
+					root: null,
+					rootMargin: '-20% 0px -70% 0px',
+					threshold: 0,
+				};
+				
+				const observerCallback = (entries: IntersectionObserverEntry[]) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							const activeId = entry.target.id;
+							// モバイル版の目次内の対応するリンクをアクティブにする
+							const mobileLinks = tocContent.querySelectorAll('.table-of-contents-link');
+							mobileLinks.forEach((mobileLink) => {
+								const mobileItem = mobileLink.closest('.table-of-contents-item');
+								if (mobileLink.getAttribute('href') === `#${activeId}`) {
+									mobileItem?.classList.add('table-of-contents-item-active');
+								} else {
+									mobileItem?.classList.remove('table-of-contents-item-active');
+								}
+							});
+						}
+					});
+				};
+				
+				const observer = new IntersectionObserver(observerCallback, observerOptions);
+				
+				// すべての見出し要素を監視
+				tocLinks.forEach((link) => {
+					const href = link.getAttribute('href');
+					if (href && href.startsWith('#')) {
+						const id = href.substring(1);
+						const element = document.getElementById(id);
+						if (element) {
+							observer.observe(element);
+						}
+					}
+				});
+				
+				// クリーンアップ関数を返す
+				return () => observer.disconnect();
+			};
+			
+			setupMobileTocObserver();
+		};
+		
+		// 目次を閉じる
+		const closeToc = () => {
+			tocContent.classList.add('hidden');
+			tocIcon.textContent = '∨';
+		};
+		
+		tocButton.addEventListener('click', () => {
+			if (tocContent.classList.contains('hidden')) {
+				openToc();
+			} else {
+				closeToc();
+			}
+		});
+		
+		// 目次の外側をクリックした時に閉じる
+		document.addEventListener('click', (e) => {
+			if (!tocContent.classList.contains('hidden')) {
+				const target = e.target as HTMLElement;
+				// 目次コンテンツとボタン以外をクリックした場合
+				if (!tocContent.contains(target) && !tocButton.contains(target)) {
+					closeToc();
+				}
+			}
+		});
+	}
+	
+	// DOMContentLoaded時に初期化
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			initMobileHeader();
+			setTimeout(initMobileHeader, 100);
+			setTimeout(initMobileHeader, 500);
+			setTimeout(initMobileHeader, 1000);
+			setTimeout(initMobileHeader, 2000);
+		});
+	} else {
+		initMobileHeader();
+		setTimeout(initMobileHeader, 100);
+		setTimeout(initMobileHeader, 500);
+		setTimeout(initMobileHeader, 1000);
+		setTimeout(initMobileHeader, 2000);
+	}
+</script>

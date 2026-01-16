@@ -1,0 +1,208 @@
+---
+---
+
+<!-- モバイル版目次アコーディオン -->
+<div class="lg:hidden">
+	<!-- アコーディオンボタン -->
+	<button
+		id="mobile-toc-button"
+		class="mobile-toc-button fixed top-0 right-0 z-50 bg-white border-l border-b border-gray-300 rounded-bl-lg px-3 py-2 shadow-md hover:bg-gray-50 transition-colors"
+		aria-label="目次を開く"
+	>
+		<span class="font-semibold text-sm text-gray-700">目次</span>
+		<span id="mobile-toc-icon" class="ml-1">∨</span>
+	</button>
+	
+	<!-- アコーディオンパネル -->
+	<div
+		id="mobile-toc-panel"
+		class="mobile-toc-panel fixed top-0 right-0 h-full bg-white shadow-xl overflow-hidden"
+		style="width: 30%; max-width: 80%; transform: translateX(100%); z-index: 40;"
+	>
+		<!-- ヘッダー -->
+		<div class="mobile-toc-header flex items-center justify-between p-3 border-b border-gray-300 bg-white" style="position: sticky; top: 0; z-index: 10;">
+			<span class="font-semibold text-sm text-gray-700">目次</span>
+			<button
+				id="mobile-toc-close"
+				class="mobile-toc-close text-gray-600 hover:text-gray-800 text-xl"
+				aria-label="目次を閉じる"
+			>
+				<i class="fa fa-times"></i>
+			</button>
+		</div>
+		
+		<!-- 目次コンテンツ -->
+		<div id="mobile-toc-content" class="mobile-toc-content overflow-y-auto p-3" style="height: calc(100% - 48px);">
+			<!-- 目次はJavaScriptで動的に挿入 -->
+		</div>
+	</div>
+</div>
+
+<script>
+	// モバイル版目次アコーディオンの機能
+	function initMobileToc() {
+		const tocButton = document.getElementById('mobile-toc-button');
+		const tocPanel = document.getElementById('mobile-toc-panel');
+		const tocClose = document.getElementById('mobile-toc-close');
+		const tocContent = document.getElementById('mobile-toc-content');
+		const tocIcon = document.getElementById('mobile-toc-icon');
+		
+		if (!tocButton || !tocPanel || !tocClose || !tocContent || !tocIcon) return;
+		
+		// 初期状態でパネルを非表示にする
+		tocPanel.style.transform = 'translateX(100%)';
+		
+		// 目次を取得する関数（複数回試行）
+		let desktopToc: Element | null = null;
+		const findToc = () => {
+			// .toc-scroll-wrapper内を優先的に確認（デスクトップ版の目次）
+			desktopToc = document.querySelector('.toc-scroll-wrapper .table-of-contents');
+			
+			// 見つからない場合は、slot="toc"の内容を確認
+			if (!desktopToc) {
+				const tocSlot = document.querySelector('slot[name="toc"]');
+				if (tocSlot) {
+					// slotのassignedNodesを確認
+					const assignedNodes = (tocSlot as HTMLSlotElement).assignedNodes();
+					for (const node of assignedNodes) {
+						if (node.nodeType === Node.ELEMENT_NODE) {
+							const toc = (node as Element).querySelector('.table-of-contents');
+							if (toc) {
+								desktopToc = toc;
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			// まだ見つからない場合は、直接.table-of-contentsを探す
+			if (!desktopToc) {
+				desktopToc = document.querySelector('.table-of-contents');
+			}
+			
+			if (!desktopToc) {
+				// 目次がない場合はボタンを非表示
+				tocButton.style.display = 'none';
+				return false;
+			}
+			
+			// 目次が見つかった場合、リストが空でないか確認
+			const tocList = desktopToc.querySelector('.table-of-contents-list');
+			if (tocList && tocList.children.length === 0) {
+				// 目次が空の場合は非表示
+				tocButton.style.display = 'none';
+				return false;
+			}
+			
+			tocButton.style.display = '';
+			return true;
+		};
+		
+		// MutationObserverで目次の追加を監視
+		const observer = new MutationObserver(() => {
+			if (!desktopToc) {
+				findToc();
+			}
+		});
+		
+		// .toc-wrapperを監視対象に追加
+		const tocWrapper = document.querySelector('.toc-wrapper');
+		if (tocWrapper) {
+			observer.observe(tocWrapper, {
+				childList: true,
+				subtree: true,
+			});
+		}
+		
+		// 最初にチェック
+		if (!findToc()) {
+			// 目次が見つからない場合でも、後で追加される可能性があるので監視を続ける
+		}
+		
+		// アコーディオンを開く
+		const openToc = () => {
+			// 目次を再取得（動的に追加される可能性があるため）
+			if (!desktopToc) {
+				if (!findToc()) {
+					return;
+				}
+			}
+			
+			tocPanel.style.transform = 'translateX(0)';
+			tocIcon.textContent = '∧';
+			
+			// 目次が既に表示されている場合は再読み込みしない
+			if (tocContent.children.length > 0) {
+				return;
+			}
+			
+			// 目次をクローンして表示
+			const tocClone = desktopToc!.cloneNode(true) as HTMLElement;
+			// ヘッダー部分を削除（メニュー内では不要）
+			const header = tocClone.querySelector('.table-of-contents-header');
+			if (header) {
+				header.remove();
+			}
+			// 既存の内容をクリアしてから追加
+			tocContent.innerHTML = '';
+			tocContent.appendChild(tocClone);
+			
+			// 目次のリンクにクリックイベントを追加（アコーディオンを閉じる）
+			const tocLinks = tocContent.querySelectorAll('.table-of-contents-link');
+			tocLinks.forEach((link) => {
+				link.addEventListener('click', () => {
+					closeToc();
+				});
+			});
+		};
+		
+		// アコーディオンを閉じる
+		const closeToc = () => {
+			tocPanel.style.transform = 'translateX(100%)';
+			tocIcon.textContent = '∨';
+		};
+		
+		tocButton.addEventListener('click', () => {
+			const isOpen = tocPanel.style.transform === 'translateX(0)';
+			if (isOpen) {
+				closeToc();
+			} else {
+				openToc();
+			}
+		});
+		
+		tocClose.addEventListener('click', closeToc);
+		
+		// パネル外をクリックしても閉じる
+		document.addEventListener('click', (e) => {
+			const isOpen = tocPanel.style.transform === 'translateX(0)';
+			if (isOpen) {
+				const target = e.target as HTMLElement;
+				if (!tocPanel.contains(target) && !tocButton.contains(target)) {
+					closeToc();
+				}
+			}
+		});
+	}
+	
+	// DOMContentLoaded時に初期化
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			initMobileToc();
+			// Reactコンポーネントのレンダリングを待つ
+			setTimeout(initMobileToc, 100);
+			setTimeout(initMobileToc, 500);
+			setTimeout(initMobileToc, 1000);
+			setTimeout(initMobileToc, 2000);
+		});
+	} else {
+		// ページが既に読み込まれている場合
+		initMobileToc();
+		// Reactコンポーネントのレンダリングを待つ
+		setTimeout(initMobileToc, 100);
+		setTimeout(initMobileToc, 500);
+		setTimeout(initMobileToc, 1000);
+		setTimeout(initMobileToc, 2000);
+	}
+</script>
