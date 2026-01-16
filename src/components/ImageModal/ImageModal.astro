@@ -1,0 +1,322 @@
+---
+---
+
+<!-- 画像モーダル -->
+<div id="image-modal" class="image-modal hidden fixed inset-0 z-[100] bg-black bg-opacity-75 items-center justify-center overflow-hidden">
+	<div class="image-modal-content relative w-full h-full flex items-center justify-center">
+		<!-- 閉じるボタン -->
+		<button
+			id="image-modal-close"
+			class="image-modal-close absolute top-4 right-4 text-white hover:text-gray-300 text-3xl z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
+			aria-label="閉じる"
+		>
+			<i class="fa fa-times"></i>
+		</button>
+		
+		<!-- 拡大ボタン -->
+		<button
+			id="image-modal-zoom-in"
+			class="image-modal-zoom-in absolute top-4 left-4 text-white hover:text-gray-300 text-2xl z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
+			aria-label="拡大"
+		>
+			<i class="fa fa-search-plus"></i>
+		</button>
+		
+		<!-- 縮小ボタン -->
+		<button
+			id="image-modal-zoom-out"
+			class="image-modal-zoom-out absolute top-16 left-4 text-white hover:text-gray-300 text-2xl z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
+			aria-label="縮小"
+		>
+			<i class="fa fa-search-minus"></i>
+		</button>
+		
+		<!-- リセットボタン -->
+		<button
+			id="image-modal-reset"
+			class="image-modal-reset absolute top-28 left-4 text-white hover:text-gray-300 text-xl z-10 bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
+			aria-label="リセット"
+		>
+			<i class="fa fa-refresh"></i>
+		</button>
+		
+		<!-- 画像コンテナ -->
+		<div id="image-modal-container" class="image-modal-container w-full h-full overflow-auto">
+			<div id="image-modal-wrapper" class="image-modal-wrapper flex items-center justify-center min-w-full min-h-full">
+				<img id="image-modal-img" class="object-contain transition-transform duration-200" src="" alt="" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function initImageModal() {
+		const modal = document.getElementById('image-modal');
+		const modalImg = document.getElementById('image-modal-img') as HTMLImageElement;
+		const modalContainer = document.getElementById('image-modal-container');
+		const modalWrapper = document.getElementById('image-modal-wrapper');
+		const closeBtn = document.getElementById('image-modal-close');
+		const zoomInBtn = document.getElementById('image-modal-zoom-in');
+		const zoomOutBtn = document.getElementById('image-modal-zoom-out');
+		const resetBtn = document.getElementById('image-modal-reset');
+		
+		if (!modal || !modalImg || !modalContainer || !modalWrapper || !closeBtn || !zoomInBtn || !zoomOutBtn || !resetBtn) return;
+		
+		let currentScale = 1;
+		const minScale = 0.5;
+		const maxScale = 5;
+		const scaleStep = 0.25;
+		let imageNaturalWidth = 0;
+		let imageNaturalHeight = 0;
+		
+		// 画像のサイズを更新し、ラッパーのサイズも調整
+		const updateImageSize = () => {
+			modalImg.style.transform = `scale(${currentScale})`;
+			
+			// ラッパーのサイズを拡大後の画像サイズに合わせる
+			if (imageNaturalWidth > 0 && imageNaturalHeight > 0) {
+				const scaledWidth = imageNaturalWidth * currentScale;
+				const scaledHeight = imageNaturalHeight * currentScale;
+				modalWrapper.style.minWidth = `${scaledWidth}px`;
+				modalWrapper.style.minHeight = `${scaledHeight}px`;
+			}
+			
+			// 拡大時に中央にスクロール
+			setTimeout(() => {
+				const containerWidth = modalContainer.clientWidth;
+				const containerHeight = modalContainer.clientHeight;
+				const scrollLeft = (modalContainer.scrollWidth - containerWidth) / 2;
+				const scrollTop = (modalContainer.scrollHeight - containerHeight) / 2;
+				modalContainer.scrollTo({
+					left: scrollLeft,
+					top: scrollTop,
+					behavior: 'smooth'
+				});
+			}, 50);
+		};
+		
+		// 拡大
+		const zoomIn = () => {
+			if (currentScale < maxScale) {
+				currentScale = Math.min(currentScale + scaleStep, maxScale);
+				updateImageSize();
+			}
+		};
+		
+		// 縮小
+		const zoomOut = () => {
+			if (currentScale > minScale) {
+				currentScale = Math.max(currentScale - scaleStep, minScale);
+				updateImageSize();
+			}
+		};
+		
+		// 初期スケールを計算（画面の90%に合わせる、ただし元のサイズの2倍まで）
+		const calculateInitialScale = () => {
+			if (imageNaturalWidth === 0 || imageNaturalHeight === 0) return 1;
+			
+			const maxWidth = window.innerWidth * 0.9;
+			const maxHeight = window.innerHeight * 0.9;
+			
+			const widthRatio = maxWidth / imageNaturalWidth;
+			const heightRatio = maxHeight / imageNaturalHeight;
+			
+			// 高さと幅の大きい方（より小さい比率）を選択
+			const calculatedScale = Math.min(widthRatio, heightRatio);
+			
+			// 元のサイズの2倍までに制限（デフォルト表示時のみ）
+			return Math.min(calculatedScale, 2);
+		};
+		
+		// 中央にスクロール
+		const centerScroll = () => {
+			setTimeout(() => {
+				const containerWidth = modalContainer.clientWidth;
+				const containerHeight = modalContainer.clientHeight;
+				const scrollLeft = (modalContainer.scrollWidth - containerWidth) / 2;
+				const scrollTop = (modalContainer.scrollHeight - containerHeight) / 2;
+				modalContainer.scrollTo({
+					left: scrollLeft,
+					top: scrollTop,
+					behavior: 'smooth'
+				});
+			}, 100);
+		};
+		
+		// リセット（初期スケールに戻す）
+		const resetZoom = () => {
+			currentScale = calculateInitialScale();
+			updateImageSize();
+			// スクロール位置も中央にリセット
+			centerScroll();
+		};
+		
+		// モーダルを開く関数
+		const openModal = (imgSrc: string, imgAlt: string) => {
+			modalImg.setAttribute('src', imgSrc);
+			modalImg.setAttribute('alt', imgAlt);
+			
+			// 画像が読み込まれた後に初期サイズを設定
+			modalImg.onload = () => {
+				imageNaturalWidth = modalImg.naturalWidth;
+				imageNaturalHeight = modalImg.naturalHeight;
+				currentScale = calculateInitialScale();
+				updateImageSize();
+				// 初期表示時は中央に配置
+				centerScroll();
+			};
+			
+			modal.classList.remove('hidden');
+			document.body.style.overflow = 'hidden';
+		};
+		
+		// モーダルを閉じる関数
+		const closeModal = () => {
+			modal.classList.add('hidden');
+			document.body.style.overflow = '';
+			resetZoom();
+		};
+		
+		// マークダウンコンテンツ内の画像にクリックイベントを追加
+		const markdownContent = document.querySelector('.markdown-content');
+		if (markdownContent) {
+			const images = markdownContent.querySelectorAll('img');
+			images.forEach((img) => {
+				// クリック可能なスタイルを追加
+				img.style.cursor = 'pointer';
+				img.addEventListener('click', () => {
+					const src = img.getAttribute('src') || '';
+					const alt = img.getAttribute('alt') || '';
+					openModal(src, alt);
+				});
+			});
+		}
+		
+		// ボタンイベント
+		closeBtn.addEventListener('click', closeModal);
+		zoomInBtn.addEventListener('click', zoomIn);
+		zoomOutBtn.addEventListener('click', zoomOut);
+		resetBtn.addEventListener('click', resetZoom);
+		
+		// ウィンドウリサイズ時に初期スケールを再計算
+		window.addEventListener('resize', () => {
+			if (!modal.classList.contains('hidden') && imageNaturalWidth > 0 && imageNaturalHeight > 0) {
+				// 現在のスケールが初期スケールと同じ場合のみ再計算
+				const initialScale = calculateInitialScale();
+				if (Math.abs(currentScale - initialScale) < 0.01) {
+					currentScale = initialScale;
+					updateImageSize();
+				}
+			}
+		});
+		
+		// マウスホイールでズーム
+		modalContainer.addEventListener('wheel', (e) => {
+			if (e.ctrlKey || e.metaKey) {
+				e.preventDefault();
+				if (e.deltaY < 0) {
+					zoomIn();
+				} else {
+					zoomOut();
+				}
+			}
+		});
+		
+		// 背景または画像の外側をクリックした時に閉じる
+		modal.addEventListener('click', (e) => {
+			const target = e.target as HTMLElement;
+			// 背景、コンテナ、ラッパーをクリックした時（画像以外）
+			if (target === modal || target === modalContainer || target === modalWrapper) {
+				closeModal();
+			}
+		});
+		
+		// 画像をクリックした時は閉じない（イベント伝播を止める）
+		modalImg.addEventListener('click', (e) => {
+			e.stopPropagation();
+		});
+		
+		// ESCキーで閉じる
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+				closeModal();
+			}
+		});
+	}
+	
+	// DOMContentLoaded時に初期化
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => {
+			initImageModal();
+			setTimeout(initImageModal, 100);
+			setTimeout(initImageModal, 500);
+		});
+	} else {
+		initImageModal();
+		setTimeout(initImageModal, 100);
+		setTimeout(initImageModal, 500);
+	}
+</script>
+
+<style>
+	.image-modal {
+		backdrop-filter: blur(4px);
+	}
+	
+	.image-modal-content {
+		animation: fadeIn 0.2s ease-in-out;
+	}
+	
+	.image-modal-close {
+		transition: all 0.2s ease-in-out;
+	}
+	
+	.image-modal-close:hover,
+	.image-modal-zoom-in:hover,
+	.image-modal-zoom-out:hover,
+	.image-modal-reset:hover {
+		background-color: rgba(0, 0, 0, 0.7);
+		transform: scale(1.1);
+	}
+	
+	#image-modal-img {
+		animation: zoomIn 0.2s ease-in-out;
+		max-width: none;
+		max-height: none;
+	}
+	
+	.image-modal-container {
+		cursor: grab;
+		padding: 20px;
+		box-sizing: border-box;
+	}
+	
+	.image-modal-container:active {
+		cursor: grabbing;
+	}
+	
+	.image-modal-wrapper {
+		padding: 20px;
+		box-sizing: border-box;
+	}
+	
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+	
+	@keyframes zoomIn {
+		from {
+			transform: scale(0.9);
+			opacity: 0;
+		}
+		to {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+</style>

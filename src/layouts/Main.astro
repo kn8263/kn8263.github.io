@@ -4,6 +4,7 @@ import { AppConfig } from '../utils/AppConfig';
 import type { PostItems } from '../types/Content';
 import Meta from './Meta.astro';
 import MobileHeader from '../components/MobileHeader/MobileHeader.astro';
+import ImageModal from '../components/ImageModal/ImageModal.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -44,6 +45,9 @@ const { recents, tags, meta } = Astro.props;
 	</head>
 	<body class="block">
 		<div class="antialiased w-full text-black md:px-0 bg-slate-100 lg:table lg:w-full">
+		<!-- 画像モーダル -->
+		<ImageModal />
+		
 		<!-- モバイル版ヘッダー（メニューと目次） -->
 		<MobileHeader recents={recents} tags={tags} />
 		

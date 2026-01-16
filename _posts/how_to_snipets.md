@@ -227,7 +227,7 @@ HyperSnipsとは、動的スニペットを実現するVS Codeの拡張機能の
 [HyperSnips - Github repository](https://github.com/draivin/hsnips)<br>
 
 以下は実際に定義した動的スニペットの使用例です。
-<img alt="画像名" src="/assets/images/posts/how_to_snipets/snippet.gif" style="width:50%; margin: 1rem 0;">
+<img alt="Markdown形式のテーブルスニペット" src="/assets/images/posts/how_to_snipets/snippet.gif" style="width:50%; margin: 1rem 0;">
 
 `t[列数]x[行数]`を入力しTabを押すと、指定した列数・行数のMarkdown形式のテーブルが出力されるスニペットです。<br>
 <br>

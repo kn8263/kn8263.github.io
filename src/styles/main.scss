@@ -61,6 +61,13 @@ $code-block-bg: #1a2638;
 			height: auto;
 			display: block;
 			margin: 1rem auto;
+			cursor: pointer;
+			transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+			
+			&:hover {
+				opacity: 0.9;
+				transform: scale(1.02);
+			}
 		}
 			
 		h2 {
