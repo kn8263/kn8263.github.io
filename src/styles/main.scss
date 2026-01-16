@@ -15,6 +15,16 @@ $code-block-bg: #1a2638;
 @layer utilities {
 	.content-title {
 		@apply px-8 pt-1 bg-[position:15px_bottom] bg-no-repeat bg-[length:50px] bg-[url('/assets/svgs/network2.svg')] text-gray-800 relative text-center font-bold text-3xl m-0 mb-6 p-1 border-solid border-4 border-slate-600 rounded-2xl bg-white after:border-transparent after:border-t-white after:border-0 after:border-t-[14px] after:border-r-[14px] after:border-solid after:content-[''] after:absolute after:right-[54px] after:bottom-[-13px] after:w-0 after:h-0 before:border-transparent before:border-t-slate-600 before:border-0 before:border-t-[24px] before:border-r-[24px] before:border-solid before:content-[''] before:absolute before:right-[48px] before:bottom-[-24px] before:w-0 before:h-0;
+		
+		// SP版の調整
+		@media (max-width: 1023px) {
+			@apply text-[1.375rem];
+			background-position: 8px center; // 左中央に配置
+			background-size: 40px; // アイコンサイズ（40px）
+			padding-left: 3rem; // アイコン分のスペースを調整（40px + 余白）
+			padding-right: 1rem;
+			text-align: left; // 左揃えに変更
+		}
 	}
 	.content-date {
 		@apply text-center text-sm mt-[-14px];
@@ -32,6 +42,12 @@ $code-block-bg: #1a2638;
 		box-sizing: border-box;
 		// モバイル/タブレット（サイドバーなし）: 画面幅
 		max-width: 100vw;
+		
+		// SP版の余白を1/3に調整
+		@media (max-width: 1023px) {
+			padding: 0.67rem; // p-8の1/3 (2rem / 3 ≈ 0.67rem)
+		}
+		
 		// デスクトップ（サイドバーあり、lg以上）: 画面幅 - サイドバー幅(384px lg-96)
 		@media (min-width: 1024px) {
 			margin: 0.5rem 0rem 1rem 0.5rem;
@@ -49,28 +65,60 @@ $code-block-bg: #1a2638;
 			
 		h2 {
 			@apply mt-16 mb-8 text-3xl font-bold py-2 pl-16 bg-left-top bg-no-repeat bg-[length:60px] bg-[url('/assets/svgs/network2.svg')];
+			
+			// SP版の調整
+			@media (max-width: 1023px) {
+				@apply text-[1.375rem];
+				background-position: left center; // 左中央に配置
+				background-size: 40px; // アイコンサイズ（40px）
+				padding-left: 3rem; // アイコン分のスペースを調整（40px + 余白）
+			}
 		}
 		h3 {
 			@apply text-xl font-semibold border-l-4 border-b border-gray-700 border-solid pl-1 my-4;
+			
+			// SP版の調整（h2よりやや小さく、標準テキストより大きく）
+			@media (max-width: 1023px) {
+				@apply text-lg; // text-xl (1.25rem) → text-lg (1.125rem)
+			}
 		}
 		h4 {
-			@apply border-l-2 border-slate-600 border-solid pl-1;
+			@apply text-lg border-l-2 border-slate-600 border-solid pl-1;
+
+			// SP版の調整
+			@media (max-width: 1023px) {
+				@apply text-[1.075rem];
+			}
 		}
 		ul li {
 			@apply list-[circle];
 		}
 		ul {
 			@apply my-6 ml-10;
+			@media (max-width: 1023px) {
+				@apply my-3 ml-6;
+			}
 		}
 		ol {
 			@apply my-6 ml-10;
 			list-style-type: decimal;
+			@media (max-width: 1023px) {
+				@apply my-3 ml-6;
+			}
 		}
 		ol li {
 			@apply list-decimal;
 		}
 		p {
 			@apply my-6;
+		}
+		hr {
+			border: none;
+			border-top: 2px solid #b5b5b5;
+			margin: 1.5rem 0;
+			@media (max-width: 1023px) {
+				margin: 1rem 0;
+			}
 		}
 		blockquote {
 			font-style: italic;
