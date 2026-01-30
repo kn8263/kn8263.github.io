@@ -91,6 +91,31 @@ if __name__ == "__main__":
     main()
 ```
 
+```diff
+# diff
+- "delete"
++ "create"
+```
+
+
+```python:diff
+def main(): # python:diff
+-    print("Hello, World!")
++    print("Hello, DIFF!")
+
+- if __name__ == "__main__":
+-    main()
+```
+
+```python:diff_diff.py
+def main(): # python:diff_diff.py
+-    print("Hello, World!")
++    print("Hello, DIFF!")
+
+-if __name__ == "__main__":
+-    main()
+```
+
 ### 言語指定なし
 
 ```
