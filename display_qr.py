@@ -14,7 +14,7 @@ def get_ngrok_url():
             ) as response:
                 data = json.loads(response.read().decode())
                 return data["tunnels"][0]["public_url"]
-        except _:
+        except Exception:
             time.sleep(1)
     return None
 
