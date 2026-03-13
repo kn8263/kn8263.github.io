@@ -4,12 +4,451 @@
         <title>KN8263.GITHUB.IO</title>
         <link>https://kn8263.github.io</link>
         <description>中島功人です。ほぼ自分用のメモサイトです。</description>
-        <lastBuildDate>Fri, 13 Mar 2026 14:01:06 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 13 Mar 2026 14:17:41 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ja</language>
         <copyright>©Nakashima, Katsuhito Some Rights Reserved</copyright>
         <atom:link href="https://kn8263.github.io/feed" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[静的/動的スニペットの活用]]></title>
+            <link>https://kn8263.github.io/posts/how_to_snipets</link>
+            <guid>https://kn8263.github.io/posts/how_to_snipets</guid>
+            <pubDate>Wed, 14 Jan 2026 06:27:06 GMT</pubDate>
+            <description><![CDATA[VSCodeで静的/動的なスニペットを設定する方法まとめ]]></description>
+            <content:encoded><![CDATA[<p>Visual Studio Code(以下VS Codeとする)の標準機能で静的、拡張機能で動的なスニペットの設定方法をまとめておきます。<br></p>
+<h2>そもそもスニペットって？</h2>
+<p>よく使うコードや文章のテンプレートを短いコマンドやキーワードで素早く挿入できる機能です。<br>
+あらかじめ定義されているスニペットを利用する以外に、自分でスニペットを定義することもできます(ユーザースニペット)。
+例えば、関数のひな形や定型文、Markdownの表などを一瞬で入力できるため、作業効率が大きく向上します。<br>
+VSCodeなど多くのエディタにはスニペット機能が備わっており、自分用にカスタマイズして登録することもできます。<br>
+静的スニペットはあらかじめ決まった内容を挿入、動的スニペットは入力時に自動生成・加工されるものになります。<br></p>
+<h2>VS Codeのユーザースニペットの種類</h2>
+<p>VS Codeでは、ファイルの種類(.txt, .md, など)ごとに<strong>ユーザースニペット</strong>を定義する方法と、<br>
+共通のユーザースニペット(グローバルスニペット)を定義する方法の大きく2種類あります。</p>
+<h2>静的スニペット</h2>
+<h3>設定方法</h3>
+<p>今回はmarkdown(.md)ファイルのスニペットを設定していきます。<br><br>
+VSCode(CursorでもOK)でコマンドパレット(<strong>Ctrl + Shift + P</strong>)で<strong>Snippets: Configure Snippets</strong>を検索します。<br>
+スニペットの構成一覧が表示されるので、今回は<strong>Markdown</strong>と入力すると、候補が表示されるので選択します。<br>
+選択すると<strong>VSCodeのパス/User/snippets/markdown.json</strong>が開かれるので設定をしていきます。<br><br></p>
+<h3>設定項目</h3>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">記述項目</div><pre class="shiki" style="background-color: #0d1117" data-lang="json" data-meta="記述項目"><code><span class="line"><span style="color: #C9D1D9">{</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"スニペット名"</span><span style="color: #C9D1D9"> : {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"プレフィックス名"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9"> : [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"出力する"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"テキスト"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9"> : </span><span style="color: #A5D6FF">"スニペットの説明文です。"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"isFileTemplate"</span><span style="color: #C9D1D9"> : </span><span style="color: #79C0FF">true</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"scope"</span><span style="color: #C9D1D9"> : </span><span style="color: #A5D6FF">"javascript,typescript"</span></span>
+<span class="line"><span style="color: #C9D1D9">  }</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span></code></pre></div>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+<th>必須</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>スニペット名</td>
+<td>重複しなければ任意の名前で良いと思われます。</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>prefix</td>
+<td>Intellisense でスニペットを選択するときに使用するプレフィックス。</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>body</td>
+<td>出力したいテキストをリスト形式で記載します。1つの場合はリストでなくても良い。</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>description</td>
+<td>Intellisenseに表示されるスニペットの説明です。</td>
+<td></td>
+</tr>
+<tr>
+<td>isFileTemplate</td>
+<td>ファイル全体を作成または置換する場合のみ使用する（らしい）。Bool</td>
+<td></td>
+</tr>
+<tr>
+<td>scope</td>
+<td>グローバル（global.code-snipets.json）な設定の場合に対象となるファイルを特定したい場合に記述。</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<br>
+<br>
+<p>使用例：</p>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">抜粋</div><pre class="shiki" style="background-color: #0d1117" data-lang="json" data-meta="抜粋"><code><span class="line"><span style="color: #C9D1D9">{</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"details"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mddetails"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"&#x3C;details>&#x3C;summary>${1:タイトル}&#x3C;/summary>"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"${2:本文}"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"&#x3C;/details>"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"details/summary 折り畳みブロック"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span></code></pre></div>
+<p>上記のスニペットを呼び出す際は、prefixの<strong>mddetails</strong>をmarkdownファイル内で打ち込むと使用できます。<br>
+以下は<strong>mdde</strong>まで入力した時の表示です。
+<img src="/assets/images/posts/how_to_snipets/md1.png" alt="intelisense">
+ここでEnter/Tabをおすと以下のように反映されます。
+<img src="/assets/images/posts/how_to_snipets/md2.png" alt="output"></p>
+<br>
+<br>
+<h3>変数</h3>
+<p>ここでは実際に使用している変数だけ紹介しておきます。<br></p>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">変数</div><pre class="shiki" style="background-color: #0d1117" data-lang="markdown" data-meta="変数"><code><span class="line"><span style="color: #C9D1D9">"date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}+0900"</span></span></code></pre></div>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>変数</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CURRENT_YEAR</td>
+<td>現在の年西暦4桁</td>
+</tr>
+<tr>
+<td>CURRENT_MONTH</td>
+<td>現在の月2桁</td>
+</tr>
+<tr>
+<td>CURRENT_DATE</td>
+<td>現在の日2桁</td>
+</tr>
+<tr>
+<td>CURRENT_HOUR</td>
+<td>現在の時刻 時24時間表記2桁</td>
+</tr>
+<tr>
+<td>CURRENT_MINUTE</td>
+<td>現在の時刻 分</td>
+</tr>
+<tr>
+<td>CURRENT_SECOND</td>
+<td>現在の時刻 秒</td>
+</tr>
+</tbody>
+</table></div>
+<p>詳細は割愛しますが、スニペット内で使用できる変数もいくつか用意されていますので興味があればご確認ください。
+<a href="https://code.visualstudio.com/docs/editing/userdefinedsnippets#_variables">>公式ドキュメント</a></p>
+<h3>私の設定</h3>
+<details><summary>私の設定内容</summary>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">markdown.json</div><pre class="shiki" style="background-color: #0d1117" data-lang="json" data-meta="markdown.json"><code><span class="line"><span style="color: #C9D1D9">{</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"codeblock"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdcode"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"```txt:plane.txt"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"$1"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"```"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"新しいMarkdownコードブロックを追加"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"table"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdtable"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"| ${1:見出し1} | ${2:見出し2} |"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"| :---: | :---: |"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"|       |       |"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"Markdownテーブルのひな形を挿入"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"link"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdlink"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"[${1:リンクテキスト}](${2:URL})"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"Markdownリンクを挿入"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"innerlink"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdinnerlink"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"[${1:リンクテキスト}](#${2:見出し名をkebabケースで入力})"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"記事内リンク（アンカーリンク）を挿入"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"image"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdimg"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"![${1:alt}](${2:path})"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"Markdown画像を挿入"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"details"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mddetails"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"&#x3C;details>&#x3C;summary>${1:タイトル}&#x3C;/summary>"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"${2:本文}"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"&#x3C;/details>"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"details/summary 折り畳みブロック"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"article"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdarticletemplate"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"---"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"title: ${1:タイトル}"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}+0900"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"template: post"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"draft: true"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"category: blog"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"description: ${2:記事の要約}"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"tags:"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"  - PHP"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"  - Laravel"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"---"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"記事の簡単な説明"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"## 見出し"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"マークダウン記事のテンプレート"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"mermaid-flowchart-td"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdmermaidtd"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"```mermaid"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"%%{init: {'theme':'base','flowchart': {'htmlLabels': false}}}%%"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"flowchart TD"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    A[</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">A</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">A</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">] --> B[</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">B</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">B</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">]"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    B --> C[</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">C</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">]"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    C --> D[</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">D</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">]"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    C --> E[</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">E</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">]"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    D --> F[</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">F</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">]"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    "</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    style A fill:#fff3e0,stroke:#e65100"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    style B fill:#f3e5f5,stroke:#4a148c"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"    style C fill:#e8f5e9,stroke:#1b5e20"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"```"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"Mermaid: top down フローチャートスニペット"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"article-datetime"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mddatetime"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}+0900"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"マークダウン記事の日付出力"</span></span>
+<span class="line"><span style="color: #C9D1D9">  },</span></span>
+<span class="line"><span style="color: #C9D1D9">  </span><span style="color: #7EE787">"footnote"</span><span style="color: #C9D1D9">: {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"prefix"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"mdfootnote"</span><span style="color: #C9D1D9">,</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"body"</span><span style="color: #C9D1D9">: [</span></span>
+<span class="line"><span style="color: #C9D1D9">      </span><span style="color: #A5D6FF">"${1:脚注}[^${2:footnote}]</span><span style="color: #79C0FF">\n\n</span><span style="color: #A5D6FF">[^${2:footnote}]: ${3:ここに脚注に内容}"</span></span>
+<span class="line"><span style="color: #C9D1D9">    ],</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #7EE787">"description"</span><span style="color: #C9D1D9">: </span><span style="color: #A5D6FF">"脚注を挿入"</span></span>
+<span class="line"><span style="color: #C9D1D9">  }</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span></code></pre></div>
+</details>
+<h2>動的スニペット</h2>
+<p>動的スニペットは静的スニペットと異なり、スニペット実行時にJavaScriptを用いた動的生成・加工が可能になります。<br>
+例えば「選択中のテキストやファイルパスを自動で挿入」「複雑なテーブルやリストを変数に基づいて生成」「パラメータや日付による分岐出力」など、静的スニペットでは難しい⾃動化・応⽤⽣成が実現できます。<br></p>
+<h3>拡張機能 HyperSnipsについて</h3>
+<p>HyperSnipsとは、動的スニペットを実現するVS Codeの拡張機能のひとつです。<br>
+<a href="https://marketplace.visualstudio.com/items?itemName=draivin.hsnips&#x26;ssr=false#overview">HyperSnips - Visual Studio Marketplace</a><br>
+<a href="https://github.com/draivin/hsnips">HyperSnips - Github repository</a><br></p>
+<p>以下は実際に定義した動的スニペットの使用例です。
+<img alt="Markdown形式のテーブルスニペット" src="/assets/images/posts/how_to_snipets/snippet.gif" style="width:50%; margin: 1rem 0;"></p>
+<p><code>t[列数]x[行数]</code>を入力しTabを押すと、指定した列数・行数のMarkdown形式のテーブルが出力されるスニペットです。<br>
+<br>
+※セパレーターの色が違うのはスニペットとは関係ありません。VS Codeの表示設定です。</p>
+<h3>設定方法</h3>
+<p>※いい感じにまとめている方の記事をおいておく。<br>
+<a href="https://qiita.com/take_me/items/19ec3a372a932ea95cd6#%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88%E5%AE%9A%E7%BE%A9%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF">動的なスニペットを実現する HyperSnips を使いこなす</a><br>
+<a href="https://zenn.dev/shena46/articles/latex-snippets-vscode">数式爆速入力のための LaTeX 動的スニペット in VSCode</a><br></p>
+<details><summary>私の設定内容(マークダウン関連スニペット)</summary>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">C:\Users&#x3C;USER_NAME>\AppData\Roaming\Cursor\User\globalStorage\draivin.hsnips\hsnips\markdown.snips</div><pre class="shiki" style="background-color: #0d1117" data-lang="javascript" data-meta="C:\Users<USER_NAME>\AppData\Roaming\Cursor\User\globalStorage\draivin.hsnips\hsnips\markdown.snips"><code><span class="line"><span style="color: #C9D1D9"># Markdown Table Generator t[cols]x[rows][align:center</span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9">c,left</span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9">l,right</span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9">r </span><span style="color: #FF7B72">|</span><span style="color: #C9D1D9"> default:center</span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9">c]</span></span>
+<span class="line"><span style="color: #C9D1D9">snippet </span><span style="color: #A5D6FF">`t([</span><span style="color: #79C0FF">\d</span><span style="color: #A5D6FF">]+)x([</span><span style="color: #79C0FF">\d</span><span style="color: #A5D6FF">]+)([lcr]{0,1})`</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Dynamic Markdown Table"</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #FF7B72">function</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">genTable</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">cols</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">rows</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">alignOption</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> table </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> header </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"|"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> separator </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"|"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">		</span><span style="color: #8B949E">// アライメント（デフォルトかcenter, left right）の判定</span></span>
+<span class="line"><span style="color: #C9D1D9">		</span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> sepStyle </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" --- |"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">		</span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (alignOption </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'c'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">			sepStyle </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" :---: |"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">		} </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (alignOption </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'l'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">			sepStyle </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" :--- |"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">		} </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (alignOption </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'r'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">			sepStyle </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">" ---: |"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">		}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">for</span><span style="color: #C9D1D9"> (</span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> i </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">; i </span><span style="color: #FF7B72">&#x3C;=</span><span style="color: #C9D1D9"> cols; i</span><span style="color: #FF7B72">++</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        header </span><span style="color: #FF7B72">+=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">` Header${</span><span style="color: #C9D1D9">i</span><span style="color: #A5D6FF">} |`</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">        separator </span><span style="color: #FF7B72">+=</span><span style="color: #C9D1D9"> sepStyle;</span></span>
+<span class="line"><span style="color: #C9D1D9">    }</span></span>
+<span class="line"><span style="color: #C9D1D9">    table </span><span style="color: #FF7B72">+=</span><span style="color: #C9D1D9"> header </span><span style="color: #FF7B72">+</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">+</span><span style="color: #C9D1D9"> separator </span><span style="color: #FF7B72">+</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">for</span><span style="color: #C9D1D9"> (</span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> i </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">; i </span><span style="color: #FF7B72">&#x3C;=</span><span style="color: #C9D1D9"> rows; i</span><span style="color: #FF7B72">++</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> row </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"|"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">for</span><span style="color: #C9D1D9"> (</span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> j </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">; j </span><span style="color: #FF7B72">&#x3C;=</span><span style="color: #C9D1D9"> cols; j</span><span style="color: #FF7B72">++</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">            row </span><span style="color: #FF7B72">+=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"       |"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">        }</span></span>
+<span class="line"><span style="color: #C9D1D9">        table </span><span style="color: #FF7B72">+=</span><span style="color: #C9D1D9"> row </span><span style="color: #FF7B72">+</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    }</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">return</span><span style="color: #C9D1D9"> table;</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span><span style="color: #C9D1D9">rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">genTable</span><span style="color: #C9D1D9">(m[</span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">], m[</span><span style="color: #79C0FF">2</span><span style="color: #C9D1D9">], m[</span><span style="color: #79C0FF">3</span><span style="color: #C9D1D9">])</span><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #C9D1D9">endsnippet</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9"># 画像を挿入</span></span>
+<span class="line"><span style="color: #C9D1D9">snippet </span><span style="color: #A5D6FF">`img@(.*)`</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"img@filename.png"</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span><span style="color: #C9D1D9"> rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">`&#x3C;img alt=</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">画像名</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF"> src=</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">/assets/images/posts/${</span><span style="color: #D2A8FF">require</span><span style="color: #A5D6FF">(</span><span style="color: #A5D6FF">'path'</span><span style="color: #A5D6FF">).</span><span style="color: #D2A8FF">parse</span><span style="color: #A5D6FF">(</span><span style="color: #C9D1D9">path</span><span style="color: #A5D6FF">).</span><span style="color: #C9D1D9">name</span><span style="color: #A5D6FF">}/${</span><span style="color: #C9D1D9">m</span><span style="color: #A5D6FF">[</span><span style="color: #79C0FF">1</span><span style="color: #A5D6FF">]</span><span style="color: #A5D6FF">}</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF"> style=</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">width:50%; margin: 0 auto;</span><span style="color: #79C0FF">\"</span><span style="color: #A5D6FF">>`</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #C9D1D9">endsnippet</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9"># クリップボードのcsv, tsvからテーブルを生成</span></span>
+<span class="line"><span style="color: #C9D1D9">snippet md_make_table_from_clipboard </span><span style="color: #A5D6FF">"Convert Clipboard TSV/CSV to Markdown Table"</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> { </span><span style="color: #79C0FF">execSync</span><span style="color: #C9D1D9"> } </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">require</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'child_process'</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> rawData </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #FF7B72">try</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">platform</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> process.platform;</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (platform </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'win32'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        rawData </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">execSync</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'powershell -NoProfile -Command "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-Clipboard"'</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">toString</span><span style="color: #C9D1D9">();</span></span>
+<span class="line"><span style="color: #C9D1D9">    } </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (platform </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'darwin'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        rawData </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">execSync</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'pbpaste'</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">toString</span><span style="color: #C9D1D9">();</span></span>
+<span class="line"><span style="color: #C9D1D9">    } </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">        rawData </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">execSync</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'xclip -selection clipboard -o'</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">toString</span><span style="color: #C9D1D9">();</span></span>
+<span class="line"><span style="color: #C9D1D9">    }</span></span>
+<span class="line"><span style="color: #C9D1D9">} </span><span style="color: #FF7B72">catch</span><span style="color: #C9D1D9"> (e) {</span></span>
+<span class="line"><span style="color: #C9D1D9">    rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Error: Clipboard access failed"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (rawData.</span><span style="color: #D2A8FF">trim</span><span style="color: #C9D1D9">()) {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">lines</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> rawData.</span><span style="color: #D2A8FF">trim</span><span style="color: #C9D1D9">().</span><span style="color: #D2A8FF">split</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #79C0FF">\r</span><span style="color: #FF7B72">?</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">/</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// TSVかCSVか判定</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">delimiter</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> lines[</span><span style="color: #79C0FF">0</span><span style="color: #C9D1D9">].</span><span style="color: #D2A8FF">includes</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'</span><span style="color: #79C0FF">\t</span><span style="color: #A5D6FF">'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">?</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'</span><span style="color: #79C0FF">\t</span><span style="color: #A5D6FF">'</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">:</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">','</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// 各行を配列化</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">rows</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> lines.</span><span style="color: #D2A8FF">map</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">line</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=></span><span style="color: #C9D1D9"> line.</span><span style="color: #D2A8FF">split</span><span style="color: #C9D1D9">(delimiter).</span><span style="color: #D2A8FF">map</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">cell</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=></span><span style="color: #C9D1D9"> cell.</span><span style="color: #D2A8FF">trim</span><span style="color: #C9D1D9">()));</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// 最大列数を計算（末尾の空セル欠落対策）</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">maxCols</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> Math.</span><span style="color: #D2A8FF">max</span><span style="color: #C9D1D9">(</span><span style="color: #FF7B72">...</span><span style="color: #C9D1D9">rows.</span><span style="color: #D2A8FF">map</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">row</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=></span><span style="color: #C9D1D9"> row.</span><span style="color: #79C0FF">length</span><span style="color: #C9D1D9">));</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">formattedTable</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> rows.</span><span style="color: #D2A8FF">map</span><span style="color: #C9D1D9">((</span><span style="color: #FFA657">row</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">index</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">=></span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #8B949E">// 最大列数に足りない分を空文字で埋める</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">fixedRow</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> Array.</span><span style="color: #D2A8FF">from</span><span style="color: #C9D1D9">({ length: maxCols }, (</span><span style="color: #FFA657">_</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">i</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">=></span><span style="color: #C9D1D9"> row[i] </span><span style="color: #FF7B72">||</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> mdRow </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">`| ${</span><span style="color: #C9D1D9">fixedRow</span><span style="color: #A5D6FF">.</span><span style="color: #D2A8FF">join</span><span style="color: #A5D6FF">(</span><span style="color: #A5D6FF">' | '</span><span style="color: #A5D6FF">)</span><span style="color: #A5D6FF">} |`</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #8B949E">// ヘッダー行直後のセパレーター</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (index </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">0</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">            </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">separator</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">`| ${</span><span style="color: #C9D1D9">fixedRow</span><span style="color: #A5D6FF">.</span><span style="color: #D2A8FF">map</span><span style="color: #A5D6FF">(() </span><span style="color: #FF7B72">=></span><span style="color: #A5D6FF"> </span><span style="color: #A5D6FF">'---'</span><span style="color: #A5D6FF">).</span><span style="color: #D2A8FF">join</span><span style="color: #A5D6FF">(</span><span style="color: #A5D6FF">' | '</span><span style="color: #A5D6FF">)</span><span style="color: #A5D6FF">} |`</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">            mdRow </span><span style="color: #FF7B72">+=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">'</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">+</span><span style="color: #C9D1D9"> separator;</span></span>
+<span class="line"><span style="color: #C9D1D9">        }</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">return</span><span style="color: #C9D1D9"> mdRow;</span></span>
+<span class="line"><span style="color: #C9D1D9">    });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> formattedTable.</span><span style="color: #D2A8FF">join</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'</span><span style="color: #79C0FF">\n</span><span style="color: #A5D6FF">'</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">} </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">    rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Clipboard is empty"</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #C9D1D9">endsnippet</span></span></code></pre></div>
+</details>
+<details><summary>私の設定内容(path補完などのスニペット)</summary>
+<div class="code-block-wrapper"><button class="code-block-wrap-button" aria-label="折り返し" type="button"><i class="fa-solid fa-turn-down wrap-icon wrap-icon-scroll"></i><i class="fa-solid fa-right-long wrap-icon wrap-icon-wrapped"></i></button><button class="code-block-copy-button" aria-label="コードをコピー" type="button"><i class="fa copy-icon"></i><span class="copy-feedback">クリップボードにコピーしました！</span></button><div class="code-block-label">C:\Users&#x3C;USER_NAME>\AppData\Roaming\Cursor\User\globalStorage\draivin.hsnips\hsnips\all.snips</div><pre class="shiki" style="background-color: #0d1117" data-lang="javascript" data-meta="C:\Users<USER_NAME>\AppData\Roaming\Cursor\User\globalStorage\draivin.hsnips\hsnips\all.snips"><code><span class="line"><span style="color: #C9D1D9"># クリップボードにコピーする関数</span></span>
+<span class="line"><span style="color: #C9D1D9">global</span></span>
+<span class="line"><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> { </span><span style="color: #79C0FF">execSync</span><span style="color: #C9D1D9"> } </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">require</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'child_process'</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #FF7B72">function</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">setClipboard</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">text</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// OSに応じたコマンドを選択</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">platform</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> process.platform;</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> command </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">''</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (platform </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'win32'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        command </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">`powershell -command "Set-Clipboard -Value '${</span><span style="color: #C9D1D9">text</span><span style="color: #A5D6FF">}'"`</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    } </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (platform </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'darwin'</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        command </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">`echo "${</span><span style="color: #C9D1D9">text</span><span style="color: #A5D6FF">}" | pbcopy`</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    } </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">        command </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">`echo "${</span><span style="color: #C9D1D9">text</span><span style="color: #A5D6FF">}" | xclip -selection clipboard`</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">try</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #D2A8FF">execSync</span><span style="color: #C9D1D9">(command);</span></span>
+<span class="line"><span style="color: #C9D1D9">    } </span><span style="color: #FF7B72">catch</span><span style="color: #C9D1D9"> (e) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        console.</span><span style="color: #D2A8FF">error</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">"Clipboard write failed"</span><span style="color: #C9D1D9">, e);</span></span>
+<span class="line"><span style="color: #C9D1D9">    }</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"><span style="color: #C9D1D9">endglobal</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">snippet </span><span style="color: #A5D6FF">`getpath([w]{0,1})(@[</span><span style="color: #79C0FF">\w</span><span style="color: #A5D6FF">-]+)?`</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Get Path: Workspace/Relative/Full"</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #FF7B72">function</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">getSmartPath</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">fullPathRaw</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">wsPathRaw</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">option</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">targetGroup</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// 1. パスのクリーンアップ</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">const</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">decode</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> (</span><span style="color: #FFA657">src</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">=></span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">decodeURIComponent</span><span style="color: #C9D1D9">(src).</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">^</span><span style="color: #A5D6FF">file:</span><span style="color: #7EE787; font-style: italic">\/\/\/</span><span style="color: #A5D6FF">/</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">''</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> p </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">decode</span><span style="color: #C9D1D9">(fullPathRaw);</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> ws </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">decode</span><span style="color: #C9D1D9">(wsPathRaw);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// 2. ターゲット名（@以降）の抽出</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> targetName </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> targetGroup </span><span style="color: #FF7B72">?</span><span style="color: #C9D1D9"> targetGroup.</span><span style="color: #D2A8FF">substring</span><span style="color: #C9D1D9">(</span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">:</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">null</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> result </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">""</span><span style="color: #C9D1D9">;</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (targetName) {</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #8B949E">// --- 特定ディレクトリ指定モード ---</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> parts </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> p.</span><span style="color: #D2A8FF">split</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #79C0FF">[</span><span style="color: #7EE787; font-style: italic">\\\/</span><span style="color: #79C0FF">]</span><span style="color: #A5D6FF">/</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> targetIndex </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> parts.</span><span style="color: #D2A8FF">lastIndexOf</span><span style="color: #C9D1D9">(targetName);</span></span>
+<span class="line"><span style="color: #C9D1D9">        result </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> (targetIndex </span><span style="color: #FF7B72">!==</span><span style="color: #C9D1D9"> </span><span style="color: #FF7B72">-</span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">?</span><span style="color: #C9D1D9"> parts.</span><span style="color: #D2A8FF">slice</span><span style="color: #C9D1D9">(targetIndex </span><span style="color: #FF7B72">+</span><span style="color: #C9D1D9"> </span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">join</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'/'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">:</span><span style="color: #C9D1D9"> p;</span></span>
+<span class="line"><span style="color: #C9D1D9">    } </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #8B949E">// --- ワークスペース相対モード ---</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #8B949E">// path から ws の部分を削る</span></span>
+<span class="line"><span style="color: #C9D1D9">        </span><span style="color: #FF7B72">if</span><span style="color: #C9D1D9"> (p.</span><span style="color: #D2A8FF">startsWith</span><span style="color: #C9D1D9">(ws)) {</span></span>
+<span class="line"><span style="color: #C9D1D9">            result </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> p.</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(ws, </span><span style="color: #A5D6FF">''</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">^</span><span style="color: #79C0FF">[</span><span style="color: #7EE787; font-style: italic">\\\/</span><span style="color: #79C0FF">]</span><span style="color: #A5D6FF">/</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">''</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">        } </span><span style="color: #FF7B72">else</span><span style="color: #C9D1D9"> {</span></span>
+<span class="line"><span style="color: #C9D1D9">            result </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> p; </span><span style="color: #8B949E">// 万が一ワークスペース外ならフルパス</span></span>
+<span class="line"><span style="color: #C9D1D9">        }</span></span>
+<span class="line"><span style="color: #C9D1D9">    }</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> resultWithOption </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> (option </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'w'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">?</span><span style="color: #C9D1D9"> result.</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #7EE787; font-style: italic">\/</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">g</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">'</span><span style="color: #79C0FF">\\</span><span style="color: #A5D6FF">'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">:</span><span style="color: #C9D1D9"> result.</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #7EE787; font-style: italic">\\</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">g</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">'/'</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">		</span><span style="color: #D2A8FF">setClipboard</span><span style="color: #C9D1D9">(resultWithOption);</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #8B949E">// 3. Windowsオプション整形</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">return</span><span style="color: #C9D1D9"> resultWithOption;</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span><span style="color: #C9D1D9">rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">getSmartPath</span><span style="color: #C9D1D9">(path, w, m[</span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">], m[</span><span style="color: #79C0FF">2</span><span style="color: #C9D1D9">]);</span><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #C9D1D9">endsnippet</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9"># Get Full </span><span style="color: #FFA657">Path</span><span style="color: #C9D1D9">: Linux</span><span style="color: #FF7B72">/</span><span style="color: #C9D1D9">Windows</span></span>
+<span class="line"><span style="color: #C9D1D9">snippet </span><span style="color: #A5D6FF">`getfullpath([w]{0,1})`</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Get Full Path: Linux/Windows"</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #FF7B72">function</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">getFullPath</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">fullPathRaw</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">option</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> p </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">decodeURIComponent</span><span style="color: #C9D1D9">(fullPathRaw).</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">^</span><span style="color: #A5D6FF">file:</span><span style="color: #7EE787; font-style: italic">\/\/\/</span><span style="color: #A5D6FF">/</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">''</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">		</span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> resultWithOption </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> (option </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'w'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">?</span><span style="color: #C9D1D9"> p.</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #7EE787; font-style: italic">\/</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">g</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">'</span><span style="color: #79C0FF">\\</span><span style="color: #A5D6FF">'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">:</span><span style="color: #C9D1D9"> p.</span><span style="color: #D2A8FF">replace</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">/</span><span style="color: #7EE787; font-style: italic">\\</span><span style="color: #A5D6FF">/</span><span style="color: #FF7B72">g</span><span style="color: #C9D1D9">, </span><span style="color: #A5D6FF">'/'</span><span style="color: #C9D1D9">);</span></span>
+<span class="line"><span style="color: #C9D1D9">		</span><span style="color: #D2A8FF">setClipboard</span><span style="color: #C9D1D9">(resultWithOption);</span></span>
+<span class="line"><span style="color: #C9D1D9">    </span><span style="color: #FF7B72">return</span><span style="color: #C9D1D9"> resultWithOption;</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span><span style="color: #C9D1D9">rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">getFullPath</span><span style="color: #C9D1D9">(path, m[</span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">]);</span><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #C9D1D9">endsnippet</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C9D1D9"># Get Current Filename</span></span>
+<span class="line"><span style="color: #C9D1D9">snippet </span><span style="color: #A5D6FF">`getfilename([.]{0,1})`</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">"Current OnlyFilename or FileName.Extension (getfilename.)"</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #FF7B72">function</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">getFilename</span><span style="color: #C9D1D9">(</span><span style="color: #FFA657">path</span><span style="color: #C9D1D9">, </span><span style="color: #FFA657">option</span><span style="color: #C9D1D9">) {</span></span>
+<span class="line"><span style="color: #C9D1D9">	</span><span style="color: #FF7B72">let</span><span style="color: #C9D1D9"> resultWithOption </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> (option </span><span style="color: #FF7B72">===</span><span style="color: #C9D1D9"> </span><span style="color: #A5D6FF">'.'</span><span style="color: #C9D1D9">) </span><span style="color: #FF7B72">?</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">require</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'path'</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">basename</span><span style="color: #C9D1D9">(path) </span><span style="color: #FF7B72">:</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">require</span><span style="color: #C9D1D9">(</span><span style="color: #A5D6FF">'path'</span><span style="color: #C9D1D9">).</span><span style="color: #D2A8FF">parse</span><span style="color: #C9D1D9">(path).name;</span></span>
+<span class="line"><span style="color: #C9D1D9">	</span><span style="color: #D2A8FF">setClipboard</span><span style="color: #C9D1D9">(resultWithOption);</span></span>
+<span class="line"><span style="color: #C9D1D9">	</span><span style="color: #FF7B72">return</span><span style="color: #C9D1D9"> resultWithOption;</span></span>
+<span class="line"><span style="color: #C9D1D9">}</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #A5D6FF">``</span><span style="color: #C9D1D9">rv </span><span style="color: #FF7B72">=</span><span style="color: #C9D1D9"> </span><span style="color: #D2A8FF">getFilename</span><span style="color: #C9D1D9">(path, m[</span><span style="color: #79C0FF">1</span><span style="color: #C9D1D9">]);</span><span style="color: #A5D6FF">``</span></span>
+<span class="line"><span style="color: #C9D1D9">endsnippet</span></span></code></pre></div>
+</details>]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[WindowsServer×Laravelの環境をHyper-Vに構築する]]></title>
             <link>https://kn8263.github.io/posts/WindowsServer_Laravel_setup</link>
