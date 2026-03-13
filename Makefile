@@ -1,21 +1,32 @@
+SHELL := bash
 # --- 設定 ---
 SCRIPT := display_qr.py
 PORT   := 8000
 DIST   := ./dist
 
+
 # --- 共通処理の定義 ---
 # サービスの停止
 define stop_services
 	@echo "Stopping python and ngrok..."
-	-@powershell -Command "Stop-Process -Name uv, python, ngrok -ErrorAction SilentlyContinue"
+	-@taskkill /F /IM uv.exe 2>/dev/null || true
+	-@taskkill /F /IM python.exe 2>/dev/null || true
+	-@taskkill /F /IM ngrok.exe 2>/dev/null || true
 endef
+# define stop_services
+# 	@echo "Stopping python and ngrok..."
+# 	-@powershell -Command "Stop-Process -Name uv, python, ngrok -ErrorAction SilentlyContinue"
+# endef
 
 # サーバーとngrokの同時起動
 # $(1): サーバー実行コマンド ('python' または 'uv run python')
 define start_services
-	powershell -Command "Start-Process $(firstword $(1)) -ArgumentList '$(wordlist 2, 99, $(1)) -m http.server $(PORT)' -WorkingDirectory '$(DIST)' -WindowStyle Minimized"
-	powershell -Command "Start-Process ngrok -ArgumentList 'http $(PORT)' -WindowStyle Minimized"
+	bash -c '(cd $(DIST) && $(1) -m http.server $(PORT) &); ngrok http $(PORT) &>/dev/null &'
 endef
+# define start_services
+# 	powershell -Command "Start-Process $(firstword $(1)) -ArgumentList '$(wordlist 2, 99, $(1)) -m http.server $(PORT)' -WorkingDirectory '$(DIST)' -WindowStyle Minimized"
+# 	powershell -Command "Start-Process ngrok -ArgumentList 'http $(PORT)' -WindowStyle Minimized"
+# endef
 
 # --- 実行コマンド ---
 
