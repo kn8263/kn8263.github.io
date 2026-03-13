@@ -2,7 +2,7 @@
 title: 静的/動的スニペットの活用
 date: 2026-01-14T15:27:06+0900
 template: post
-draft: true
+draft: false
 category: blog
 description: VSCodeで静的/動的なスニペットを設定する方法まとめ
 tags:
@@ -234,11 +234,16 @@ HyperSnipsとは、動的スニペットを実現するVS Codeの拡張機能の
 ※セパレーターの色が違うのはスニペットとは関係ありません。VS Codeの表示設定です。
 
 ### 設定方法
+※いい感じにまとめている方の記事をおいておく。<br>
+[動的なスニペットを実現する HyperSnips を使いこなす](https://qiita.com/take_me/items/19ec3a372a932ea95cd6#%E3%82%B9%E3%83%8B%E3%83%9A%E3%83%83%E3%83%88%E5%AE%9A%E7%BE%A9%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF)<br>
+[数式爆速入力のための LaTeX 動的スニペット in VSCode](https://zenn.dev/shena46/articles/latex-snippets-vscode)<br>
 
-<!-- MEMO -->
+
+<details><summary>私の設定内容(マークダウン関連スニペット)</summary>
+
 ```javascript:C:\Users\<USER_NAME>\AppData\Roaming\Cursor\User\globalStorage\draivin.hsnips\hsnips\markdown.snips
 # Markdown Table Generator t[cols]x[rows][align:center=c,left=l,right=r | default:center=c]
-snippet `t([\d]+)x([\d]+)([lcr]{0,1})` "Dynamic Markdown Table" 
+snippet `t([\d]+)x([\d]+)([lcr]{0,1})` "Dynamic Markdown Table"
 ``
 function genTable(cols, rows, alignOption) {
     let table = "";
@@ -254,13 +259,13 @@ function genTable(cols, rows, alignOption) {
 		} else if (alignOption === 'r') {
 			sepStyle = " ---: |";
 		}
-    
+
     for (let i = 1; i <= cols; i++) {
         header += ` Header${i} |`;
         separator += sepStyle;
     }
     table += header + "\n" + separator + "\n";
-    
+
     for (let i = 1; i <= rows; i++) {
         let row = "|";
         for (let j = 1; j <= cols; j++) {
@@ -302,18 +307,18 @@ if (rawData.trim()) {
     const lines = rawData.trim().split(/\r?\n/);
     // TSVかCSVか判定
     const delimiter = lines[0].includes('\t') ? '\t' : ',';
-    
+
     // 各行を配列化
     const rows = lines.map(line => line.split(delimiter).map(cell => cell.trim()));
-    
+
     // 最大列数を計算（末尾の空セル欠落対策）
     const maxCols = Math.max(...rows.map(row => row.length));
-    
+
     const formattedTable = rows.map((row, index) => {
         // 最大列数に足りない分を空文字で埋める
         const fixedRow = Array.from({ length: maxCols }, (_, i) => row[i] || "");
         let mdRow = `| ${fixedRow.join(' | ')} |`;
-        
+
         // ヘッダー行直後のセパレーター
         if (index === 0) {
             const separator = `| ${fixedRow.map(() => '---').join(' | ')} |`;
@@ -321,7 +326,7 @@ if (rawData.trim()) {
         }
         return mdRow;
     });
-    
+
     rv = formattedTable.join('\n');
 } else {
     rv = "Clipboard is empty";
@@ -329,6 +334,9 @@ if (rawData.trim()) {
 ``
 endsnippet
 ```
+</details>
+
+<details><summary>私の設定内容(path補完などのスニペット)</summary>
 
 ```javascript:C:\Users\<USER_NAME>\AppData\Roaming\Cursor\User\globalStorage\draivin.hsnips\hsnips\all.snips
 # クリップボードにコピーする関数
@@ -339,7 +347,7 @@ function setClipboard(text) {
     // OSに応じたコマンドを選択
     const platform = process.platform;
     let command = '';
-    
+
     if (platform === 'win32') {
         command = `powershell -command "Set-Clipboard -Value '${text}'"`;
     } else if (platform === 'darwin') {
@@ -347,7 +355,7 @@ function setClipboard(text) {
     } else {
         command = `echo "${text}" | xclip -selection clipboard`;
     }
-    
+
     try {
         execSync(command);
     } catch (e) {
@@ -363,10 +371,10 @@ function getSmartPath(fullPathRaw, wsPathRaw, option, targetGroup) {
     const decode = (src) => decodeURIComponent(src).replace(/^file:\/\/\//, '');
     let p = decode(fullPathRaw);
     let ws = decode(wsPathRaw);
-    
+
     // 2. ターゲット名（@以降）の抽出
     let targetName = targetGroup ? targetGroup.substring(1) : null;
-    
+
     let result = "";
     if (targetName) {
         // --- 特定ディレクトリ指定モード ---
@@ -416,125 +424,4 @@ function getFilename(path, option) {
 ``rv = getFilename(path, m[1]);``
 endsnippet
 ```
-
-```json:c:/Users/<USER_NAME>/AppData/Roaming/Cursor/User/snippets/markdown.json
-{
-  "codeblock": {
-    "prefix": "mdcode",
-    "body": [
-      "```txt:plane.txt",
-      "$1",
-      "```"
-    ],
-    "description": "新しいMarkdownコードブロックを追加"
-  },
-  "table": {
-    "prefix": "mdtable",
-    "body": [
-      "| ${1:見出し1} | ${2:見出し2} |",
-      "| :---: | :---: |",
-      "|       |       |"
-    ],
-    "description": "Markdownテーブルのひな形を挿入"
-  },
-  "link": {
-    "prefix": "mdlink",
-    "body": [
-      "[${1:リンクテキスト}](${2:URL})"
-    ],
-    "description": "Markdownリンクを挿入"
-  },
-  "innerlink": {
-    "prefix": "mdinnerlink",
-    "body": [
-      "[${1:リンクテキスト}](#${2:見出し名をkebabケースで入力})"
-    ],
-    "description": "記事内リンク（アンカーリンク）を挿入"
-  },
-  "image": {
-    "prefix": "mdimgmd",
-    "body": [
-      "![${1:alt}](${2:path})"
-    ],
-    "description": "Markdown形式で画像を挿入"
-  },
-  "htmlimage": {
-    "prefix": "mdimghtml",
-    "body": [
-      "<img alt=\"${2:画像名}\" src=\"/assets/images/posts/${3:getfilenameスニペット}/${4:image_name.png}\" style=\"width:50%; margin: 0${5: auto};\">"
-    ],
-    "description": "html形式で画像を挿入"
-  },
-  "details": {
-    "prefix": "mddetails",
-    "body": [
-      "<details><summary>${1:タイトル}</summary>",
-      "",
-      "${2:本文}",
-      "</details>"
-    ],
-    "description": "details/summary 折り畳みブロック"
-  },
-  "article": {
-    "prefix": "mdarticletemplate",
-    "body": [
-      "---",
-      "title: ${1:タイトル}",
-      "date: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}+0900",
-      "template: post",
-      "draft: true",
-      "category: blog",
-      "description: ${2:記事の要約}",
-      "tags:",
-      "  - PHP",
-      "  - Laravel",
-      "---",
-      "",
-      "記事の簡単な説明",
-      "",
-      "## 見出し"
-    ],
-    "description": "マークダウン記事のテンプレート"
-  },
-  "mermaid-flowchart-td": {
-    "prefix": "mdmermaidtd",
-    "body": [
-      "```mermaid",
-      "%%{init: {'theme':'base','flowchart': {'htmlLabels': false}}}%%",
-      "flowchart TD",
-      "    A[\"A\nA\"] --> B[\"B\nB\"]",
-      "    B --> C[\"C\"]",
-      "    C --> D[\"D\"]",
-      "    C --> E[\"E\"]",
-      "    D --> F[\"F\"]",
-      "    ",
-      "    style A fill:#fff3e0,stroke:#e65100",
-      "    style B fill:#f3e5f5,stroke:#4a148c",
-      "    style C fill:#e8f5e9,stroke:#1b5e20",
-      "```"
-    ],
-    "description": "Mermaid: top down フローチャートスニペット"
-  },
-  "article-datetime": {
-    "prefix": "mddatetime",
-    "body": "${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}+0900",
-    "description": "マークダウン記事の日付出力"
-  },
-  "footnote": {
-    "prefix": "mdfootnote",
-    "body": [
-      "${1:**脚注**}[^${2:footnote}]\n\n[^${2:footnote}]: ${3:ここに脚注に内容}"
-    ],
-    "description": "脚注を挿入"
-  },
-  "html": {
-    "prefix": "md_text_strong",
-    "body": [
-      "<p style=\"color: red; font-weight: bold;\">",
-      "${1}",
-      "</p>"
-    ],
-    "description": "脚注を挿入"
-  },
-}
-```
+</details>
